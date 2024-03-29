@@ -18,6 +18,9 @@
   - [避免 _auto someVar = expression of **invisible** proxy class type_](#避免-auto-somevar--expression-of-invisible-proxy-class-type)
   - [必须 _auto someVar = static\_cast\<T\>(expression of **invisible** proxy class type)_](#必须-auto-somevar--static_casttexpression-of-invisible-proxy-class-type)
   - [_the explicitly typed initializer idiom_ 可以强制 _auto_ 去推导你想要的 **_正确_** 的类型](#the-explicitly-typed-initializer-idiom-可以强制-auto-去推导你想要的-正确-的类型)
+- [Item 7 创建对象时区分 _()_ 和 _{}_](#item-7-创建对象时区分--和-)
+  - [_braced initialization_ 的用法](#braced-initialization-的用法)
+  - [_braced initialization_ 的特性](#braced-initialization-的特性)
 
 # Item 1 理解模板的类型推导
 
@@ -530,3 +533,169 @@ _std::vector<bool>::reference_ 就是 **_invisble_** _proxy classes_，不能 **
 ```C++
   auto ep = static_cast<float>(calcEpsilon());
 ```
+
+# Item 7 创建对象时区分 _()_ 和 _{}_
+
+* _braced initialization_ 是最广泛的可使用的初始化语法，它可以禁止 _narrowing conversions_并且对 _C++_ 的  
+_most vexing parse_ 所免疫。
+
+* 在构造函数重载决议期间，如果可能，_braced initializer_ 会和 _std::initializer_list_ 形参匹配，即使其他的构造函  
+数提供了看起来是更好的匹配。
+
+* 在选择使用 _()_ 和 _{}_ 时可能产生显著差异的一个例子是使用两个实参来创建 _std::vector&lt;numeric type&gt;_时。
+
+
+* 当在模板中创建对象时，在 _()_ 和 _{}_ 之间进行选择是具有挑战性的。
+
+## _braced initialization_ 的用法
+
+显式声明
+
+```C++
+  int x{ 0 };                 // ok
+
+  int x = { 0 };              // ok
+```
+
+_auto_ 声明
+
+```C++
+  auto z{ 0 };                // ok, z is int                 
+
+  auto z = { 0 };             // ok, but z is std::initializer_lists
+
+  auto z{0, 1};               // error, shit! C++ fuck you
+```
+> 原文认为：“我通常会忽略 _equals-sign-plus-braces_ 语法，因为 _C++_ 通常把它和 _braces-only_ 做同样地处理。” 实  
+> 际测试不是这样，使用的编译器是 _c++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0_。_auto v{0, 1};_ 这样是无法通过编  
+> 译的并且 _auto v{0}_ 中的 _v_ 是 _int_ 类型而不是 _std::initializer_lists_ 类型。
+> _C++ fuck you!_
+
+## _braced initialization_ 的特性
+
+_braced initialization_ 可以直接创建持有一组特定值的 _container_。
+
+```C++
+  std::vector<int> v{ 1, 3, 5 };        // v's initial content is 1, 3, 5
+```
+
+_braced initialization_ 可以被用于指明非静态数据成员的默认初始化值。
+
+```C++
+  class Widget {
+  …
+  private:
+    int x{ 0 };               // fine, x's default value is 0
+    int y = 0;                // also fine
+    int z(0);                 // error!
+  };
+``` 
+> _C++11_ 后才可以，注意 _()_ 不可以。
+
+_braced initialization_ 可以禁止内建类型之间的 _implicit narrowing conversions_。
+
+```C++
+  double x, y, z;
+  
+  …
+  
+  int sum1{ x + y + z };      // error! sum of doubles may
+                              // not be expressible as int
+```
+
+_braced initialization_ 可以免疫 _C++_ 的 _most vexing parse_。
+
+```C++
+  Widget w2();                // most vexing parse! declares a function
+                              // named w2 that returns a Widget!
+
+  Widget w3{};                // calls Widget ctor with no args
+```
+
+_braced initialization_ 可以让编译器强烈地优先选择持有 _std::initializer_lists_ 的重载函数。此处的 **_强烈地优先选择_** 是  
+指：只要可以 **_implicit converting_** 的话，编译器强就会去选择持有 _std::initializer_lists_ 的重载函数，就算此时的这  
+个 **_implicit converting_** 是 _implicit narrowing converting_ 的会导致报错，编译器也会去选择持有 _std::initializer_lists_  
+的重载函数。
+
+> 只有当没有办法将 _braced initializer_ 中的实参的类型转换 _std::initializer_list_ 中的类型时，编译器才会回退到一般  
+> 的重载决议中，但是注意经过经过重载决议后，如果编译器仍然有机会去选择持有 _std::initializer_lists_ 的重载函  
+数的话，那么编译器强仍然会去选择持有 _std::initializer_lists_ 的重载函数。
+
+```C++
+  class Widget {
+  public:
+    Widget(int i, bool b);                        // as before
+    Widget(int i, double d);                      // as before
+
+    Widget(const Test &);
+    Widget(std::initializer_list<Widget> il);
+    
+    Widget(std::initializer_list<bool> il);       
+                                                  
+    …                                            
+  };                                              
+
+  Widget w{10, 5.0};                              // error! requires narrowing conversions
+
+  Test t; 
+  Widget w{t};                                    // t type is Test, so no implicit conversion.
+                                                  // first, the 'Widget(const Test &)' is invoked, which indicates a Widget is created;
+                                                  // second, the 'std::initializer_list<Widget> il' is invoked by passing the Widget created in the first step. 
+```  
+> 就是这么 **_强烈地优先选择_**。_C++_ 你是有病吗？学你算我倒霉。
+
+
+_braced initialization_ 对于常规的拷贝构造函数和移动构造函数会有不同。
+> 原文认为：“甚至那些常规的拷贝构造和移动构造也可以被 _std::initializer_list_ 构造函数所劫持。”实际测试不是  
+> 这样，使用的编译器是 _c++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0_。
+
+* 原文认为的常规的拷贝构造和移动构造情况
+
+```C++
+  class Widget {
+  public:
+    Widget(int i, bool b);                                  // as before
+    Widget(int i, double d);                                // as before
+    Widget(std::initializer_list<long double> il);          // as before
+    
+    operator float() const;                                 // convert
+    …                                                       // to float
+  };
+
+  Widget w5(w4);                                            // uses parens, calls copy ctor
+  
+  Widget w6{w4};                                            // uses braces, calls
+                                                            // std::initializer_list ctor
+                                                            // (w4 converts to float, and float
+                                                            // converts to long double)
+
+  Widget w7(std::move(w4));                                 // uses parens, calls move ctor
+
+  Widget w8{std::move(w4)};                                 // uses braces, calls
+                                                            // std::initializer_list ctor
+                                                            // (for same reason as w6)
+```
+
+* 实际测试的拷贝构造和移动构造情况
+  
+```C++
+  class Widget {
+  public:
+    Widget(int i, bool b);                                  // as before
+    Widget(int i, double d);                                // as before
+    Widget(std::initializer_list<long double> il);          // as before
+    
+    operator float() const;                                 // convert
+    …                                                       // to float
+  };
+
+  Widget w5(w4);                                            // uses parens, calls copy ctor
+  
+  Widget w6{w4};                                            // uses braces, calls copy ctor
+
+  Widget w7(std::move(w4));                                 // uses parens, calls move ctor
+
+  Widget w8{std::move(w4)};                                 // uses braces, calls move ctor
+```
+
+_braced initialization_ 只有当没有办法将 _braced initializer_ 中的实参的类型转换 _std::initializer_list_ 中的类型时，编译器才会回退到一般的重载决议中，但是注意经过经过重载决议后，如果编译器仍然有机会去选择持有 _std::initializer_lists_ 的重载函数的话，那么编译器强就会去选择持又 _std::initializer_lists_ 的重载函数。
