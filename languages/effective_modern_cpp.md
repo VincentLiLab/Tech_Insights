@@ -21,6 +21,7 @@
 - [Item 7 创建对象时区分 _()_ 和 _{}_](#item-7-创建对象时区分--和-)
   - [_braced initialization_ 的用法](#braced-initialization-的用法)
   - [_braced initialization_ 的特性](#braced-initialization-的特性)
+  - [_braced initialization_ 的易错](#braced-initialization-的易错)
 
 # Item 1 理解模板的类型推导
 
@@ -619,7 +620,7 @@ _braced initialization_ 可以让编译器强烈地优先选择持有 _std::init
 
 > 只有当没有办法将 _braced initializer_ 中的实参的类型转换 _std::initializer_list_ 中的类型时，编译器才会回退到一般  
 > 的重载决议中，但是注意经过经过重载决议后，如果编译器仍然有机会去选择持有 _std::initializer_lists_ 的重载函  
-数的话，那么编译器强仍然会去选择持有 _std::initializer_lists_ 的重载函数。
+> 数的话，那么编译器强仍然会去选择持有 _std::initializer_lists_ 的重载函数。
 
 ```C++
   class Widget {
@@ -698,4 +699,15 @@ _braced initialization_ 对于常规的拷贝构造函数和移动构造函数�
   Widget w8{std::move(w4)};                                 // uses braces, calls move ctor
 ```
 
-_braced initialization_ 只有当没有办法将 _braced initializer_ 中的实参的类型转换 _std::initializer_list_ 中的类型时，编译器才会回退到一般的重载决议中，但是注意经过经过重载决议后，如果编译器仍然有机会去选择持有 _std::initializer_lists_ 的重载函数的话，那么编译器强就会去选择持又 _std::initializer_lists_ 的重载函数。
+## _braced initialization_ 的易错
+
+```C++
+  std::vector<int> v;
+  …
+  doSomeWork<std::vector<int>>(10, 20);
+```
+
+如果创建 _localObject_ 时 _doSomeWork_ 使用了 _()_ 的话，那么 _std::vector_ 就是有 _10_ 个元素。如果创建 _localObject_ 时   
+_doSomeWork_ 使用了 _{}_ 的话，那么 _std::vector_ 就是有 _2_ 个元素。哪一个是正确的？_doSomeWork_ 的作者是不知道  
+的，只有调用者知道。_()_ 和 _{}_ 只使用其中之一最好。
+
