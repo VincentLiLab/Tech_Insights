@@ -22,6 +22,9 @@
   - [_braced initialization_ 的用法](#braced-initialization-的用法)
   - [_braced initialization_ 的特性](#braced-initialization-的特性)
   - [_braced initialization_ 的易错](#braced-initialization-的易错)
+- [Item 8 首选 _nullptr_ 而不是 _0_ 和 _NULL_](#item-8-首选-nullptr-而不是-0-和-null)
+  - [_0_ 和 _NULL_ 都不是指针类型，而是 _integral_ 类型](#0-和-null-都不是指针类型而是-integral-类型)
+  - [首选 _nullptr_ 而不是 _0_ 和 _NULL_](#首选-nullptr-而不是-0-和-null)
 
 # Item 1 理解模板的类型推导
 
@@ -711,3 +714,90 @@ _braced initialization_ 对于常规的拷贝构造函数和移动构造函数�
 _doSomeWork_ 使用了 _{}_ 的话，那么 _std::vector_ 就是有 _2_ 个元素。哪一个是正确的？_doSomeWork_ 的作者是不知道  
 的，只有调用者知道。_()_ 和 _{}_ 只使用其中之一最好。
 
+# Item 8 首选 _nullptr_ 而不是 _0_ 和 _NULL_
+
+## _0_ 和 _NULL_ 都不是指针类型，而是 _integral_ 类型
+
+_C++_ 是在只有指针被使用的环境下，才是会将 _0_ 和 _NULL_ 做为空指针的，否则是不会将 _NULL_ 做为空指针 的，而  
+是将 _0_ 和 _NULL_ 做为它们本身的 _integral_ 类型。
+
+```C
+ 
+  void f(void*);
+  
+  f(0);                       // this is the context where only a pointer can be used,
+  f(NULL);                    // C++ will grudgingly interpret 0 and NULL as a null pointer.
+```
+
+```C++
+  void f(void*);
+  void f(int);
+
+  f(0);                       // this is the context where not only a pointer can be used,
+  f(NULL);                    // C++ will grudgingly interpret 0 and NULL as a interal type.
+```
+
+## 首选 _nullptr_ 而不是 _0_ 和 _NULL_
+
+```C++
+  int f1(std::shared_ptr<Widget> spw);            // call these only when
+  double f2(std::unique_ptr<Widget> upw);         // the appropriate
+  bool f3(Widget* pw);                            // mutex is locked
+```  
+
+```C++
+  std::mutex f1m, f2m, f3m;             // mutexes for f1, f2, and f3
+  
+  using MuxGuard =                      // C++11 typedef; see Item 9
+  std::lock_guard<std::mutex>;
+  …
+  
+  {
+    MuxGuard g(f1m);                    // lock mutex for f1
+    auto result = f1(0);                // pass 0 as null ptr to f1
+  }                                     // unlock mutex
+  
+  …
+  
+  {
+    MuxGuard g(f2m);                    // lock mutex for f2
+    auto result = f2(NULL);             // pass NULL as null ptr to f2
+  }                                     // unlock mutex
+  
+  …
+  
+  {
+    MuxGuard g(f3m);                    // lock mutex for f3
+    auto result = f3(nullptr);          // pass nullptr as null ptr to f3
+  }
+```  
+
+因为此时是在只有指针被使用的环境下，所以可以将 _0_ 隐式转换为 _std::shared_ptr&lt;Widget&gt;_ 类型的形参。_NULL_ 和  
+_std::unique_ptr&lt;Widget&gt;_ 类型的形参也是这样的情况。
+
+```C++
+  template<typename FuncType,
+            typename MuxType,
+            typename PtrType>
+  decltype(auto) lockAndCall(FuncType func,       // C++14
+                              MuxType& mutex,
+                              PtrType ptr)
+  {
+    MuxGuard g(mutex);
+    return func(ptr);
+  }
+
+  auto result1 = lockAndCall(f1, f1m, 0);         // error!
+  
+  …
+  
+  auto result2 = lockAndCall(f2, f2m, NULL);      // error!  
+  
+  …
+
+  auto result3 = lockAndCall(f3, f3m, nullptr);   // fine
+``` 
+
+因为在 _lockAndCall_ 所对应的模板的类型推导下，会将 _0_ 所对应的 _ptr_ 的类型推导为 _integral_ 类型，而 _integral_ 类  
+型是无法隐式转换为 _std::shared_ptr&lt;Widget&gt;_ 类型的，所以是错误的。_NULL_ 和 _std::unique_ptr&lt;Widget&gt;_ 类型的  
+形参也是这样的情况。
