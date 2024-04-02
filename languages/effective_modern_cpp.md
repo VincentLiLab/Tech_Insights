@@ -25,6 +25,8 @@
 - [Item 8 首选 _nullptr_ 而不是 _0_ 和 _NULL_](#item-8-首选-nullptr-而不是-0-和-null)
   - [_0_ 和 _NULL_ 都不是指针类型，而是 _integral_ 类型](#0-和-null-都不是指针类型而是-integral-类型)
   - [首选 _nullptr_ 而不是 _0_ 和 _NULL_](#首选-nullptr-而不是-0-和-null)
+- [Item 9 首选 _alias declarations_ 而不是 _typedefs_](#item-9-首选-alias-declarations-而不是-typedefs)
+  - [_alias declarations_ 支持模板化，而 _typedef_ 不支持模板化](#alias-declarations-支持模板化而-typedef-不支持模板化)
 
 # Item 1 理解模板的类型推导
 
@@ -801,3 +803,29 @@ _std::unique_ptr&lt;Widget&gt;_ 类型的形参也是这样的情况。
 因为在 _lockAndCall_ 所对应的模板的类型推导下，会将 _0_ 所对应的 _ptr_ 的类型推导为 _integral_ 类型，而 _integral_ 类  
 型是无法隐式转换为 _std::shared_ptr&lt;Widget&gt;_ 类型的，所以是错误的。_NULL_ 和 _std::unique_ptr&lt;Widget&gt;_ 类型的  
 形参也是这样的情况。
+
+# Item 9 首选 _alias declarations_ 而不是 _typedefs_
+
+## _alias declarations_ 支持模板化，而 _typedef_ 不支持模板化
+
+* _alias declarations_
+
+```C
+  template<typename T>                            // MyAllocList<T>
+  using MyAllocList = std::list<T, MyAlloc<T>>;   // is synonym for
+                                                  // std::list<T,
+                                                  // MyAlloc<T>>
+
+  MyAllocList<Widget> lw;                         // client code
+```
+
+* _typedef_ 
+
+```C++
+  template<typename T>                            // MyAllocList<T>::type
+  struct MyAllocList {                            // is synonym for
+    typedef std::list<T, MyAlloc<T>> type;        // std::list<T,
+  };                                              // MyAlloc<T>>
+  
+  MyAllocList<Widget>::type lw;                   // client code
+```  
