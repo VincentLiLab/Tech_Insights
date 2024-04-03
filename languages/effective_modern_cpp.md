@@ -27,6 +27,10 @@
   - [首选 _nullptr_ 而不是 _0_ 和 _NULL_](#首选-nullptr-而不是-0-和-null)
 - [Item 9 首选 _alias declarations_ 而不是 _typedefs_](#item-9-首选-alias-declarations-而不是-typedefs)
   - [_alias declarations_ 支持模板化，而 _typedef_ 不支持模板化](#alias-declarations-支持模板化而-typedef-不支持模板化)
+- [Item 10 首选 _scoped enums_ 而不是 _unscoped enums_](#item-10-首选-scoped-enums-而不是-unscoped-enums)
+  - [_scoped enums_ 可以降低 _namespace_ 的污染](#scoped-enums-可以降低-namespace-的污染)
+  - [_scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的](#scoped-enums-所对应的-enumerators-是不可以被隐式转换的)
+  - [_scoped enums_ 可以直接进行前置声明来减少编译依赖](#scoped-enums-可以直接进行前置声明来减少编译依赖)
 
 # Item 1 理解模板的类型推导
 
@@ -829,3 +833,94 @@ _std::unique_ptr&lt;Widget&gt;_ 类型的形参也是这样的情况。
   
   MyAllocList<Widget>::type lw;                   // client code
 ```  
+
+# Item 10 首选 _scoped enums_ 而不是 _unscoped enums_
+
+## _scoped enums_ 可以降低 _namespace_ 的污染
+
+ _scoped enums_ 不会将其所对应的 _enumerators_ 的名称泄露到那个包含着它的作用域中，而 _unscoped enums_ 会发生泄露。
+
+* _scoped enums_
+
+ ```C++
+  enum class Color { black, white, red };         // black, white, red
+                                                  // are scoped to Color
+  
+  auto white = false;                             // fine, no other
+                                                  // "white" in scope
+
+  Color c = white;                                // error! no enumerator named
+                                                  // "white" is in this scope
+
+  Color c = Color::white;                         // fine
+
+  auto c = Color::white;                          // also fine (and in accord
+    
+ ```
+
+ _unscoped enums_
+
+ ```C++
+  enum Color { black, white, red };     // black, white, red are
+                                        // in same scope as Color
+
+  auto white = false;                   // error! white already
+                                        // declared in this scope
+```
+
+## _scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的
+
+_scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的，而 _unscoped enums_ 所对应的 _enumerators_ 是可以被隐式转换的。
+
+* _scoped enums_
+
+```C++
+  enum class Color { black, white, red };         // enum is now scoped
+
+  Color c = Color::red;                           // as before, but
+  …                                               // with scope qualifier
+
+  if (c < 14.5) {                                 // error! can't compare
+                                                  // Color and double
+    auto factors =                                // error! can't pass Color to
+      primeFactors(c);                            // function expecting std::size_t
+    …
+  }
+```
+
+* _unscoped enums_
+
+```C++
+  enum Color { black, white, red };     // unscoped enum
+
+  std::vector<std::size_t>              // func. returning
+    primeFactors(std::size_t x);        // prime factors of x
+  
+  Color c = red;
+  …
+
+  if (c < 14.5) {                       // compare Color to double (!)
+    auto factors =                      // compute prime factors
+      primeFactors(c);                  // of a Color (!)
+    …
+  }
+```
+
+## _scoped enums_ 可以直接进行前置声明来减少编译依赖
+
+_scoped enums_ 可以直接进行前置声明来减少编译依赖，而 _unscoped enums_ 只有当指明了 _underlying type_ 才可以进行前置声明。
+ 
+* _scoped enums_
+
+```C++
+  enum class Color;           // fine
+```
+
+* _unscoped enums_
+
+```C++
+  enum Color;                 // error!
+
+  enum Color : int;           // fine
+``` 
+
