@@ -23,14 +23,17 @@
   - [_braced initialization_ 的特性](#braced-initialization-的特性)
   - [_braced initialization_ 的易错](#braced-initialization-的易错)
 - [Item 8 首选 _nullptr_ 而不是 _0_ 和 _NULL_](#item-8-首选-nullptr-而不是-0-和-null)
-  - [_0_ 和 _NULL_ 都不是指针类型，而是 _integral_ 类型](#0-和-null-都不是指针类型而是-integral-类型)
-  - [首选 _nullptr_ 而不是 _0_ 和 _NULL_](#首选-nullptr-而不是-0-和-null)
+  - [_nullptr_ 在任意情况下都可以做为空指针](#nullptr-在任意情况下都可以做为空指针)
 - [Item 9 首选 _alias declarations_ 而不是 _typedefs_](#item-9-首选-alias-declarations-而不是-typedefs)
-  - [_alias declarations_ 支持模板化，而 _typedef_ 不支持模板化](#alias-declarations-支持模板化而-typedef-不支持模板化)
+  - [_alias declarations_ 是支持模板化的](#alias-declarations-是支持模板化的)
 - [Item 10 首选 _scoped enums_ 而不是 _unscoped enums_](#item-10-首选-scoped-enums-而不是-unscoped-enums)
   - [_scoped enums_ 可以降低 _namespace_ 的污染](#scoped-enums-可以降低-namespace-的污染)
   - [_scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的](#scoped-enums-所对应的-enumerators-是不可以被隐式转换的)
   - [_scoped enums_ 可以直接进行前置声明来减少编译依赖](#scoped-enums-可以直接进行前置声明来减少编译依赖)
+- [Item 11 首选 _deleted functions_ 而不是 _private undefined functions_](#item-11-首选-deleted-functions-而不是-private-undefined-functions)
+  - [_deleted functions_ 是在编译阶段报错的](#deleted-functions-是在编译阶段报错的)
+  - [_deleted functions_ 是可以用于任何函数的](#deleted-functions-是可以用于任何函数的)
+  - [_deleted functions_ 是可以用于模板特化的](#deleted-functions-是可以用于模板特化的)
 
 # Item 1 理解模板的类型推导
 
@@ -546,17 +549,6 @@ _std::vector<bool>::reference_ 就是 **_invisble_** _proxy classes_，不能 **
 
 # Item 7 创建对象时区分 _()_ 和 _{}_
 
-* _braced initialization_ 是最广泛的可使用的初始化语法，它可以禁止 _narrowing conversions_并且对 _C++_ 的  
-_most vexing parse_ 所免疫。
-
-* 在构造函数重载决议期间，如果可能，_braced initializer_ 会和 _std::initializer_list_ 形参匹配，即使其他的构造函  
-数提供了看起来是更好的匹配。
-
-* 在选择使用 _()_ 和 _{}_ 时可能产生显著差异的一个例子是使用两个实参来创建 _std::vector&lt;numeric type&gt;_时。
-
-
-* 当在模板中创建对象时，在 _()_ 和 _{}_ 之间进行选择是具有挑战性的。
-
 ## _braced initialization_ 的用法
 
 显式声明
@@ -722,13 +714,13 @@ _doSomeWork_ 使用了 _{}_ 的话，那么 _std::vector_ 就是有 _2_ 个元�
 
 # Item 8 首选 _nullptr_ 而不是 _0_ 和 _NULL_
 
-## _0_ 和 _NULL_ 都不是指针类型，而是 _integral_ 类型
+## _nullptr_ 在任意情况下都可以做为空指针
 
-_C++_ 是在只有指针被使用的环境下，才是会将 _0_ 和 _NULL_ 做为空指针的，否则是不会将 _NULL_ 做为空指针 的，而  
-是将 _0_ 和 _NULL_ 做为它们本身的 _integral_ 类型。
+_nullptr_ 在任意情况下都可以做为空指针，而 _0_ 和 _NULL_ 只有在指针被使用的情况下才可以做为空指针，否则将 _0_ 和 _NULL_ 做为它们本身的 _integral_ 类型。
+
+* _0_ 和 _NULL_ 可以做为空指针的情况   
 
 ```C
- 
   void f(void*);
   
   f(0);                       // this is the context where only a pointer can be used,
@@ -736,22 +728,11 @@ _C++_ 是在只有指针被使用的环境下，才是会将 _0_ 和 _NULL_ 做�
 ```
 
 ```C++
-  void f(void*);
-  void f(int);
 
-  f(0);                       // this is the context where not only a pointer can be used,
-  f(NULL);                    // C++ will grudgingly interpret 0 and NULL as a interal type.
-```
-
-## 首选 _nullptr_ 而不是 _0_ 和 _NULL_
-
-```C++
   int f1(std::shared_ptr<Widget> spw);            // call these only when
   double f2(std::unique_ptr<Widget> upw);         // the appropriate
-  bool f3(Widget* pw);                            // mutex is locked
-```  
+  bool f3(Widget* pw);  
 
-```C++
   std::mutex f1m, f2m, f3m;             // mutexes for f1, f2, and f3
   
   using MuxGuard =                      // C++11 typedef; see Item 9
@@ -781,7 +762,22 @@ _C++_ 是在只有指针被使用的环境下，才是会将 _0_ 和 _NULL_ 做�
 因为此时是在只有指针被使用的环境下，所以可以将 _0_ 隐式转换为 _std::shared_ptr&lt;Widget&gt;_ 类型的形参。_NULL_ 和  
 _std::unique_ptr&lt;Widget&gt;_ 类型的形参也是这样的情况。
 
+* _0_ 和 _NULL_ 不可以做为空指针的情况
+
 ```C++
+  void f(void*);
+  void f(int);
+
+  f(0);                       // this is the context where not only a pointer can be used,
+  f(NULL);                    // C++ will grudgingly interpret 0 and NULL as a interal type.
+```
+
+```C++
+
+  int f1(std::shared_ptr<Widget> spw);            // call these only when
+  double f2(std::unique_ptr<Widget> upw);         // the appropriate
+  bool f3(Widget* pw);  
+
   template<typename FuncType,
             typename MuxType,
             typename PtrType>
@@ -810,7 +806,9 @@ _std::unique_ptr&lt;Widget&gt;_ 类型的形参也是这样的情况。
 
 # Item 9 首选 _alias declarations_ 而不是 _typedefs_
 
-## _alias declarations_ 支持模板化，而 _typedef_ 不支持模板化
+## _alias declarations_ 是支持模板化的
+
+_alias declarations_ 是支持模板化的，而 _typedef_ 是不支持模板化的。
 
 * _alias declarations_
 
@@ -838,7 +836,8 @@ _std::unique_ptr&lt;Widget&gt;_ 类型的形参也是这样的情况。
 
 ## _scoped enums_ 可以降低 _namespace_ 的污染
 
- _scoped enums_ 不会将其所对应的 _enumerators_ 的名称泄露到那个包含着它的作用域中，而 _unscoped enums_ 会发生泄露。
+ _scoped enums_ 是不会将其所对应的 _enumerators_ 的名称泄露到那个包含着它的作用域中的，而 _unscoped enums_   
+ 是会的。
 
 * _scoped enums_
 
@@ -870,7 +869,8 @@ _std::unique_ptr&lt;Widget&gt;_ 类型的形参也是这样的情况。
 
 ## _scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的
 
-_scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的，而 _unscoped enums_ 所对应的 _enumerators_ 是可以被隐式转换的。
+_scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的，而 _unscoped enums_ 所对应的 _enumerators_ 是可以  
+被隐式转换的。
 
 * _scoped enums_
 
@@ -908,7 +908,8 @@ _scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的，而 _
 
 ## _scoped enums_ 可以直接进行前置声明来减少编译依赖
 
-_scoped enums_ 可以直接进行前置声明来减少编译依赖，而 _unscoped enums_ 只有当指明了 _underlying type_ 才可以进行前置声明。
+_scoped enums_ 可以直接进行前置声明来减少编译依赖，而 _unscoped enums_ 则需要在指明 _underlying type_ 的情况  
+下才可以进行前置声明。
  
 * _scoped enums_
 
@@ -924,3 +925,91 @@ _scoped enums_ 可以直接进行前置声明来减少编译依赖，而 _unscop
   enum Color : int;           // fine
 ``` 
 
+# Item 11 首选 _deleted functions_ 而不是 _private undefined functions_
+
+## _deleted functions_ 是在编译阶段报错的
+
+_deleted functions_ 是在编译阶段报错的，而 _private undefined functions_ 则是在链接阶段报错的。_deleted functions_ 是应该被声明为 _public_ 而不是 _private_ 的。
+
+## _deleted functions_ 是可以用于任何函数的
+
+_deleted functions_ 是可以用于任何函数的，包括成员函数、非成员函数和模板实例，而 _private undefined functions_  
+是只可以用于成员函数的。
+
+* 成员函数
+
+```C++
+  template <class charT, class traits = char_traits<charT> >
+  class basic_ios : public ios_base {
+  public:
+    …
+    basic_ios(const basic_ios& ) = delete;
+    basic_ios& operator=(const basic_ios&) = delete;
+    …
+  };
+```
+
+* 非成员函数
+
+```C++
+  bool isLucky(int number);             // original function
+  
+  bool isLucky(char) = delete;          // reject chars
+  
+  bool isLucky(bool) = delete;          // reject bools
+  
+  bool isLucky(double) = delete;        // reject doubles and
+                                        // floats
+``` 
+
+* 模板实例
+
+```C++
+  template<typename T>
+  void processPointer(T* ptr);
+
+  template<>
+  void processPointer<void>(void*) = delete;
+  
+  template<>
+  void processPointer<char>(char*) = delete; 
+```  
+
+## _deleted functions_ 是可以用于模板特化的
+
+_deleted functions_ 是可以用于模板特化的，而 _private undefined functions_ 是不可以的。如果在类中有一个函数模  
+板，并且你想通过 _private_ 声明来 _disable_ 它的一些实例的话，那么这样做是不可以的。因为不能给成员函数模板  
+的特化一个和主模板是不同的访问级别。
+
+* _deleted functions_
+
+```C++
+  class Widget {
+  public:
+  …
+  template<typename T>
+  void processPointer(T* ptr)
+  { … }
+  …
+  };
+  template<>                                                  // still
+  void Widget::processPointer<void>(void*) = delete;          // public,
+                                                              // but
+                                                              // deleted
+```
+
+* _private undefined functions_
+
+```C++
+  class Widget {
+  public:
+    …
+    template<typename T>
+    void processPointer(T* ptr)
+    { … }
+
+  private:
+    template<>                          // error!       
+    void processPointer<void>(void*);
+ };
+``` 
