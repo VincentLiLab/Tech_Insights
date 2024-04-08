@@ -34,6 +34,10 @@
   - [_deleted functions_ 是在编译阶段报错的](#deleted-functions-是在编译阶段报错的)
   - [_deleted functions_ 是可以用于任何函数的](#deleted-functions-是可以用于任何函数的)
   - [_deleted functions_ 是可以用于模板特化的](#deleted-functions-是可以用于模板特化的)
+- [Item 12 使用 _override_ 来声明重写函数](#item-12-使用-override-来声明重写函数)
+  - [重写的条件](#重写的条件)
+  - [_reference qualifiers_ 的作用](#reference-qualifiers-的作用)
+  - [使用 _override_ 来声明重写函数的优势](#使用-override-来声明重写函数的优势)
 
 # Item 1 理解模板的类型推导
 
@@ -1013,3 +1017,81 @@ _deleted functions_ 是可以用于模板特化的，而 _private undefined func
     void processPointer<void>(void*);
  };
 ``` 
+
+# Item 12 使用 _override_ 来声明重写函数
+
+## 重写的条件
+
+_base class_ 的函数必须是 _virtual functions_。  
+_base function_ 和 _derived function_ 的名字必须一致，除了 _destructors_ 的场景以外。  
+_base function_ 和 _derived function_ 的形参类型必须一致。  
+_base function_ 和 _derived function_ 的 _constness_ 必须一致。  
+_base function_ 和 _derived function_ 的返回类型和异常规范必须要兼容。  
+_base function_ 和 _derived function_ 的 _reference qualifiers_ 必须一致。
+
+## _reference qualifiers_ 的作用
+
+成员函数的 reference qualifiers 使得可以不同地处理左值 *this 对象和右值 *this 对象了。
+```C+++
+  class Widget {
+  public:
+    using DataType = std::vector<double>;
+    …
+
+    DataType& data() &                            // for lvalue Widgets,
+    { return values; }                            // return lvalue
+
+    DataType data() &&                            // for rvalue Widgets,
+    { return std::move(values); }                 // return rvalue
+    …
+  private:
+    DataType values;
+  };
+```  
+
+```C++
+  auto vals1 = w.data();                // calls lvalue overload for
+                                        // Widget::data, copy-
+                                        // constructs vals1
+
+  auto vals2 = makeWidget().data();     // calls rvalue overload for
+                                        // Widget::data, move-
+                                        // constructs vals2
+```  
+
+## 使用 _override_ 来声明重写函数的优势
+
+```C++
+  class Base {
+  public:
+    virtual void mf1() const;
+    virtual void mf2(int x);
+    virtual void mf3() &;
+    void mf4() const;
+  };
+```
+
+在 _C++98_ 中，如果没有满足重写的条件的话，那么编译器可能是不会发出警告的，因为覆盖也是符合要求的。
+
+```C++
+  class Derived: public Base {
+  public:
+    virtual void mf1();
+    virtual void mf2(unsigned int x);
+    virtual void mf3() &&;
+    void mf4() const;
+  };
+```
+
+在 _C++11_ 中，如果没有满足重写的条件，但使用了 _override_ 来声明重写函数的话，那么编译器是会判定为错误  
+的。
+```C++
+  class Derived: public Base {
+  public:
+  virtual void mf1() override;
+  virtual void mf2(unsigned int x) override;
+  virtual void mf3() && override;
+  virtual void mf4() const override;
+  };
+``` 
+
