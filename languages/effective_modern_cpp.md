@@ -38,6 +38,8 @@
   - [重写的条件](#重写的条件)
   - [_reference qualifiers_ 的作用](#reference-qualifiers-的作用)
   - [使用 _override_ 来声明重写函数的优势](#使用-override-来声明重写函数的优势)
+- [Item 13 首选 _const\_iterators_ 而不是 _iterators_](#item-13-首选-const_iterators-而不是-iterators)
+  - [_const\_iterators_ 符合只要有可能使用 _const_ 就应该去使用 _const_ 的规则](#const_iterators-符合只要有可能使用-const-就应该去使用-const-的规则)
 
 # Item 1 理解模板的类型推导
 
@@ -1094,4 +1096,25 @@ _base function_ 和 _derived function_ 的 _reference qualifiers_ 必须一致�
   virtual void mf4() const override;
   };
 ``` 
+
+# Item 13 首选 _const_iterators_ 而不是 _iterators_
+
+## _const_iterators_ 符合只要有可能使用 _const_ 就应该去使用 _const_ 的规则
+
+只要有可能使用 _const_ 就应该去使用 _const_，这个规则在 _C++11_ 之前就是一直有的。但是在 _C++98_ 中，当使用到   
+_iterators_ 时，这个原则就不适用了。而在 _C++11_ 中，这个原则就很适用了。_container_ 的  成员函数 _cbegin_ 和 _cend_   
+都产生的是 _const_iterators_。
+
+```C++
+  std::vector<int> values;                        // as before
+  
+  …
+  
+  auto it =                                       // use cbegin
+  
+  std::find(values.cbegin(),values.cend(), 1983); // and cend
+  
+  values.insert(it, 1998);
+```
+
 
