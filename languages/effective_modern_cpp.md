@@ -47,11 +47,16 @@
   - [_C++11_ 的 _exception specification_  的优点](#c11-的-exception-specification--的优点)
   - [_noexcept_ 允许编译器去生成更好的对象代码](#noexcept-允许编译器去生成更好的对象代码)
   - [_noexcept_ 可以提高性能](#noexcept-可以提高性能)
-  - [只有当愿意长期来维护一个 _noexcept_ 实现时，才应该声明一个函数为 _noexcept_](#只有当愿意长期来维护一个-noexcept-实现时才应该声明一个函数为-noexcept)
+  - [_noexcept_ 是接口，只有当愿意长期来维护一个 _noexcept_ 实现时，才应该声明一个函数为 _noexcept_](#noexcept-是接口只有当愿意长期来维护一个-noexcept-实现时才应该声明一个函数为-noexcept)
   - [_exception-neutral_ 的函数不是 _noexcept_ 的](#exception-neutral-的函数不是-noexcept-的)
   - [扭曲函数的实现以去让 _noexcept_ 成为可能是不合理的](#扭曲函数的实现以去让-noexcept-成为可能是不合理的)
   - [所有的内存释放函数和析构函数默认都是隐式 _noexcept_ 的](#所有的内存释放函数和析构函数默认都是隐式-noexcept-的)
   - [没有声明为 _noexcept_ 的函数也可以是 _noexcept_ 的](#没有声明为-noexcept-的函数也可以是-noexcept-的)
+- [Item 15 只要有可能就使用 _constexpr_](#item-15-只要有可能就使用-constexpr)
+  - [_constexpr_ 对象](#constexpr-对象)
+  - [_constexpr_ 函数](#constexpr-函数)
+  - [只要有可能就使用 _constexpr_ 的优势](#只要有可能就使用-constexpr-的优势)
+  - [_constexpr_ 是接口，只有当愿意长期来维护一个 _constexpr_ 实现时，才应该声明一个对象或函数为 _constexpr_](#constexpr-是接口只有当愿意长期来维护一个-constexpr-实现时才应该声明一个对象或函数为-constexpr)
 
 # Item 1 理解模板的类型推导
 
@@ -1230,7 +1235,7 @@ _array_ 的交换是否是 _noexcept_ 的。这依次决定了其他的像 _Widg
 _noexcept_ 的。只有当低级别成分的交换是 _noexcept_ 的时，高级别的数据结构才可以是 _noexcept_ 的，这个事实激励  
 你只要可以就应该去提供 _noexcept_ 的 _swap_ 函数。
 
-## 只有当愿意长期来维护一个 _noexcept_ 实现时，才应该声明一个函数为 _noexcept_
+## _noexcept_ 是接口，只有当愿意长期来维护一个 _noexcept_ 实现时，才应该声明一个函数为 _noexcept_
 
 只有当愿意长期来维护一个 _noexcept_ 实现时，才应该声明一个函数为 _noexcept_。因为如果你开始时声明了一个函  
 数为 _noexcept_，但是后续却后悔了的话，那么你的选择是有限的。你可以从函数的声明中删除 _noexcept_，即为：  
@@ -1286,3 +1291,83 @@ _noexcept_ 的。只有当低级别成分的交换是 _noexcept_ 的时，高级
 至一些已经从 _C_ 标准库移动到 _std namespace_ 的函数仍然缺少着 _exception specification_，比如：_std::strlen_ 没有被  
 声明为 _noexcept_。又或者它们是决定不使用 _C++98_ 的 _exception specification_，但还没有被修改为使用 _C++11_ 的  
 _exception specification_ 的 _C++98_ 的库。
+
+# Item 15 只要有可能就使用 _constexpr_
+
+## _constexpr_ 对象
+
+_constexpr_ 对象的值在编译期间就是已知的，所以需要使用在编译期间就是已知的值来进行初始化，而 _const_ 对象  
+不需要使用在编译期间就是已知的值来进行初始化。也就是说：所有 _constexpr_ 对象都是 _const_ 的，但所有 _const_  
+对象不都是 _constexpr_ 的。
+
+```C++
+  int sz;                               // non-constexpr variable
+  
+  …
+  
+  constexpr auto arraySize1 = sz;       // error! sz's value not
+                                        // known at compilation
+  
+  std::array<int, sz> data1;            // error! same problem
+  
+  constexpr auto arraySize2 = 10;       // fine, 10 is a
+                                        // compile-time constant
+  
+  std::array<int, arraySize2> data2;    // fine, arraySize2
+                                        // is constexpr
+```
+
+```C++
+  int sz;                               // as before
+  
+  …
+  
+  const auto arraySize = sz;            // fine, arraySize is
+                                        // const copy of sz
+
+  std::array<int, arraySize> data;      // error! arraySize's value
+                                        // not known at compilation
+```  
+
+## _constexpr_ 函数
+
+如果你传递给 _constexpr_ 函数的实参的值是在编译期间就是已知的话，那么这个 _constexpr_ 函数的结果将会在编译  
+期间被计算。如果你传递给 _constexpr_ 函数的实参的值不是在编译期间就是已知的话，那么这个 _constexpr_ 函数的  
+结果将会在运行期间被计算。构造函数和其他成员函数也可以是 _constexpr_ 的。因为如果所传入的实参是在编译期  
+间就是已知的话，那么所构造的对象的数据成员的值也是在编译期间就是已知的。所以可以是 _constexpr_ 的。
+
+```C++
+  class Point {
+  public:
+    constexpr Point(double xVal = 0, double yVal = 0) noexcept
+      : x(xVal), y(yVal)
+      {}
+
+      constexpr double xValue() const noexcept { return x; }
+      constexpr double yValue() const noexcept { return y; }
+      
+      void setX(double newX) noexcept { x = newX; }
+      void setY(double newY) noexcept { y = newY; }
+    
+    private:
+      double x, y;
+  };
+``` 
+
+```C++
+  constexpr Point p1(9.4, 27.7);        // fine, "runs" constexpr
+                                        // ctor during compilation
+  
+  constexpr Point p2(28.8, 5.3);        // also fine
+```  
+
+## 只要有可能就使用 _constexpr_ 的优势
+
+_constexpr_ 对象可以在只读内存中被创建。这意味着：你可以在模板的实参中或者在要指定 _enumerator_ 值的表达式  
+中使用像 _mid.xValue() * 10_ 这样的的表达式了。这意味着：在编译期间所完成的工作和运行期间所完成的工作之间  
+传统上是相当严格的界限开始变得模糊了，一些传统上是在运行期间所完成的计算现在可以迁移到编译期间来进行  
+了。迁移的代码越多，你的程序将会运行的更快，当然编译也会更耗时。
+
+## _constexpr_ 是接口，只有当愿意长期来维护一个 _constexpr_ 实现时，才应该声明一个对象或函数为 _constexpr_
+
+_constexpr_ 是接口，只有当愿意长期来维护一个 _constexpr_ 实现时，才应该声明一个对象或函数为 _constexpr_。
