@@ -57,6 +57,9 @@
   - [_constexpr_ 函数](#constexpr-函数)
   - [只要有可能就使用 _constexpr_ 的优势](#只要有可能就使用-constexpr-的优势)
   - [_constexpr_ 是接口，只有当愿意长期来维护一个 _constexpr_ 实现时，才应该声明一个对象或函数为 _constexpr_](#constexpr-是接口只有当愿意长期来维护一个-constexpr-实现时才应该声明一个对象或函数为-constexpr)
+- [Item 16 使 _const_ 成员函数成为线程安全的](#item-16-使-const-成员函数成为线程安全的)
+  - [_mutable_ 的用法](#mutable-的用法)
+  - [_std::atomic_ 与 _std::mutex_](#stdatomic-与-stdmutex)
 
 # Item 1 理解模板的类型推导
 
@@ -1371,3 +1374,94 @@ _constexpr_ 对象可以在只读内存中被创建。这意味着：你可以�
 ## _constexpr_ 是接口，只有当愿意长期来维护一个 _constexpr_ 实现时，才应该声明一个对象或函数为 _constexpr_
 
 _constexpr_ 是接口，只有当愿意长期来维护一个 _constexpr_ 实现时，才应该声明一个对象或函数为 _constexpr_。
+
+# Item 16 使 _const_ 成员函数成为线程安全的
+
+## _mutable_ 的用法
+
+在 _const_ 成员函数中会，如果一个成员会执行 _no-const_ 操作的话，比如：被更改或者会调用到其他 _no-const_ 函数，那么需要声明这个成员为 _mutable_。
+
+```C++
+  class Polynomial {
+  public:
+    using RootsType = std::vector<double>;
+    
+    RootsType roots() const
+    {
+      std::lock_guard<std::mutex> g(m);           // lock mutex
+
+      if (!rootsAreValid) {                       // if cache not valid
+      
+        …                                         // compute/store roots
+      
+        rootsAreValid = true;
+      }
+
+    return rootVals;
+  }                                               // unlock mutex
+  
+  private:
+    mutable std::mutex m;
+    mutable bool rootsAreValid{ false };
+    mutable RootsType rootVals{};
+  };
+```  
+_std::mutex m_ 被声明为了 _mutable_，因为 _m_ 的加锁和解锁是 _non-const_ 成员函数，但却是在 _const_ 成员函数 _roots_   
+中，如果 _m_ 没有被声明为 _mutable_ 的话，那么 _m_ 将会被认为 _const_ 对象。
+
+## _std::atomic_ 与 _std::mutex_
+
+对于单个要求同步的变量或内存区域来说，使用 _std::atomic_ 是适当的，但是一旦你有两个或多个要求做为整体来  
+进行操作的变量或内存区域的话，那么你应该去使用 _std::mutex_。
+
+```C++
+  class Widget {
+  public:
+    …
+    int magicValue() const
+    {
+      if (cacheValid) return cachedValue;
+      else {
+        auto val1 = expensiveComputation1();
+        auto val2 = expensiveComputation2();
+        cachedValue = val1 + val2;                // uh oh, part 1
+        cacheValid = true;                        // uh oh, part 2
+        return cachedValue;
+      }
+    }
+
+  private:
+    mutable std::atomic<bool> cacheValid{ false };
+    mutable std::atomic<int> cachedValue;
+  };
+```
+
+* 第一个线程调用了 _Widget::magicValue_，看到了 _cacheValid_ 为 _false_，执行两个成本高的计算后将它们的和分  
+  配给了 _cachedValue_。
+* 在那时，第二个线程调用了 _Widget::magicValue_，也看到了 _cacheValid_ 为 _false_，因此也执行了和第一个线程  
+已经完成的是相同的成本大的计算。实际上，“第二个线程”可能是其他多个线程。
+  
+```C++
+  class Widget {
+  public:
+    …
+    
+    int magicValue() const
+    {
+      if (cacheValid) return cachedValue;
+      else {
+        auto val1 = expensiveComputation1();
+        auto val2 = expensiveComputation2();
+        cacheValid = true; // uh oh, part 1
+        return cachedValue = val1 + val2; // uh oh, part 2
+      }
+    }
+
+    …
+
+  };
+```  
+
+* 一个线程调用了 _Widget::magicValue_，并执行到了 _cacheValid_ 被设置为 _true_ 的那一点。
+* 此时，第二个线程调用了 _Widget::magicValue_，然后会检查 _cacheValid_。看到的它为 _true_ 后，这个线程会返回  
+_cachedValue_，尽管第一个线程还没有对它的赋值。因此，所返回的值是错误的。
