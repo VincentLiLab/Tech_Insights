@@ -24,22 +24,22 @@
   - [_braced initialization_ 的易错](#braced-initialization-的易错)
 - [Item 8 首选 _nullptr_ 而不是 _0_ 和 _NULL_](#item-8-首选-nullptr-而不是-0-和-null)
   - [_nullptr_ 在任意情况下都可以做为空指针](#nullptr-在任意情况下都可以做为空指针)
-- [Item 9 首选 _alias declarations_ 而不是 _typedefs_](#item-9-首选-alias-declarations-而不是-typedefs)
-  - [_alias declarations_ 是支持模板化的](#alias-declarations-是支持模板化的)
-- [Item 10 首选 _scoped enums_ 而不是 _unscoped enums_](#item-10-首选-scoped-enums-而不是-unscoped-enums)
-  - [_scoped enums_ 可以降低 _namespace_ 的污染](#scoped-enums-可以降低-namespace-的污染)
-  - [_scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的](#scoped-enums-所对应的-enumerators-是不可以被隐式转换的)
-  - [_scoped enums_ 可以直接进行前置声明来减少编译依赖](#scoped-enums-可以直接进行前置声明来减少编译依赖)
-- [Item 11 首选 _deleted functions_ 而不是 _private undefined functions_](#item-11-首选-deleted-functions-而不是-private-undefined-functions)
-  - [_deleted functions_ 是在编译阶段报错的](#deleted-functions-是在编译阶段报错的)
-  - [_deleted functions_ 是可以用于任何函数的](#deleted-functions-是可以用于任何函数的)
-  - [_deleted functions_ 是可以用于模板特化的](#deleted-functions-是可以用于模板特化的)
+- [Item 9 首选 _alias declaration_ 而不是 _typedef_](#item-9-首选-alias-declaration-而不是-typedef)
+  - [_alias declaration_ 是支持模板化的](#alias-declaration-是支持模板化的)
+- [Item 10 首选 _scoped enum_ 而不是 _unscoped enum_](#item-10-首选-scoped-enum-而不是-unscoped-enum)
+  - [_scoped enum_ 可以降低 _namespace_ 的污染](#scoped-enum-可以降低-namespace-的污染)
+  - [_scoped enum_ 所对应的 _enumerator_ 是不可以被隐式转换的](#scoped-enum-所对应的-enumerator-是不可以被隐式转换的)
+  - [_scoped enum_ 可以直接进行前置声明来减少编译依赖](#scoped-enum-可以直接进行前置声明来减少编译依赖)
+- [Item 11 首选 _deleted function_ 而不是 _private undefined function_](#item-11-首选-deleted-function-而不是-private-undefined-function)
+  - [_deleted function_ 是在编译阶段报错的](#deleted-function-是在编译阶段报错的)
+  - [_deleted function_ 是可以用于任何函数的](#deleted-function-是可以用于任何函数的)
+  - [_deleted function_ 是可以用于模板特化的](#deleted-function-是可以用于模板特化的)
 - [Item 12 使用 _override_ 来声明重写函数](#item-12-使用-override-来声明重写函数)
   - [重写的条件](#重写的条件)
-  - [_reference qualifiers_ 的作用](#reference-qualifiers-的作用)
+  - [_reference qualifier_ 的作用](#reference-qualifier-的作用)
   - [使用 _override_ 来声明重写函数的优势](#使用-override-来声明重写函数的优势)
-- [Item 13 首选 _const\_iterators_ 而不是 _iterators_](#item-13-首选-const_iterators-而不是-iterators)
-  - [_const\_iterators_ 符合只要有可能使用 _const_ 就应该去使用 _const_ 的规则](#const_iterators-符合只要有可能使用-const-就应该去使用-const-的规则)
+- [Item 13 首选 _const\_iterator_ 而不是 _iterator_](#item-13-首选-const_iterator-而不是-iterator)
+  - [_const\_iterator_ 符合只要有可能使用 _const_ 就应该去使用 _const_ 的规则](#const_iterator-符合只要有可能使用-const-就应该去使用-const-的规则)
 - [Item 14 当函数不会抛出异常时声明函数为 _noexcept_](#item-14-当函数不会抛出异常时声明函数为-noexcept)
   - [_C++98_ 的 _exception specification_  的格式](#c98-的-exception-specification--的格式)
   - [_C++98_ 的 _exception specification_  的缺点](#c98-的-exception-specification--的缺点)
@@ -479,13 +479,13 @@ _auto_ 变量必须要进行初始化，所以可以避免未初始化的变量�
 
 ## _auto_ 可以避免类型不匹配所导致的效率问题
 
-_auto_ 和 _std::function_ 都可以被用来持有 _closures_，但是 _auto_ 声明的持有 _closure_ 的变量的类型和 _closure_ 的类型是  
-相同的，所使用的内存大小和 _closure_ 所需要的内存大小也是相同的。而 _std::function_ 声明的持有 _closure_ 的变量的  
-类型是 _std::function_ 模板的实例，对于任意的所给定的 _signature_ 来说，它的大小都是固定的。这个大小对于存储  
-_closure_ 来说，可能是不够的。在这种场景下，_std::function_ 的构造函数就会去分配堆栈内存来存储 _closure_。导致  
-的结果就是 _std::function_ 对象通常会比 _auto_ 所声明的对象使用更多的内存。由于限制内联和产生间接调用的实现  
-细节，通过 _std::function_ 对象来调用 _closuer_ 几乎肯定要比通过 _auto_ 所声明的对象来调用 _closure_ 要慢。而且可能  
-还会产生内存溢出的异常。 
+_auto_ 和 _std::function_ 都可以被用来持有 _closure_，但是 _auto_ 声明的用于持有 _closure_ 的变量的类型和 _closure_ 的类型  
+是相同的，所使用的内存大小和 _closure_ 所需要的内存大小也是相同的。而 _std::function_ 声明的持有 _closure_ 的变量  
+的类型是 _std::function_ 模板的实例，对于任意的所给定的 _signature_ 来说，它的大小都是固定的。这个大小对于存  
+储 _closure_ 来说，可能是不够的。在这种场景下，_std::function_ 的构造函数就会去分配堆栈内存来存储 _closure_。导  
+致的结果就是 _std::function_ 对象通常会比 _auto_ 所声明的对象使用更多的内存。由于限制内联和产生间接调用的实  
+现细节，通过 _std::function_ 对象来调用 _closuer_ 几乎肯定要比通过 _auto_ 所声明的对象来调用 _closure_ 要慢。而且可  
+能还会产生内存溢出的异常。 
 
 ## _auto_ 可以避免类型不匹配所导致的可移植问题
 
@@ -533,25 +533,25 @@ _m_ 中的每一个
                                         // type
 ```  
 
-_std::vector::operator[]_ 一般都是返回 _T&_ 的，但是因为 _C++_ 禁止引用 _bits_，不能够返回 _bool&_，所以 _std::vector<bool>_ 的  
-_operator[]_ 返回的是一个表现的像是 _bool&_ 的对象：_std::vector<bool>::reference_。为了可以这样，_std::vector<bool>::reference_ 必 
-须在基本上所有可以使用 _bool&_ 的上下文中都可以使用。在 _std::vector<bool>::reference_ 中的可以完成这个工作的一个特  
-性是可以隐式转换为 _bool_，是 _bool_ 而不是 _bool&_。所以此时 _highPriority_ 的类型是 _std::vector<bool>::reference_。
+_std::vector::operator[]_ 一般返回的都是 _T&_，但是 _C++_ 禁止引用 _bit_。不能够返回 _bool&_，所以 _std::vector&lt;bool&gt;_ 的  
+_operator[]_ 返回的是一个表现的像是 _bool&_ 的对象。为了可以这样做，_std::vector&lt;bool&gt;::reference_ 必须在基本上所  
+有可以使用 _bool&_ 的上下文中都可以使用。在 _std::vector&lt;bool&gt;::reference_ 中的可以完成这个工作的一个特性是可  
+以隐式转换为 _bool_，是 _bool_ 而不是 _bool&_。所以此时 _highPriority_ 的类型是 _std::vector&lt;bool&gt;::reference_。
 
-_std::vector<bool>::reference_ 的一种实现是去包含一个指针，这个指针指向一个机器字，而这个机器字中保存着那个 _bit_ 和  
-那个 _bit_ 所对应的偏移量。因为此时涉及到是 _auto_ 的 _by-value_ 的类型推导规则，所以此时 _highPriority_ 也就有了  
-这个指针的副本了，在 _auto highPriority = features(w)[5];_ 这个语句结束后，因为临时对象会被销毁掉。所以临时  
-对象所对应的指针也会被销毁掉，那么 _highPriority_ 就包含有一个 _dangling_ 指针了。
+
+_std::vector&lt;bool&gt;::reference_ 的一种实现是去包含一个指针，这个指针指向一个机器字，而这个机器字中保存着那  
+个 _bit_ 和那个 _bit_ 所对应的偏移量。因为此时涉及到是 _auto_ 的 _by-value_ 的类型推导规则，所以此时 _highPriority_ 也  
+就有了这个指针的副本了，在 _auto highPriority = features(w)[5];_ 这个语句结束后，因为临时对象会被销毁掉。所  
+以临时对象所对应的指针也会被销毁掉，那么 _highPriority_ 就包含有一个 _dangling_ 指针了。
 
 ```C++
   bool highPriority = features(w)[5];   // declare highPriority's
                                         // type explicitly
 ```  
-在 _bool highPriority = features(w)[5];_ 时，会将 _std::vector<bool>::reference_ 对象隐式转换为 _bool_ 来初始化 _highPriority_。此时就没有 _dangling_ 指针的问题了。
+在执行 _bool highPriority = features(w)[5];_ 时，会将 _std::vector&lt;bool&gt;::reference_ 对象隐式转换为 _bool_，以去初始化  
+_highPriority_。此时就没有 _dangling_ 指针的问题了。
 
-_std::vector<bool>::reference_ 就是 **_invisble_** _proxy classes_，不能 **_直接_** 和 _auto_ 一起使用，因为 **_invisble_** _proxy classes_ 类型的  
-对象。因为这种类型的对象通常不会被设计为比单语句存在的还久，所以创建这种类型的变量就是在违反基础库的  
-设计假设的。
+_std::vector&lt;bool&gt;::reference_ 就是 **_invisble_** _proxy class_，不能 **_直接_** 和 _auto_ 一起使用，因为 **_invisble_** _proxy class_ 这种类型的对象通常不会被设计为比单语句存在的还久，所以创建这种类型的变量就是在违反基础库的设计假设。
 
 ## 必须 _auto someVar = static_cast&lt;T&gt;(expression of **invisible** proxy class type)_
 
@@ -596,7 +596,7 @@ _auto_ 声明
 ```
 > 原文认为：“我通常会忽略 _equals-sign-plus-braces_ 语法，因为 _C++_ 通常把它和 _braces-only_ 做同样地处理。” 实  
 > 际测试不是这样，使用的编译器是 _c++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0_。_auto v{0, 1};_ 这样是无法通过编  
-> 译的并且 _auto v{0}_ 中的 _v_ 是 _int_ 类型而不是 _std::initializer_lists_ 类型。
+> 译的并且 _auto v{0}_ 中的 _v_ 是 _int_ 类型而不是 _std::initializer_list_ 类型。
 > _C++ fuck you!_
 
 ## _braced initialization_ 的特性
@@ -620,7 +620,7 @@ _braced initialization_ 可以被用于指明非静态数据成员的默认初�
 ``` 
 > _C++11_ 后才可以，注意 _()_ 不可以。
 
-_braced initialization_ 可以禁止内建类型之间的 _implicit narrowing conversions_。
+_braced initialization_ 可以禁止内建类型之间的 _implicit narrowing conversion_。
 
 ```C++
   double x, y, z;
@@ -640,14 +640,14 @@ _braced initialization_ 可以免疫 _C++_ 的 _most vexing parse_。
   Widget w3{};                // calls Widget ctor with no args
 ```
 
-_braced initialization_ 可以让编译器强烈地优先选择持有 _std::initializer_lists_ 的重载函数。此处的 **_强烈地优先选择_** 是  
-指：只要可以 **_implicit converting_** 的话，编译器强就会去选择持有 _std::initializer_lists_ 的重载函数，就算此时的这  
-个 **_implicit converting_** 是 _implicit narrowing converting_ 的会导致报错，编译器也会去选择持有 _std::initializer_lists_  
+_braced initialization_ 可以让编译器强烈地优先选择持有 _std::initializer_list_ 的重载函数。此处的 **_强烈地优先选择_** 是  
+指：只要可以 **_implicit converting_** 的话，编译器强就会去选择持有 _std::initializer_list_ 的重载函数，就算此时的这  
+个 **_implicit converting_** 是 _implicit narrowing converting_ 的会导致报错，编译器也会去选择持有 _std::initializer_list_  
 的重载函数。
 
 > 只有当没有办法将 _braced initializer_ 中的实参的类型转换 _std::initializer_list_ 中的类型时，编译器才会回退到一般  
-> 的重载决议中，但是注意经过经过重载决议后，如果编译器仍然有机会去选择持有 _std::initializer_lists_ 的重载函  
-> 数的话，那么编译器强仍然会去选择持有 _std::initializer_lists_ 的重载函数。
+> 的重载决议中，但是注意经过经过重载决议后，如果编译器仍然有机会去选择持有 _std::initializer_list_ 的重载函  
+> 数的话，那么编译器强仍然会去选择持有 _std::initializer_list_ 的重载函数。
 
 ```C++
   class Widget {
@@ -830,13 +830,13 @@ _std::unique_ptr&lt;Widget&gt;_ 类型的形参也是这样的情况。
 型是无法隐式转换为 _std::shared_ptr&lt;Widget&gt;_ 类型的，所以是错误的。_NULL_ 和 _std::unique_ptr&lt;Widget&gt;_ 类型的  
 形参也是这样的情况。
 
-# Item 9 首选 _alias declarations_ 而不是 _typedefs_
+# Item 9 首选 _alias declaration_ 而不是 _typedef_
 
-## _alias declarations_ 是支持模板化的
+## _alias declaration_ 是支持模板化的
 
-_alias declarations_ 是支持模板化的，而 _typedef_ 是不支持模板化的。
+_alias declaration_ 是支持模板化的，而 _typedef_ 是不支持模板化的。
 
-* _alias declarations_
+* _alias declaration_
 
 ```C
   template<typename T>                            // MyAllocList<T>
@@ -858,14 +858,14 @@ _alias declarations_ 是支持模板化的，而 _typedef_ 是不支持模板化
   MyAllocList<Widget>::type lw;                   // client code
 ```  
 
-# Item 10 首选 _scoped enums_ 而不是 _unscoped enums_
+# Item 10 首选 _scoped enum_ 而不是 _unscoped enum_
 
-## _scoped enums_ 可以降低 _namespace_ 的污染
+## _scoped enum_ 可以降低 _namespace_ 的污染
 
- _scoped enums_ 是不会将其所对应的 _enumerators_ 的名称泄露到那个包含着它的作用域中的，而 _unscoped enums_   
- 是会的。
+ _scoped enum_ 是不会将其所对应的 _enumerator_ 的名称泄露到那个包含着它的作用域中的，而 _unscoped enum_ 是会  
+ 的。
 
-* _scoped enums_
+* _scoped enum_
 
  ```C++
   enum class Color { black, white, red };         // black, white, red
@@ -883,7 +883,7 @@ _alias declarations_ 是支持模板化的，而 _typedef_ 是不支持模板化
     
  ```
 
- _unscoped enums_
+ _unscoped enum_
 
  ```C++
   enum Color { black, white, red };     // black, white, red are
@@ -893,12 +893,12 @@ _alias declarations_ 是支持模板化的，而 _typedef_ 是不支持模板化
                                         // declared in this scope
 ```
 
-## _scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的
+## _scoped enum_ 所对应的 _enumerator_ 是不可以被隐式转换的
 
-_scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的，而 _unscoped enums_ 所对应的 _enumerators_ 是可以  
-被隐式转换的。
+_scoped enum_ 所对应的 _enumerator_ 是不可以被隐式转换的，而 _unscoped enum_ 所对应的 _enumerator_ 是可以被隐  
+式转换的。
 
-* _scoped enums_
+* _scoped enum_
 
 ```C++
   enum class Color { black, white, red };         // enum is now scoped
@@ -914,7 +914,7 @@ _scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的，而 _
   }
 ```
 
-* _unscoped enums_
+* _unscoped enum_
 
 ```C++
   enum Color { black, white, red };     // unscoped enum
@@ -932,18 +932,18 @@ _scoped enums_ 所对应的 _enumerators_ 是不可以被隐式转换的，而 _
   }
 ```
 
-## _scoped enums_ 可以直接进行前置声明来减少编译依赖
+## _scoped enum_ 可以直接进行前置声明来减少编译依赖
 
-_scoped enums_ 可以直接进行前置声明来减少编译依赖，而 _unscoped enums_ 则需要在指明 _underlying type_ 的情况  
-下才可以进行前置声明。
+_scoped enum_ 可以直接进行前置声明来减少编译依赖，而 _unscoped enum_ 则需要在指明 _underlying type_ 的情况下  
+才可以进行前置声明。
  
-* _scoped enums_
+* _scoped enum_
 
 ```C++
   enum class Color;           // fine
 ```
 
-* _unscoped enums_
+* _unscoped enum_
 
 ```C++
   enum Color;                 // error!
@@ -951,15 +951,16 @@ _scoped enums_ 可以直接进行前置声明来减少编译依赖，而 _unscop
   enum Color : int;           // fine
 ``` 
 
-# Item 11 首选 _deleted functions_ 而不是 _private undefined functions_
+# Item 11 首选 _deleted function_ 而不是 _private undefined function_
 
-## _deleted functions_ 是在编译阶段报错的
+## _deleted function_ 是在编译阶段报错的
 
-_deleted functions_ 是在编译阶段报错的，而 _private undefined functions_ 则是在链接阶段报错的。_deleted functions_ 是应该被声明为 _public_ 而不是 _private_ 的。
+_deleted function_ 是在编译阶段报错的，而 _private undefined function_ 则是在链接阶段报错的。_deleted function_ 是  
+应该被声明为 _public_ 而不是 _private_ 的。
 
-## _deleted functions_ 是可以用于任何函数的
+## _deleted function_ 是可以用于任何函数的
 
-_deleted functions_ 是可以用于任何函数的，包括成员函数、非成员函数和模板实例，而 _private undefined functions_  
+_deleted function_ 是可以用于任何函数的，包括成员函数、非成员函数和模板实例，而 _private undefined function_  
 是只可以用于成员函数的。
 
 * 成员函数
@@ -1001,13 +1002,13 @@ _deleted functions_ 是可以用于任何函数的，包括成员函数、非成
   void processPointer<char>(char*) = delete; 
 ```  
 
-## _deleted functions_ 是可以用于模板特化的
+## _deleted function_ 是可以用于模板特化的
 
-_deleted functions_ 是可以用于模板特化的，而 _private undefined functions_ 是不可以的。如果在类中有一个函数模  
+_deleted function_ 是可以用于模板特化的，而 _private undefined function_ 是不可以的。如果在类中有一个函数模  
 板，并且你想通过 _private_ 声明来 _disable_ 它的一些实例的话，那么这样做是不可以的。因为不能给成员函数模板  
 的特化一个和主模板是不同的访问级别。
 
-* _deleted functions_
+* _deleted function_
 
 ```C++
   class Widget {
@@ -1024,7 +1025,7 @@ _deleted functions_ 是可以用于模板特化的，而 _private undefined func
                                                               // deleted
 ```
 
-* _private undefined functions_
+* _private undefined function_
 
 ```C++
   class Widget {
@@ -1044,14 +1045,14 @@ _deleted functions_ 是可以用于模板特化的，而 _private undefined func
 
 ## 重写的条件
 
-_base class_ 的函数必须是 _virtual functions_。  
-_base function_ 和 _derived function_ 的名字必须一致，除了 _destructors_ 的场景以外。  
+_base class_ 的函数必须是 _virtual function_。  
+_base function_ 和 _derived function_ 的名字必须一致，除了析构函数的场景以外。  
 _base function_ 和 _derived function_ 的形参类型必须一致。  
 _base function_ 和 _derived function_ 的 _constness_ 必须一致。  
 _base function_ 和 _derived function_ 的返回类型和异常规范必须要兼容。  
-_base function_ 和 _derived function_ 的 _reference qualifiers_ 必须一致。
+_base function_ 和 _derived function_ 的 _reference qualifier_ 必须一致。
 
-## _reference qualifiers_ 的作用
+## _reference qualifier_ 的作用
 
 成员函数的 reference qualifiers 使得可以不同地处理左值 *this 对象和右值 *this 对象了。
 ```C+++
@@ -1117,13 +1118,13 @@ _base function_ 和 _derived function_ 的 _reference qualifiers_ 必须一致�
   };
 ``` 
 
-# Item 13 首选 _const_iterators_ 而不是 _iterators_
+# Item 13 首选 _const_iterator_ 而不是 _iterator_
 
-## _const_iterators_ 符合只要有可能使用 _const_ 就应该去使用 _const_ 的规则
+## _const_iterator_ 符合只要有可能使用 _const_ 就应该去使用 _const_ 的规则
 
 只要有可能使用 _const_ 就应该去使用 _const_，这个规则在 _C++11_ 之前就是一直有的。但是在 _C++98_ 中，当使用到   
-_iterators_ 时，这个原则就不适用了。而在 _C++11_ 中，这个原则就很适用了。_container_ 的  成员函数 _cbegin_ 和 _cend_   
-都产生的是 _const_iterators_。
+_iterator_ 时，这个原则就不适用了。而在 _C++11_ 中，这个原则就很适用了。_container_ 的  成员函数 _cbegin_ 和 _cend_   
+都产生的是 _const_iterator_。
 
 ```C++
   std::vector<int> values;                        // as before
@@ -1207,14 +1208,14 @@ _iterators_ 时，这个原则就不适用了。而在 _C++11_ 中，这个原�
 走了。不可能恢复原来的状态，因为试图移动每一个元素回到原来的旧内存都可能会产生异常。
 
 这是一个严重的问题，因为 _legacy_ 代码的行为可能是依赖于 _push_back_ 的强异常安全保证的。因此，_C++11_ 的实  
-现不能悄悄地使用 _move operations_ 来替换 _push_back_ 中的 _copy operations_，除非确认 _move operations_ 不会抛出  
-异常。不会抛出异常时，_move operations_ 代替 _copy operations_ 是安全的，唯一的附加影响是将会提升性能。
+现不能悄悄地使用 _move operation_ 来替换 _push_back_ 中的 _copy operation_，除非确认 _move operation_ 不会抛出异  
+常。不会抛出异常时，_move operation_ 代替 _copy operation_ 是安全的，唯一的附加影响是将会提升性能。
 
 _std::vector::push_back_ 利用了 **_move if you can, but copy if you must_** 的策略的优势，它不是唯一一个在标准库中这  
 样做的函数。其他的利用了 _C++98_ 的强异常安全保证的函数也是使用了相同的方式，比如：_std::vector::reserve_ 和  
- _std::deque::insert_ 等。如果 _move operations_ 被认为是不会抛出异常异常的话，那么全部的这些函数会使用 _C++11_   
-的 _move operations_ 来代替 _C++98_ 的 _copy operations_。但是这些函数如何可以知道 _move operation_ 是否不会产生  
-异常呢？答案是明显的：去检查 _move operations_ 是否被声明为了 _noexcept_。
+ _std::deque::insert_ 等。如果 _move operation_ 被认为是不会抛出异常异常的话，那么全部的这些函数会使用 _C++11_   
+的 _move operation_ 来代替 _C++98_ 的 _copy operation_。但是这些函数如何可以知道 _move operation_ 是否不会产生异  
+常呢？答案是明显的：去检查 _move operation_ 是否被声明为了 _noexcept_。
 
 ```C++
   template <class T, size_t N>
@@ -1230,10 +1231,10 @@ _std::vector::push_back_ 利用了 **_move if you can, but copy if you must_** �
   };
 ```  
 
-这些函数是 **_有条件地_** _noexcept_ 的：它们是否是 _noexcept_ 的是依赖于 _noexcept clauses_ 中的表达式是否是 _noexcept_  
+这些函数是 **_有条件地_** _noexcept_ 的：它们是否是 _noexcept_ 的是依赖于 _noexcept clause_ 中的表达式是否是 _noexcept_  
 的。例如：给定两个 _Widget_ 类型的 _array_，只有当 _array_ 中的单独的元素的交换是 _noexcept_ 时，即为：_Widget_ 的  
 _swap_ 是 _noexcept_ 的时，这两个 _array_ 的交换才会是 _noexcept_ 的。因此，_Widget_ 的 _swap_ 的作者决定了 _Widget_ 的  
-_array_ 的交换是否是 _noexcept_ 的。这依次决定了其他的像 _Widget_ 的 _array_ 的 _array_ 这样的 _swaps_ 是否是 _noexcept_  
+_array_ 的交换是否是 _noexcept_ 的。这依次决定了其他的像 _Widget_ 的 _array_ 的 _array_ 这样的 _swap_ 是否是 _noexcept_  
 的。类似地，还有两个包含着 _Widget_ 的 _std::pair_ 对象的交换是否是 _noexcept_ 的是依赖于 _Widget_ 的  _swap_ 是否是  
 _noexcept_ 的。只有当低级别成分的交换是 _noexcept_ 的时，高级别的数据结构才可以是 _noexcept_ 的，这个事实激励  
 你只要可以就应该去提供 _noexcept_ 的 _swap_ 函数。
