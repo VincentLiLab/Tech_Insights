@@ -60,6 +60,12 @@
 - [Item 16 使 _const_ 成员函数成为线程安全的](#item-16-使-const-成员函数成为线程安全的)
   - [_mutable_ 的用法](#mutable-的用法)
   - [_std::atomic_ 与 _std::mutex_](#stdatomic-与-stdmutex)
+- [Item 17 理解特殊成员函数的生成](#item-17-理解特殊成员函数的生成)
+  - [_default constructor_ 被生成的条件](#default-constructor-被生成的条件)
+  - [析构函数被生成的条件](#析构函数被生成的条件)
+  - [_move operation_ 被生成的条件](#move-operation-被生成的条件)
+  - [_copy operation_ 被生成的条件](#copy-operation-被生成的条件)
+  - [成员函数模板永远不会阻止特殊成员函数的生成](#成员函数模板永远不会阻止特殊成员函数的生成)
 
 # Item 1 理解模板的类型推导
 
@@ -1466,3 +1472,67 @@ _std::mutex m_ 被声明为了 _mutable_，因为 _m_ 的加锁和解锁是 _non
 * 一个线程调用了 _Widget::magicValue_，并执行到了 _cacheValid_ 被设置为 _true_ 的那一点。
 * 此时，第二个线程调用了 _Widget::magicValue_，然后会检查 _cacheValid_。看到的它为 _true_ 后，这个线程会返回  
 _cachedValue_，尽管第一个线程还没有对它的赋值。因此，所返回的值是错误的。
+
+# Item 17 理解特殊成员函数的生成
+
+## _default constructor_ 被生成的条件
+
+只有当类中没有包含用户声明的构造函数时，_default constructor_ 才会被生成。
+
+## 析构函数被生成的条件
+
+只有当类中没有用户声明的析构函数时，析构函数才会被生成。
+
+## _move operation_ 被生成的条件
+
+只有当类中没有用户声明的 _move operation_、_copy operation_ 和析构函数时，_move operation_ 才会被生成。
+
+如果声明了其中一个 _move operation_ 的话，那么会阻止编译器生成另一个 _move operation_。因为只要声明了其中  
+一个 _move operation_，就表明了编译器所生成的 _move operation_ 的 _memberwise move_ 是不合适的，所以应该阻止  
+编译器生成另一个 _move operation_。
+
+如果声明了 _copy operation_ 的话，那么会阻止编译器生成 _move operation_。因为只要声明了 _copy operation_，就表  
+明了编译器所生成的 _copy operation_ 的 _memberwise copy_ 是不合适的，编译器也会认为如果 _memberwise copy_ 都  
+不合适的话，那么 _memberwise move_ 也是不合适的。所以应该阻止编译器生成 _move operation_。
+
+如果声明了析构函数的话，那么会阻止编译器生成 _move operation_。因为只要声明了析构函数，就表明了需要在  
+析构函数中做特殊处理，那么编译器所生成的 _move operation_ 的 _memberwise move_ 是不合适的了，所以应该阻止  
+编译器生成 _move operation_。
+
+
+## _copy operation_ 被生成的条件
+
+只有当类中没有用户声明的 _copy constructor_ 时，_copy constructor_ 才会被生成；同样，只有当类中没有用户声明的   
+_copy assignment operator_ 时，_copy assignment operator_ 才会被生成；如果 _move operation_ 有被声明了的话，那  
+么 _copy operation_ 会被删除。
+
+如果声明了其中一个 _copy operation_ 的话，那么 **_应该_** 阻止编译器生成另一个 _copy operation_。因为只要声明了其  
+中一个 _copy operation_，就表明了编译器所生成的 _copy operation_ 的 _memberwise copy_ 是不合适的，所以应该阻止  
+编译器生成另一个 _copy operation_。但注意是 **_应该_**，但是并没有，因为这会破坏 _C++98_ 的代码。
+
+如果声明了 _move operation_ 的话，那么会阻止编译器生成 _copy operation_。因为只要声明了 _move operation_，就表  
+明了编译器所生成的 _move operation_ 的 _memberwise move_ 是不合适的，编译器也会认为如果 _memberwise move_  
+都不合适的话，那么 _memberwise copy_ 也是不合适的。所以应该阻止编译器生成 _copy operation_。
+
+如果声明了析构函数的话，那么 **_应该_** 阻止编译器生成 _copy operation_。因为只要声明了析构函数，就表明了需要  
+在析构函数中做特殊处理，那么编译器所生成的 _copy operation_ 的 _memberwise copy_ 是不合适的了，所以应该阻  
+止编译器生成 _move operation_。但注意是 **_应该_**，但是并没有，因为这会破坏 _C++98_ 的代码。
+
+所以，如果你声明了任意一个 _copy constructor_、_copy assignment operator_ 和析构函数的话，那么你应该把这三个  
+都声明出来，否则虽然仍然是可以编译和运行的，但却是被 _C++11_ 废弃的。
+
+## 成员函数模板永远不会阻止特殊成员函数的生成
+
+```C++
+  class Widget {
+    …
+    template<typename T>                // construct Widget
+    Widget(const T& rhs);               // from anything
+    
+    template<typename T>                // assign Widget
+    Widget& operator=(const T& rhs);    // from anything
+    …
+  };
+```  
+当 _T_ 是 _Widget_ 时，这些模板是可以被实例化去产生出 _copy constructor_ 和 _copy assignment operator_ 的 _signature_   
+的，但是这并不会阻止编译器生成特殊成员函数。
