@@ -66,6 +66,9 @@
   - [_move operation_ 被生成的条件](#move-operation-被生成的条件)
   - [_copy operation_ 被生成的条件](#copy-operation-被生成的条件)
   - [成员函数模板永远不会阻止特殊成员函数的生成](#成员函数模板永远不会阻止特殊成员函数的生成)
+- [Item 18 对于 _exclusive-ownership_ 的资源管理使用 _std::unique\_ptr_](#item-18-对于-exclusive-ownership-的资源管理使用-stdunique_ptr)
+  - [_std::unique\_ptr\<T\>_ 和 _std::unique\_ptr\<T\[\]\>_](#stdunique_ptrt-和-stdunique_ptrt)
+  - [_std::unique\_ptr_ 适合做为工厂函数的返回类型](#stdunique_ptr-适合做为工厂函数的返回类型)
 
 # Item 1 理解模板的类型推导
 
@@ -557,7 +560,8 @@ _std::vector&lt;bool&gt;::reference_ 的一种实现是去包含一个指针，�
 在执行 _bool highPriority = features(w)[5];_ 时，会将 _std::vector&lt;bool&gt;::reference_ 对象隐式转换为 _bool_，以去初始化  
 _highPriority_。此时就没有 _dangling_ 指针的问题了。
 
-_std::vector&lt;bool&gt;::reference_ 就是 **_invisble_** _proxy class_，不能 **_直接_** 和 _auto_ 一起使用，因为 **_invisble_** _proxy class_ 这种类型的对象通常不会被设计为比单语句存在的还久，所以创建这种类型的变量就是在违反基础库的设计假设。
+_std::vector&lt;bool&gt;::reference_ 就是 **_invisble_** _proxy class_，不能 **_直接_** 和 _auto_ 一起使用，因为 **_invisble_** _proxy class_ 这种  
+类型的对象通常不会被设计为比单语句存在的还久，所以创建这种类型的变量就是在违反基础库的设计假设。
 
 ## 必须 _auto someVar = static_cast&lt;T&gt;(expression of **invisible** proxy class type)_
 
@@ -1536,3 +1540,21 @@ _copy assignment operator_ 时，_copy assignment operator_ 才会被生成；�
 ```  
 当 _T_ 是 _Widget_ 时，这些模板是可以被实例化去产生出 _copy constructor_ 和 _copy assignment operator_ 的 _signature_   
 的，但是这并不会阻止编译器生成特殊成员函数。
+
+
+# Item 18 对于 _exclusive-ownership_ 的资源管理使用 _std::unique_ptr_
+
+## _std::unique_ptr&lt;T&gt;_ 和 _std::unique_ptr&lt;T[]&gt;_
+
+_std::unique_ptr&lt;T&gt;_ 没有 _operator[]_，而 _std::unique_ptr&lt;T[]&gt;_ 没有 _operator*_ 和 _operator->_。_std::unique_ptr&lt;T[]&gt;_ 较少被使用，因为 _std::array_、_std::vector_ 和 _std::string_ 相比于原始数组几乎总是更好的数据结构选择。只有在使用 _C-like_ 的 _API_，才需要使用。
+
+这个特性使得 _std::unique_ptr_ 非常适合做为工厂函数的返回类型。对于工厂函数所返回的对象来说，它们并不知道  
+调用方会使用 _exclusive ownership_ 语义还是 _shared ownership_ 语义，即为：_std::shared_ptr_ 是否会更合适。通过返  
+回 _std::unique_ptr_，工厂函数只是提供给了调用方一个高效的智能指针，但并不会阻碍调用方使用更灵活的其他智   
+能指针来代替它。更多关于 _std::shared_ptr_ 的信息见  [_Item 19_](./Chapter%204.md#item-19-对于-shared-ownership-的资源管理使用-std::shared_ptr)。
+
+## _std::unique_ptr_ 适合做为工厂函数的返回类型
+
+因为对于工厂函数来说，它们并不知道调用方会使用 _exclusive ownership_ 语义还是 _shared ownership_ 语义，又因  
+为 _std::unique_ptr_ 是可以被简单高效地转换为 _std::shared_ptr_ 的，所以 _std::unique_ptr_ 适合做为工厂函数的返回类  
+型。
