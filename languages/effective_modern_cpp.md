@@ -67,8 +67,16 @@
   - [_copy operation_ 被生成的条件](#copy-operation-被生成的条件)
   - [成员函数模板永远不会阻止特殊成员函数的生成](#成员函数模板永远不会阻止特殊成员函数的生成)
 - [Item 18 对于 _exclusive-ownership_ 的资源管理使用 _std::unique\_ptr_](#item-18-对于-exclusive-ownership-的资源管理使用-stdunique_ptr)
-  - [_std::unique\_ptr\<T\>_ 和 _std::unique\_ptr\<T\[\]\>_](#stdunique_ptrt-和-stdunique_ptrt)
+  - [对于 _exclusive-ownership_ 的资源管理使用 _std::unique\_ptr\<T\>_](#对于-exclusive-ownership-的资源管理使用-stdunique_ptrt)
+  - [禁止使用 _std::unique\_ptr\<T\[\]\>_](#禁止使用-stdunique_ptrt)
   - [_std::unique\_ptr_ 适合做为工厂函数的返回类型](#stdunique_ptr-适合做为工厂函数的返回类型)
+- [Item 19 对于 _shared-ownership_ 的资源管理使用 _std::shared\_ptr_](#item-19-对于-shared-ownership-的资源管理使用-stdshared_ptr)
+  - [对于 _shared-ownership_ 的资源管理使用 _std::shared\_ptr\<T\>_](#对于-shared-ownership-的资源管理使用-stdshared_ptrt)
+  - [禁止使用 _std::shared\_ptr\<T\[\]\>_](#禁止使用-stdshared_ptrt)
+  - [使用 _std::shared\_ptr_ 的成本](#使用-stdshared_ptr-的成本)
+  - [禁止使用原始指针类型的变量来创建 _std::shared\_ptr_](#禁止使用原始指针类型的变量来创建-stdshared_ptr)
+  - [创建 _std::shared\_ptr_ 的方式](#创建-stdshared_ptr-的方式)
+  - [_enable\_shared\_from\_this_ 模板](#enable_shared_from_this-模板)
 
 # Item 1 理解模板的类型推导
 
@@ -1544,17 +1552,140 @@ _copy assignment operator_ 时，_copy assignment operator_ 才会被生成；�
 
 # Item 18 对于 _exclusive-ownership_ 的资源管理使用 _std::unique_ptr_
 
-## _std::unique_ptr&lt;T&gt;_ 和 _std::unique_ptr&lt;T[]&gt;_
+## 对于 _exclusive-ownership_ 的资源管理使用 _std::unique_ptr&lt;T&gt;_
 
-_std::unique_ptr&lt;T&gt;_ 没有 _operator[]_，而 _std::unique_ptr&lt;T[]&gt;_ 没有 _operator*_ 和 _operator->_。_std::unique_ptr&lt;T[]&gt;_ 较少被使用，因为 _std::array_、_std::vector_ 和 _std::string_ 相比于原始数组几乎总是更好的数据结构选择。只有在使用 _C-like_ 的 _API_，才需要使用。
+对于 _exclusive-ownership_ 的资源管理使用 _std::unique_ptr&lt;T&gt;_。
 
-这个特性使得 _std::unique_ptr_ 非常适合做为工厂函数的返回类型。对于工厂函数所返回的对象来说，它们并不知道  
-调用方会使用 _exclusive ownership_ 语义还是 _shared ownership_ 语义，即为：_std::shared_ptr_ 是否会更合适。通过返  
-回 _std::unique_ptr_，工厂函数只是提供给了调用方一个高效的智能指针，但并不会阻碍调用方使用更灵活的其他智   
-能指针来代替它。更多关于 _std::shared_ptr_ 的信息见  [_Item 19_](./Chapter%204.md#item-19-对于-shared-ownership-的资源管理使用-std::shared_ptr)。
+## 禁止使用 _std::unique_ptr&lt;T[]&gt;_
+
+_std::unique_ptr&lt;T&gt;_ 没有 _operator[]_，而 _std::unique_ptr&lt;T[]&gt;_ 没有 _operator*_ 和 _operator->_。_std::unique_ptr&lt;T[]&gt;_   
+较少被使用，因为 _std::array_、_std::vector_ 和 _std::string_ 相比于原始数组几乎总是更好的数据结构选择。所以只有在  
+使用 _C-like_ 的 _API_，才需要使用原始数组。
 
 ## _std::unique_ptr_ 适合做为工厂函数的返回类型
 
 因为对于工厂函数来说，它们并不知道调用方会使用 _exclusive ownership_ 语义还是 _shared ownership_ 语义，又因  
 为 _std::unique_ptr_ 是可以被简单高效地转换为 _std::shared_ptr_ 的，所以 _std::unique_ptr_ 适合做为工厂函数的返回类  
 型。
+
+# Item 19 对于 _shared-ownership_ 的资源管理使用 _std::shared_ptr_
+
+## 对于 _shared-ownership_ 的资源管理使用 _std::shared_ptr&lt;T&gt;_
+
+对于 _shared-ownership_ 的资源管理使用 _std::shared_ptr&lt;T&gt;_。
+
+## 禁止使用 _std::shared_ptr&lt;T[]&gt;_
+
+_std::shared_ptr_ 不能用于数组。没有 _std::shared_ptr&lt;T[]&gt;_。禁止指定一个 _custom deleter_ 去执行数组的删除。因为  
+首先，_std::shared_ptr_ 没有提供 _operator[]_；其次，_std::shared_ptr_ 支持 _derived-to-base_ 指针的转换，这种转换对于  
+单个对象是合理的，但是当应用于数组时，就是错误的了。因为 _std::array_、_std::vector_ 和 _std::string_ 相比于原始数  
+组几乎总是更好的数据结构选择，所以只有在使用 _C-like_ 的 _API_，才需要使用原始数组。
+
+
+## 使用 _std::shared_ptr_ 的成本
+
+因为 _std::shared_ptr_ 会涉及到动态分配的 _control block_、任意大小的 _deleter_ 和 _allocator_、_virtual function_ 机制和原  
+子引用计数操作，所以是有成本的。
+
+## 禁止使用原始指针类型的变量来创建 _std::shared_ptr_
+
+```C++
+  auto pw = new Widget;                           // pw is raw ptr
+  
+  …
+  
+  std::shared_ptr<Widget> spw1(pw, loggingDel);   // create control
+                                                  // block for *pw
+  …
+
+  std::shared_ptr<Widget> spw2(pw, loggingDel);   // create 2nd
+                                                  // control block
+                                                  // for *pw!
+```  
+
+此时，_pw_ 会被析构两次，造成 _undefined behavior_。
+
+```C++
+  std::vector<std::shared_ptr<Widget>> processedWidgets;
+
+  class Widget {
+  public:
+    …
+    void Widget::process()
+    {
+      …                                           // process the Widget
+      
+      processedWidgets.emplace_back(this);        // add it to list of
+    }                                             // processed Widgets;
+                                                  // this is wrong!
+    …
+  }; 
+```
+如果在成员函数外已经存在有了 _shared_ptr_ 指向了这个 _this_ 的话，那么就会发生 _undefined behavior_。  
+
+所以禁止根据原始指针类型的变量来创建 _std::shared_ptr_
+
+## 创建 _std::shared_ptr_ 的方式 
+
+直接使用 _new_
+
+```C++
+  std::shared_ptr<Widget> spw1(new Widget,        // direct use of new
+                                loggingDel);
+```  
+
+使用智能指针
+
+```C++
+ std::shared_ptr<Widget> spw2(spw1);              // spw2 uses same
+                                                  // control block as spw1 
+```
+
+使用 _make_shared_
+
+
+```C++
+ std::shared_ptr<Widget> spw3 = std::make_shared<Widget>(); // use std::make_shared 
+```
+
+## _enable_shared_from_this_ 模板
+
+如果想要根据 _this_ 指针来安全地创建 _std::shared_ptr_ 的话，那么需要继承 _std::enable_shared_from_this_ 模板。它定  
+义有一个成员函数 _shared_from_this_，这个函数会创建一个指向当前对象的指针的 _std::shared_ptr_，但是不会重复  
+创建所对应的 _control block_。所以，无论什么时候你想要一个指向和 _this_ 指针一样的对象的 _std::shared_ptr_ 时，你  
+都可以在成员函数中使用 _shared_from_this_。这样就可以避免当使用原始指针类型的变量来创建 _std::shared_ptr_ 时  
+所遇到的问题了。
+
+_shared_from_this_ 会在内部找出当前对象的 _control block_，然后 _shared_from_this_ 会创建一个新的指向那个所找出  
+的 _control block_ 的 _std::shared_ptr_。这种设计依赖于当前对象已经有了它所对应的 _control block_ 了。为了可以这  
+样，必须已经存在一个当前对象的 _std::shared_ptr_。如果这样的 _std::shared_ptr_ 不存在的话，即为：当前对象没有  
+所对应的 _control block_ 的话，那么行为将是未定义的。
+
+为了避免客户在 _std::shared_ptr_ 指向所对应的对象之前就去调用执行了 _shared_from_this_ 的成员函数，那些继承自   
+_std::enable_shared_from_this_ 的类通常会声明它们的构造函数为 _private_，并让客户通过返回类型为 _std::shared_ptr_  
+的工厂函数来让创建对象。
+
+```C++
+  class Widget: public std::enable_shared_from_this<Widget> {
+  public:
+    // factory function that perfect-forwards args
+    // to a private ctor
+    template<typename... Ts>
+    static std::shared_ptr<Widget> create(Ts&&... params);
+    
+    …
+    void process();         
+    {
+      // as before, process the Widget
+      …
+    
+      // add std::shared_ptr to current object to processedWidgets
+      processedWidgets.emplace_back(shared_from_this());
+
+    }
+    …
+  
+  private:
+    …                         // ctors
+  };
+``` 
