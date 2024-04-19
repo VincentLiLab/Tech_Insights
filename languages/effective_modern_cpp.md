@@ -77,6 +77,11 @@
   - [禁止使用原始指针类型的变量来创建 _std::shared\_ptr_](#禁止使用原始指针类型的变量来创建-stdshared_ptr)
   - [创建 _std::shared\_ptr_ 的方式](#创建-stdshared_ptr-的方式)
   - [_enable\_shared\_from\_this_ 模板](#enable_shared_from_this-模板)
+- [Item 20 对于可能会悬空的 _std::shared\_ptr-like_ 指针使用 _std::weak\_ptr_](#item-20-对于可能会悬空的-stdshared_ptr-like-指针使用-stdweak_ptr)
+  - [_std::weak\_ptr_ 不能阻止它所对应的 _std::shared\_ptr_ 去悬空](#stdweak_ptr-不能阻止它所对应的-stdshared_ptr-去悬空)
+  - [_std::weak\_ptr_ 的 _expired_ 函数不能阻止它所对应的 _std::shared\_ptr_ 去悬空](#stdweak_ptr-的-expired-函数不能阻止它所对应的-stdshared_ptr-去悬空)
+  - [使用 _std::weak\_ptr_ 来检查 _std::shared\_ptr_ 是否悬空的方法](#使用-stdweak_ptr-来检查-stdshared_ptr-是否悬空的方法)
+  - [_std::weak\_ptr_ 的使用场景](#stdweak_ptr-的使用场景)
 
 # Item 1 理解模板的类型推导
 
@@ -1689,3 +1694,67 @@ _std::enable_shared_from_this_ 的类通常会声明它们的构造函数为 _pr
     …                         // ctors
   };
 ``` 
+
+# Item 20 对于可能会悬空的 _std::shared_ptr-like_ 指针使用 _std::weak_ptr_
+
+## _std::weak_ptr_ 不能阻止它所对应的 _std::shared_ptr_ 去悬空 
+
+_std::weak_ptr_ 是根据 _std::shared_ptr_ 来创建的，但是并不会改变它所对应的对象的引用计数，也就是并不会改变它  
+所对应的 _std::shared_ptr_ 所对应的对象的引用计数，所以它并不能阻止它所对应的 _std::shared_ptr_ 去悬空。 
+
+## _std::weak_ptr_ 的 _expired_ 函数不能阻止它所对应的 _std::shared_ptr_ 去悬空
+
+_std::weak_ptr_ 的 _expired_ 函数表示的是它是否过期了，也就是表示的是它所对应的 _std::shared_ptr_ 是否悬空了，因  
+为_std::weak_ptr_ 并不能阻止它所对应的 _std::shared_ptr_ 去悬空，所以在使用 _std::weak_ptr_ 的 _expired_ 函数判断它  
+没有过期后，它仍然随时都有可能会过期。假设 _std::weak_ptr_ 有解引用操作。如果在调用 _std::weak_ptr_ 的 _expired_   
+函数和解引用操作之间，另一个线程 _reassign_ 或者销毁了最后一个指向所对应的对象的 _std::shared_ptr_ 话，那么这  
+个解引用操作会导致 _undefined behavior_。所以 _std::weak_ptr_ 的 _expired_ 函数表示的只是当前此刻它是否过期了，  
+并不能阻止它所对应的 _std::shared_ptr_ 去悬空。 
+
+## 使用 _std::weak_ptr_ 来检查 _std::shared_ptr_ 是否悬空的方法
+
+可以使用 _std::weak_ptr_ 来检查 _std::shared_ptr_ 是否悬空，共有两种方法：_lock_ 和 _throw_。
+
+```C++
+  auto spw =                            // after spw is constructed,
+    std::make_shared<Widget>();         // the pointed-to Widget's
+                                        // ref count (RC) is 1. (See
+                                        // Item 21 for info on
+                                        // std::make_shared.)
+
+  std::weak_ptr<Widget> wpw(spw);       // wpw points to same Widget
+                                        // as spw. RC remains 1
+```
+
+_lock_ 方法
+
+```C++
+  
+  std::shared_ptr<Widget> spw1 = wpw.lock();      // if wpw's expired,
+                                                  // spw1 is null
+  if(spw1 != nullptr)
+    ...
+```  
+
+_throw_ 方法
+
+```C++
+  std::shared_ptr<Widget> spw2(wpw);              // if wpw's expired,
+                                                  // throw std::bad_weak_ptr
+```
+
+## _std::weak_ptr_ 的使用场景
+
+缓存。在返回类型为 _std::shared_ptr_ 的工厂函数中存在有缓存，缓存中所保存的指针需要能够探测这些指针何时才  
+是悬空的，以便于在工厂函数的客户在使用完了工厂函数所返回的对象之后，可以将缓存中的所对应的指针进行销  
+毁。此时在缓存中需要使用的是 _std::weak_ptr_。
+
+观察者设计模式。这种设计模式的主要组件是 _subject_，是状态可能会改变的对象，和 _observer_，是状态改变发生  
+时将要被通知的对象。在大部分的实现中，每一个 _subject_ 都包含一个数据成员，在这个数据成员中保存着指向所  
+对应的 _observer_ 的指针。如果 _subject_ 确定某个 _observer_ 已经被销毁了的话，那么 _subject_ 就不会尝试去访问这个  
+_observer_ 了。所以让每个 _subject_ 都持有一个 _std::weak_ptr_ 的 _container_，这个 _container_ 中的每个 _std::weak_ptr_ 都  
+指向一个 _observer_。这样的话，_subject_ 就可以在使用指针之前先去确认指针是否是悬空的了。 
+
+防止 _std::shared_ptr_ 互相嵌套。假设有 _A_、_B_ 和 _C_ 三个对象，其中 _A_ 和 _C_ 持有指向 _B_ 的 _std::shared_ptr_，如果存在  
+一个 _B_ 到 _A_ 的指针的话，那么这个指针必须是 _std::weak_ptr_ 而不能是 _std::shared_ptr_，否则会造成 _std::shared_ptr_   
+互相嵌套，发生资源泄露。
