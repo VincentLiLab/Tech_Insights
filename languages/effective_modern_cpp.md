@@ -82,6 +82,13 @@
   - [_std::weak\_ptr_ 的 _expired_ 函数不能阻止它所对应的 _std::shared\_ptr_ 去悬空](#stdweak_ptr-的-expired-函数不能阻止它所对应的-stdshared_ptr-去悬空)
   - [使用 _std::weak\_ptr_ 来检查 _std::shared\_ptr_ 是否悬空的方法](#使用-stdweak_ptr-来检查-stdshared_ptr-是否悬空的方法)
   - [_std::weak\_ptr_ 的使用场景](#stdweak_ptr-的使用场景)
+- [Item 21 首选 _std::make\_unique_ 和 _std::make\_shared_ 而不是直接使用 _new_](#item-21-首选-stdmake_unique-和-stdmake_shared-而不是直接使用-new)
+  - [_std::make\_unique_ 和 _std::make\_shared_ 可以消除代码重复](#stdmake_unique-和-stdmake_shared-可以消除代码重复)
+  - [_std::make\_unique_ 和 _std::make\_shared_ 可以避免资源泄露](#stdmake_unique-和-stdmake_shared-可以避免资源泄露)
+  - [_std::make\_shared_ 可以提高效率](#stdmake_shared-可以提高效率)
+  - [_std::make\_unique_ 和 _std::make\_shared_ 不可以指定 _custom deleter_](#stdmake_unique-和-stdmake_shared-不可以指定-custom-deleter)
+  - [_std::make\_unique_ 和 _std::make\_shared_ 不可以使用 _braced initializer_](#stdmake_unique-和-stdmake_shared-不可以使用-braced-initializer)
+  - [_std::make\_shared_ 不可以用于那些有着私有版本的 _operator new_ 和 _operator delete_ 的类](#stdmake_shared-不可以用于那些有着私有版本的-operator-new-和-operator-delete-的类)
 
 # Item 1 理解模板的类型推导
 
@@ -1758,3 +1765,108 @@ _observer_ 了。所以让每个 _subject_ 都持有一个 _std::weak_ptr_ 的 _
 防止 _std::shared_ptr_ 互相嵌套。假设有 _A_、_B_ 和 _C_ 三个对象，其中 _A_ 和 _C_ 持有指向 _B_ 的 _std::shared_ptr_，如果存在  
 一个 _B_ 到 _A_ 的指针的话，那么这个指针必须是 _std::weak_ptr_ 而不能是 _std::shared_ptr_，否则会造成 _std::shared_ptr_   
 互相嵌套，发生资源泄露。
+
+# Item 21 首选 _std::make_unique_ 和 _std::make_shared_ 而不是直接使用 _new_
+
+## _std::make_unique_ 和 _std::make_shared_ 可以消除代码重复
+
+```C++
+  auto upw1(std::make_unique<Widget>());          // with make func
+  std::unique_ptr<Widget> upw2(new Widget);       // without make func
+  
+  auto spw1(std::make_shared<Widget>());          // with make func
+  std::shared_ptr<Widget> spw2(new Widget);       // without make func
+```
+
+## _std::make_unique_ 和 _std::make_shared_ 可以避免资源泄露
+
+直接使用 _new_ 容易资源泄露。
+
+```C++
+  processWidget(std::shared_ptr<Widget>(new Widget),        // potential
+    computePriority());                                     // resource
+                                                            // leak!
+```  
+
+当编译器按照下面这样的顺序来执行操作时：  
+* 执行 _new Widget_。
+* 执行 _computePriority_。
+* 执行 _std::shared_ptr_ 的构造函数。
+
+如果在运行时 _computePriority_ 产生了一个异常的话，那么动态分配的 _Widget_ 将会被泄露，因为它永远不会被存  
+储到那个应该管理它的 _std::shared_ptr_ 中。
+
+使用 _std::make_shared_ 可以避免资源泄露
+
+ ```C++
+  processWidget(std::make_shared<Widget>(),       // no potential
+                  computePriority());             // resource leak
+ ```  
+
+在运行时，_std::make_shared_ 或 _computePriority_ 都可以先被调用。如果 _std::make_shared_ 先被调用了的话，那么指  
+向动态分配的 _Widget_ 的原始指针是可以在 _computePriority_ 被调用之前，就被安全存储到所返回的 _std::shared_ptr_  
+中的。如果 _computePriority_ 随后产生了一个异常的话，那么 _std::shared_ptr_ 的析构函数会销毁它拥有的 _Widget_。  
+如果 _computePriority_ 先被调用了，并产生了一个异常的话，那么 _std::make_shared_ 不会被执行，因此是不用担心  
+动态分配的 _Widget_ 的。
+
+## _std::make_shared_ 可以提高效率
+
+直接使用 _new_ 需要两次内存分配。因为每个 _std::shared_ptr_ 都指向有一个 _control block_，而这个 _control block_ 的内  
+存是在 _std::shared_ptr_ 的构造函数中被分配的，所以需要一次对象的内存分配，还需要一次 _control block_ 的内存分  
+配。
+
+使用 _std::make_shared_ 只需要一次内存分配。这是因为 _std::make_shared_ 分配了一块可以同时保存 _control block_ 和  
+_Widget_ 的内存，因为代码只包含了一次内存分配调用，所以提高了效率。此外，使用 _std::make_shared_ 可以避免  
+一些在 _control block_ 中所需要的 _bookkeeping information_，这潜在地减少了程序的 _memory footprint_ 总量。但是   
+_control block_ 还包含着 _weak count_，记录着有多少个 _std::weak_ptr_ 引用了这个 _control block_。只要有 _std::weak_ptr_   
+引用着 _control block_，这个 _control block_ 就必须保持存在。只要这个 _control block_ 存在，包含着这个 _control block_   
+的内存也就必须存在。_std::make_shared_ 所分配的内存只有当引用着这个内存的最后一个 _std::shared_ptr_ 和最后一  
+个 _std::weak_ptr_ 都被销毁后，才能被释放。如果对象是非常大的，并且此对象所对应的最后一个 _std::shared_ptr_ 和  
+最后一个 std::shared_ptr 之间的析构时间又是非常重要的话，那么在销毁这个对象和释放这个对象所占用的内存  
+之间会有延迟，而直接使用 _new_ 则没有这个问题。
+
+## _std::make_unique_ 和 _std::make_shared_ 不可以指定 _custom deleter_
+
+_std::make_unique_ 和 _std::make_shared_ 不可以指定 _custom deleter_，只可以通过直接使用 _new_ 来完成。
+
+```C++
+auto widgetDeleter = [](Widget* pw) { … };
+
+std::unique_ptr<Widget, decltype(widgetDeleter)>
+    upw(new Widget, widgetDeleter);
+
+std::shared_ptr<Widget> spw(new Widget, widgetDeleter);
+
+``` 
+
+## _std::make_unique_ 和 _std::make_shared_ 不可以使用 _braced initializer_
+
+_std::make_unique_ 和 _std::make_shared_ 不可以使用 _braced initializer_，只可以通过直接使用 _new_ 或者使用 _auto = {}_ 来完成。
+
+```C++
+  auto upv = std::make_unique<std::vector<int>>{10, 20};  // error
+
+  auto spv = std::make_shared<std::vector<int>>{10, 20};  // error
+```  
+
+```C++
+  std::unique_ptr<std::vector<int>> upv(new std::vector<int>{10, 20});          // direct use of new
+
+  std::shared_ptr<std::vector<int>> spv(new std::vector<int>{10, 20});          // direct use of new
+``` 
+
+```C++
+  // create std::initializer_list
+  auto initList = { 10, 20 };
+  
+  // create std::vector using std::initializer_list ctor
+  auto spv = std::make_shared<std::vector<int>>(initList);                      // use _auto = {}_
+```
+
+## _std::make_shared_ 不可以用于那些有着私有版本的 _operator new_ 和 _operator delete_ 的类
+
+一些类定义有私有版本的 _operator new_ 和 _operator delete_。这些函数的存在说明了：全局版本的 _operator new_ 和   
+_operator delete_ 对于这些类的对象是不合适的。类所对应的私有版本的 _operator new_ 和 _operator delete_ 是被用于  
+分配和释放特定该类大小的内存块的，但是 _std::allocate_shared_ 所需要的内存的大小是不等于动态分配的对象的大  
+小的，而是等于动态分配的对象的大小再加上 _control block_ 的大小的。所以使用 _std::make_shared_ 去创建那些有着  
+私有版本的 _operator new_ 和 _operator delete_ 的类的对象通常不是一个好主意。
