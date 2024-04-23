@@ -42,9 +42,9 @@
   - [_const\_iterator_ 符合只要有可能使用 _const_ 就应该去使用 _const_ 的规则](#const_iterator-符合只要有可能使用-const-就应该去使用-const-的规则)
 - [Item 14 当函数不会抛出异常时声明函数为 _noexcept_](#item-14-当函数不会抛出异常时声明函数为-noexcept)
   - [_C++98_ 的 _exception specification_  的格式](#c98-的-exception-specification--的格式)
-  - [_C++98_ 的 _exception specification_  的缺点](#c98-的-exception-specification--的缺点)
-  - [_C++11_ 的 _exception specification_  的格式](#c11-的-exception-specification--的格式)
-  - [_C++11_ 的 _exception specification_  的优点](#c11-的-exception-specification--的优点)
+  - [_C++98_ 的 _exception specification_ 的缺点](#c98-的-exception-specification-的缺点)
+  - [_C++11_ 的 _exception specification_ 的格式](#c11-的-exception-specification-的格式)
+  - [_C++11_ 的 _exception specification_ 的优点](#c11-的-exception-specification-的优点)
   - [_noexcept_ 允许编译器去生成更好的对象代码](#noexcept-允许编译器去生成更好的对象代码)
   - [_noexcept_ 可以提高性能](#noexcept-可以提高性能)
   - [_noexcept_ 是接口，只有当愿意长期来维护一个 _noexcept_ 实现时，才应该声明一个函数为 _noexcept_](#noexcept-是接口只有当愿意长期来维护一个-noexcept-实现时才应该声明一个函数为-noexcept)
@@ -89,6 +89,9 @@
   - [_std::make\_unique_ 和 _std::make\_shared_ 不可以指定 _custom deleter_](#stdmake_unique-和-stdmake_shared-不可以指定-custom-deleter)
   - [_std::make\_unique_ 和 _std::make\_shared_ 不可以使用 _braced initializer_](#stdmake_unique-和-stdmake_shared-不可以使用-braced-initializer)
   - [_std::make\_shared_ 不可以用于那些有着私有版本的 _operator new_ 和 _operator delete_ 的类](#stdmake_shared-不可以用于那些有着私有版本的-operator-new-和-operator-delete-的类)
+- [Item 22 当使用 _Pimpl Idiom_ 时，在源文件中定义特殊成员函数](#item-22-当使用-pimpl-idiom-时在源文件中定义特殊成员函数)
+  - [_Pimpl Idiom_ 是通过减少类的客户和类的实现之间的编译依赖来缩短编译时间的](#pimpl-idiom-是通过减少类的客户和类的实现之间的编译依赖来缩短编译时间的)
+  - [使用 _std::unique\_ptr_ 实现 _Pimpl Idiom_ 时，需要特殊处理](#使用-stdunique_ptr-实现-pimpl-idiom-时需要特殊处理)
 
 # Item 1 理解模板的类型推导
 
@@ -1178,13 +1181,13 @@ _iterator_ 时，这个原则就不适用了。而在 _C++11_ 中，这个原则
   int f(int x) throw(int, char, std::string);     // exceptions from f: C++98 style
 ```
 
-## _C++98_ 的 _exception specification_  的缺点
+## _C++98_ 的 _exception specification_ 的缺点
 
 在 _C++98_ 中，必须要总结出一个函数的所有可能会抛出的异常类型，所以如果这个函数的实现被更改了的话，那  
 么它的 _exception specification_ 可能也需要更改。而改变一个函数的  _exception specification_  是可能会破坏客户代码  
 的，这是因为调用方可能是依赖于原来的 _exception specification_ 的。
 
-## _C++11_ 的 _exception specification_  的格式
+## _C++11_ 的 _exception specification_ 的格式
 
 ```C++
   int f(int x) noexcept;      // no exceptions from f: C++11 style
@@ -1192,7 +1195,7 @@ _iterator_ 时，这个原则就不适用了。而在 _C++11_ 中，这个原则
   int f(int x);               // exceptions from f: C++11 style
 ```
 
-## _C++11_ 的 _exception specification_  的优点
+## _C++11_ 的 _exception specification_ 的优点
 
 在 _C++11_ 开发期间，达成了一个共识：关于函数的异常抛出行为，真正有意义的信息是它是否有异常。黑或白，  
 函数要么可能会抛出异常，要么保证不会抛出异常。_maybe-or-never_ 二分法是 _C++11_ 的 _exception specification_  
@@ -1870,3 +1873,17 @@ _operator delete_ 对于这些类的对象是不合适的。类所对应的私�
 分配和释放特定该类大小的内存块的，但是 _std::allocate_shared_ 所需要的内存的大小是不等于动态分配的对象的大  
 小的，而是等于动态分配的对象的大小再加上 _control block_ 的大小的。所以使用 _std::make_shared_ 去创建那些有着  
 私有版本的 _operator new_ 和 _operator delete_ 的类的对象通常不是一个好主意。
+
+# Item 22 当使用 _Pimpl Idiom_ 时，在源文件中定义特殊成员函数
+
+## _Pimpl Idiom_ 是通过减少类的客户和类的实现之间的编译依赖来缩短编译时间的
+
+在头文件中，定义指针类型的对象时，可以只有指针类型的声明而没有指针类型的定义，这样就不需要包含指针类  
+型所对应的头文件了，_Pimpl Idiom_ 就是在头文件使用已经被声明，但没有被定义的指针，这样就减少了类的客户  
+和类的实现之间的编译依赖，缩短了编译时间。
+
+
+## 使用 _std::unique_ptr_ 实现 _Pimpl Idiom_ 时，需要特殊处理
+
+使用 _std::unique_ptr_ 实现 _Pimpl Idiom_ 时，必须要在头文件中声明特殊成员函数，在源文件中实现特殊成员函数，  
+并且成员函数必须要在 _Pimpl_ 的定义后。
