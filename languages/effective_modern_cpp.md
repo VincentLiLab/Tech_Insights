@@ -92,6 +92,11 @@
 - [_Item 22_ 当使用 _Pimpl Idiom_ 时，在源文件中定义特殊成员函数](#item-22-当使用-pimpl-idiom-时在源文件中定义特殊成员函数)
   - [_Pimpl Idiom_ 是通过减少类的客户和类的实现之间的编译依赖来缩短编译时间的](#pimpl-idiom-是通过减少类的客户和类的实现之间的编译依赖来缩短编译时间的)
   - [使用 _std::unique\_ptr_ 实现 _Pimpl Idiom_ 时，需要特殊处理](#使用-stdunique_ptr-实现-pimpl-idiom-时需要特殊处理)
+- [_Item 23_ 理解 _std::move_ 和 _std::forward_](#item-23-理解-stdmove-和-stdforward)
+  - [函数所返回的右值引用肯定是右值](#函数所返回的右值引用肯定是右值)
+  - [_std::move_ 是转换而不是移动](#stdmove-是转换而不是移动)
+  - [_std::forward_ 是转换而不是转发](#stdforward-是转换而不是转发)
+  - [_std::move_ 并不能保证转换后的结果是可以被移动的，禁止将可以被移动的对象声明为 _const_](#stdmove-并不能保证转换后的结果是可以被移动的禁止将可以被移动的对象声明为-const)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -1690,3 +1695,52 @@ _std::make_unique_ 和 _std::make_shared_ 不可以使用 _braced initializer_�
 ## 使用 _std::unique_ptr_ 实现 _Pimpl Idiom_ 时，需要特殊处理
 
 使用 _std::unique_ptr_ 实现 _Pimpl Idiom_ 时，必须要在头文件中声明特殊成员函数，然后在源文件中实现特殊成员函数，并且成员函数必须要在 _Pimpl_ 的定义后。
+
+# _Item 23_ 理解 _std::move_ 和 _std::forward_
+
+## 函数所返回的右值引用肯定是右值
+
+```C++
+  template<typename T>                            // C++14; still in
+  decltype(auto) move(T&& param)                  // namespace std
+  {
+    using ReturnType = remove_reference_t<T>&&;
+    return static_cast<ReturnType>(param);
+  }
+```  
+
+## _std::move_ 是转换而不是移动
+
+_std::move_ 的形参的类型是 _univeral reference_，这表示它的形参可以引用左值或右值，也就是说它的形参的类型可以是左值引用类型或右值引用类型。_std::move_ 的返回类型是右值引用类型，这表示它的返回值肯定是右值。_std::move_ 首先会在函数中将形参的类型转换为右值引用类型，注意只是将形参类型的 **_值类型_** 部分做了转换，形参类型的其他部分仍然会保留，比如：_const_ 会一直保留，然后再返回这个形参，因为函数所返回的右值引用肯定是右值，所以就是将实参转换为了右值。应用 _std::move_ 到一个对象上是在告诉编译器这个对象是可以被移动的。 
+
+## _std::forward_ 是转换而不是转发
+
+_std::forward_ 的形参的类型是 _univeral reference_，这表示它的形参可以引用左值或右值，也就是说它的形参的类型可以是左值引用类型或右值引用类型。_std::forward_ 的返回类型是依赖于模板类型实参的，可以是左值引用类型或右值引用类型，这表示它的返回值可以是左值或右值。_std::forward_ 首先会在函数中将形参的类型根据模板类型实参来转换为左值引用类型或右值引用类型，注意只是将形参类型的 **_值类型_** 部分做了转换，形参类型的其他部分仍然会保留，比如：_const_ 会一直保留，然后再返回这个形参，因为函数所返回的可以是左值引用类型或右值引用类型，所以就是将实参进行了转发。 
+
+## _std::move_ 并不能保证转换后的结果是可以被移动的，禁止将可以被移动的对象声明为 _const_
+
+```C++
+  class Annotation {
+  public:
+    explicit Annotation(const std::string text)
+    : value(std::move(text))                      // "move" text into value; this code
+    { … }                                         // doesn't do what it seems to!
+    
+    …
+  
+  private:
+    std::string value;
+  };
+```   
+这个代码可以编译。这个代码可以链接。这个代码可以运行。这个代码也将数据成员 _value_ 的内容设置为了 _text_ 的内容。这个代码和你所设想的完美实现间的唯一的区别是：_text_ 不是被移动到 _value_ 中的，而是被拷贝到 _value_ 中的。是的，是通过 _std::move_ 将 _text_ 转换为了一个右值，但是 _text_ 是被声明为 _const std::string_ 的，所以 _text_ 在转换之前就是一个 _const std::string_ 类型的左值了，相应地，在转换后就是一个 _const std::string_ 类型的右值了，在这个过程中， _constness_ 一直保留。
+
+```C++
+  class string {                        // std::string is actually a
+  public:                               // typedef for std::basic_string<char>
+    …
+    string(const string& rhs);          // copy ctor
+    string(string&& rhs);               // move ctor
+    …
+  };
+```  
+在 _Annotation_ 的构造函数的成员初始值列表中，_std::move(text)_ 的结果是一个 _const std::string_ 的右值。这个右值不可以被传递到 _std::string_ 的移动构造函数中，因为 _std::string_ 的移动构造函数持有的是 _non-const std::string_ 的右值引用。然而，这个右值是可以被传递到 _std::string_ 的 _copy constructor_ 中的，因为允许 _lvalue-reference-to-const_ 去绑定一个 _const_ 右值。因此 _Annotation_ 的成员初始化执行的会是 _std::string_ 的 _copy constructor_，尽管 _text_ 已经被转换为了一个右值。这样的行为对于维护 _const-correctness_ 是必不可少的。将值移出对象之外通常会修改这个对象，所以，语言不允许将 _const_ 对象传递给那些像移动构造函数一样的可能会修改它们的函数。
