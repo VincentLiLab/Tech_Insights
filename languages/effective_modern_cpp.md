@@ -1,47 +1,47 @@
-- [Item 1 理解模板的类型推导](#item-1-理解模板的类型推导)
+- [_Item 1_ 理解模板的类型推导](#item-1-理解模板的类型推导)
   - [_by-reference_](#by-reference)
   - [_by-value_](#by-value)
   - [_by-pointer_](#by-pointer)
-- [Item 2 理解 _auto_ 的类型推导](#item-2-理解-auto-的类型推导)
+- [_Item 2_ 理解 _auto_ 的类型推导](#item-2-理解-auto-的类型推导)
   - [_auto_ 的类型推导和模板的类型推导的关系](#auto-的类型推导和模板的类型推导的关系)
   - [_auto_ 的类型推导和模板的类型推导的异同](#auto-的类型推导和模板的类型推导的异同)
-- [Item 3 理解 _decltype_](#item-3-理解-decltype)
+- [_Item 3_ 理解 _decltype_](#item-3-理解-decltype)
   - [用于声明函数返回值类型](#用于声明函数返回值类型)
   - [用于声明变量类型](#用于声明变量类型)
   - [用于非名字的左值表达式](#用于非名字的左值表达式)
-- [Item 4 了解如何查看所推导的类型](#item-4-了解如何查看所推导的类型)
-- [Item 5 首选 _auto_ 而不是显式类型声明](#item-5-首选-auto-而不是显式类型声明)
+- [_Item 4_ 了解如何查看所推导的类型](#item-4-了解如何查看所推导的类型)
+- [_Item 5_ 首选 _auto_ 而不是显式类型声明](#item-5-首选-auto-而不是显式类型声明)
   - [_auto_ 可以避免未初始化的变量和冗长的变量声明，可以使重构的过程简化](#auto-可以避免未初始化的变量和冗长的变量声明可以使重构的过程简化)
   - [_auto_ 可以避免类型不匹配所导致的效率问题](#auto-可以避免类型不匹配所导致的效率问题)
   - [_auto_ 可以避免类型不匹配所导致的可移植问题](#auto-可以避免类型不匹配所导致的可移植问题)
-- [Item 6 当 _auto_ 推导出的类型是 _undesired_ 时，使用 _the explicitly typed initializer idiom_](#item-6-当-auto-推导出的类型是-undesired-时使用-the-explicitly-typed-initializer-idiom)
+- [_Item 6_ 当 _auto_ 推导出的类型是 _undesired_ 时，使用 _the explicitly typed initializer idiom_](#item-6-当-auto-推导出的类型是-undesired-时使用-the-explicitly-typed-initializer-idiom)
   - [避免 _auto someVar = expression of **invisible** proxy class type_](#避免-auto-somevar--expression-of-invisible-proxy-class-type)
   - [必须 _auto someVar = static\_cast\<T\>(expression of **invisible** proxy class type)_](#必须-auto-somevar--static_casttexpression-of-invisible-proxy-class-type)
   - [_the explicitly typed initializer idiom_ 可以强制 _auto_ 去推导你想要的 **_正确_** 的类型](#the-explicitly-typed-initializer-idiom-可以强制-auto-去推导你想要的-正确-的类型)
-- [Item 7 创建对象时区分 _()_ 和 _{}_](#item-7-创建对象时区分--和-)
+- [_Item 7_ 创建对象时区分 _()_ 和 _{}_](#item-7-创建对象时区分--和-)
   - [_braced initialization_ 的用法](#braced-initialization-的用法)
   - [_braced initialization_ 的特性](#braced-initialization-的特性)
   - [_braced initialization_ 的易错](#braced-initialization-的易错)
-- [Item 8 首选 _nullptr_ 而不是 _0_ 和 _NULL_](#item-8-首选-nullptr-而不是-0-和-null)
+- [_Item 8_ 首选 _nullptr_ 而不是 _0_ 和 _NULL_](#item-8-首选-nullptr-而不是-0-和-null)
   - [_nullptr_ 在任意情况下都可以做为空指针](#nullptr-在任意情况下都可以做为空指针)
-- [Item 9 首选 _alias declaration_ 而不是 _typedef_](#item-9-首选-alias-declaration-而不是-typedef)
+- [_Item 9_ 首选 _alias declaration_ 而不是 _typedef_](#item-9-首选-alias-declaration-而不是-typedef)
   - [_alias declaration_ 是支持模板化的](#alias-declaration-是支持模板化的)
-- [Item 10 首选 _scoped enum_ 而不是 _unscoped enum_](#item-10-首选-scoped-enum-而不是-unscoped-enum)
+- [_Item 10_ 首选 _scoped enum_ 而不是 _unscoped enum_](#item-10-首选-scoped-enum-而不是-unscoped-enum)
   - [_scoped enum_ 可以降低 _namespace_ 的污染](#scoped-enum-可以降低-namespace-的污染)
   - [_scoped enum_ 所对应的 _enumerator_ 是不可以被隐式转换的](#scoped-enum-所对应的-enumerator-是不可以被隐式转换的)
   - [_scoped enum_ 可以直接进行前置声明来减少编译依赖](#scoped-enum-可以直接进行前置声明来减少编译依赖)
-- [Item 11 首选 _deleted function_ 而不是 _private undefined function_](#item-11-首选-deleted-function-而不是-private-undefined-function)
+- [_Item 11_ 首选 _deleted function_ 而不是 _private undefined function_](#item-11-首选-deleted-function-而不是-private-undefined-function)
   - [_deleted function_ 是在编译阶段报错的](#deleted-function-是在编译阶段报错的)
   - [_deleted function_ 是可以用于任何函数的](#deleted-function-是可以用于任何函数的)
   - [_deleted function_ 是可以用于模板特化的](#deleted-function-是可以用于模板特化的)
-- [Item 12 使用 _override_ 来声明重写函数](#item-12-使用-override-来声明重写函数)
+- [_Item 12_ 使用 _override_ 来声明重写函数](#item-12-使用-override-来声明重写函数)
   - [重写的条件](#重写的条件)
   - [_reference qualifier_ 的作用](#reference-qualifier-的作用)
   - [使用 _override_ 来声明重写函数的优势](#使用-override-来声明重写函数的优势)
-- [Item 13 首选 _const\_iterator_ 而不是 _iterator_](#item-13-首选-const_iterator-而不是-iterator)
+- [_Item 13_ 首选 _const\_iterator_ 而不是 _iterator_](#item-13-首选-const_iterator-而不是-iterator)
   - [_const\_iterator_ 符合只要有可能使用 _const_ 就应该去使用 _const_ 的规则](#const_iterator-符合只要有可能使用-const-就应该去使用-const-的规则)
-- [Item 14 当函数不会抛出异常时声明函数为 _noexcept_](#item-14-当函数不会抛出异常时声明函数为-noexcept)
-  - [_C++98_ 的 _exception specification_  的格式](#c98-的-exception-specification--的格式)
+- [_Item 14_ 当函数不会抛出异常时声明函数为 _noexcept_](#item-14-当函数不会抛出异常时声明函数为-noexcept)
+  - [_C++98_ 的 _exception specification_ 的格式](#c98-的-exception-specification-的格式)
   - [_C++98_ 的 _exception specification_ 的缺点](#c98-的-exception-specification-的缺点)
   - [_C++11_ 的 _exception specification_ 的格式](#c11-的-exception-specification-的格式)
   - [_C++11_ 的 _exception specification_ 的优点](#c11-的-exception-specification-的优点)
@@ -52,48 +52,48 @@
   - [扭曲函数的实现以去让 _noexcept_ 成为可能是不合理的](#扭曲函数的实现以去让-noexcept-成为可能是不合理的)
   - [所有的内存释放函数和析构函数默认都是隐式 _noexcept_ 的](#所有的内存释放函数和析构函数默认都是隐式-noexcept-的)
   - [没有声明为 _noexcept_ 的函数也可以是 _noexcept_ 的](#没有声明为-noexcept-的函数也可以是-noexcept-的)
-- [Item 15 只要有可能就使用 _constexpr_](#item-15-只要有可能就使用-constexpr)
+- [_Item 15_ 只要有可能就使用 _constexpr_](#item-15-只要有可能就使用-constexpr)
   - [_constexpr_ 对象](#constexpr-对象)
   - [_constexpr_ 函数](#constexpr-函数)
   - [只要有可能就使用 _constexpr_ 的优势](#只要有可能就使用-constexpr-的优势)
   - [_constexpr_ 是接口，只有当愿意长期来维护一个 _constexpr_ 实现时，才应该声明一个对象或函数为 _constexpr_](#constexpr-是接口只有当愿意长期来维护一个-constexpr-实现时才应该声明一个对象或函数为-constexpr)
-- [Item 16 使 _const_ 成员函数成为线程安全的](#item-16-使-const-成员函数成为线程安全的)
+- [_Item 16_ 使 _const_ 成员函数成为线程安全的](#item-16-使-const-成员函数成为线程安全的)
   - [_mutable_ 的用法](#mutable-的用法)
   - [_std::atomic_ 与 _std::mutex_](#stdatomic-与-stdmutex)
-- [Item 17 理解特殊成员函数的生成](#item-17-理解特殊成员函数的生成)
+- [_Item 17_ 理解特殊成员函数的生成](#item-17-理解特殊成员函数的生成)
   - [_default constructor_ 被生成的条件](#default-constructor-被生成的条件)
   - [析构函数被生成的条件](#析构函数被生成的条件)
   - [_move operation_ 被生成的条件](#move-operation-被生成的条件)
   - [_copy operation_ 被生成的条件](#copy-operation-被生成的条件)
   - [成员函数模板永远不会阻止特殊成员函数的生成](#成员函数模板永远不会阻止特殊成员函数的生成)
-- [Item 18 对于 _exclusive-ownership_ 的资源管理使用 _std::unique\_ptr_](#item-18-对于-exclusive-ownership-的资源管理使用-stdunique_ptr)
+- [_Item 18_ 对于 _exclusive-ownership_ 的资源管理使用 _std::unique\_ptr_](#item-18-对于-exclusive-ownership-的资源管理使用-stdunique_ptr)
   - [对于 _exclusive-ownership_ 的资源管理使用 _std::unique\_ptr\<T\>_](#对于-exclusive-ownership-的资源管理使用-stdunique_ptrt)
   - [禁止使用 _std::unique\_ptr\<T\[\]\>_](#禁止使用-stdunique_ptrt)
   - [_std::unique\_ptr_ 适合做为工厂函数的返回类型](#stdunique_ptr-适合做为工厂函数的返回类型)
-- [Item 19 对于 _shared-ownership_ 的资源管理使用 _std::shared\_ptr_](#item-19-对于-shared-ownership-的资源管理使用-stdshared_ptr)
+- [_Item 19_ 对于 _shared-ownership_ 的资源管理使用 _std::shared\_ptr_](#item-19-对于-shared-ownership-的资源管理使用-stdshared_ptr)
   - [对于 _shared-ownership_ 的资源管理使用 _std::shared\_ptr\<T\>_](#对于-shared-ownership-的资源管理使用-stdshared_ptrt)
   - [禁止使用 _std::shared\_ptr\<T\[\]\>_](#禁止使用-stdshared_ptrt)
   - [使用 _std::shared\_ptr_ 的成本](#使用-stdshared_ptr-的成本)
   - [禁止使用原始指针类型的变量来创建 _std::shared\_ptr_](#禁止使用原始指针类型的变量来创建-stdshared_ptr)
   - [创建 _std::shared\_ptr_ 的方式](#创建-stdshared_ptr-的方式)
   - [_enable\_shared\_from\_this_ 模板](#enable_shared_from_this-模板)
-- [Item 20 对于可能会悬空的 _std::shared\_ptr-like_ 指针使用 _std::weak\_ptr_](#item-20-对于可能会悬空的-stdshared_ptr-like-指针使用-stdweak_ptr)
+- [_Item 20_ 对于可能会悬空的 _std::shared\_ptr-like_ 指针使用 _std::weak\_ptr_](#item-20-对于可能会悬空的-stdshared_ptr-like-指针使用-stdweak_ptr)
   - [_std::weak\_ptr_ 不能阻止它所对应的 _std::shared\_ptr_ 去悬空](#stdweak_ptr-不能阻止它所对应的-stdshared_ptr-去悬空)
   - [_std::weak\_ptr_ 的 _expired_ 函数不能阻止它所对应的 _std::shared\_ptr_ 去悬空](#stdweak_ptr-的-expired-函数不能阻止它所对应的-stdshared_ptr-去悬空)
   - [使用 _std::weak\_ptr_ 来检查 _std::shared\_ptr_ 是否悬空的方法](#使用-stdweak_ptr-来检查-stdshared_ptr-是否悬空的方法)
   - [_std::weak\_ptr_ 的使用场景](#stdweak_ptr-的使用场景)
-- [Item 21 首选 _std::make\_unique_ 和 _std::make\_shared_ 而不是直接使用 _new_](#item-21-首选-stdmake_unique-和-stdmake_shared-而不是直接使用-new)
+- [_Item 21_ 首选 _std::make\_unique_ 和 _std::make\_shared_ 而不是直接使用 _new_](#item-21-首选-stdmake_unique-和-stdmake_shared-而不是直接使用-new)
   - [_std::make\_unique_ 和 _std::make\_shared_ 可以消除代码重复](#stdmake_unique-和-stdmake_shared-可以消除代码重复)
   - [_std::make\_unique_ 和 _std::make\_shared_ 可以避免资源泄露](#stdmake_unique-和-stdmake_shared-可以避免资源泄露)
   - [_std::make\_shared_ 可以提高效率](#stdmake_shared-可以提高效率)
   - [_std::make\_unique_ 和 _std::make\_shared_ 不可以指定 _custom deleter_](#stdmake_unique-和-stdmake_shared-不可以指定-custom-deleter)
   - [_std::make\_unique_ 和 _std::make\_shared_ 不可以使用 _braced initializer_](#stdmake_unique-和-stdmake_shared-不可以使用-braced-initializer)
   - [_std::make\_shared_ 不可以用于那些有着私有版本的 _operator new_ 和 _operator delete_ 的类](#stdmake_shared-不可以用于那些有着私有版本的-operator-new-和-operator-delete-的类)
-- [Item 22 当使用 _Pimpl Idiom_ 时，在源文件中定义特殊成员函数](#item-22-当使用-pimpl-idiom-时在源文件中定义特殊成员函数)
+- [_Item 22_ 当使用 _Pimpl Idiom_ 时，在源文件中定义特殊成员函数](#item-22-当使用-pimpl-idiom-时在源文件中定义特殊成员函数)
   - [_Pimpl Idiom_ 是通过减少类的客户和类的实现之间的编译依赖来缩短编译时间的](#pimpl-idiom-是通过减少类的客户和类的实现之间的编译依赖来缩短编译时间的)
   - [使用 _std::unique\_ptr_ 实现 _Pimpl Idiom_ 时，需要特殊处理](#使用-stdunique_ptr-实现-pimpl-idiom-时需要特殊处理)
 
-# Item 1 理解模板的类型推导
+# _Item 1_ 理解模板的类型推导
 
 ```C++
   template<typename T>
@@ -104,13 +104,9 @@
 
 ## _by-reference_
 
-如果 _param_ 的类型为引用类型（注意可以是左值引用类型 _&_ 或是右值引用类型 _&&_），也就是 _ParamType_ 中包含  
-有 _reference qualifier_ 的话，那么在模板的类型推导期间，首先要忽略 _expr_ 的 _reference-ness_，然后再通过 _expr_ 的  
-类型和 _ParamType_ 进行模式匹配去确定 _T_。
+如果 _param_ 的类型为引用类型（注意可以是左值引用类型 _&_ 或是右值引用类型 _&&_），也就是 _ParamType_ 中包含有 _reference qualifier_ 的话，那么在模板的类型推导期间，首先要忽略 _expr_ 的 _reference-ness_，然后再通过 _expr_ 的类型和 _ParamType_ 进行模式匹配去确定 _T_。
 
-当传递一个 _const_ 类型的对象到引用类型的形参上时，希望的是这个对象是保持不变的，即为：希望形参的类型是  
-_const&_ 或者 _const&&_ 的。这也是为什么传递一个 _const_ 类型的对象到一个持有形参的类型为 _T&_ 或者 _T&&_ 的模板  
-上时是安全的：因为对象的 _constness_ 成为了 _T_ 的一部分。
+当传递一个 _const_ 类型的对象到引用类型的形参上时，希望的是这个对象是保持不变的，即为：希望形参的类型是 _const&_ 或 _const&&_ 的。这也是为什么传递一个 _const_ 类型的对象到一个持有形参的类型为 _T&_ 或者 _T&&_ 的模板上时是安全的：因为对象的 _constness_ 成为了 _T_ 的一部分。
 
 * 左值引用
 
@@ -210,22 +206,15 @@ _const&_ 或者 _const&&_ 的。这也是为什么传递一个 _const_ 类型的
 
 ## _by-value_
 
-如果 _param_ 的类型为 **_值类型_** 的话，那么在模板的类型推导期间，首先要忽略 _expr_ 的 _reference-ness_、_const_ 或者  
-_volatile_，然后再通过 _expr_ 的类型和 _ParamType_ 进行模式匹配去确定 _T_。
+如果 _param_ 的类型为 **_值类型_** 的话，那么在模板的类型推导期间，首先要忽略 _expr_ 的 _reference-ness_、_const_ 或者 _volatile_，然后再通过 _expr_ 的类型和 _ParamType_ 进行模式匹配去确定 _T_。
 
-当传递一个 _const_ 类型的对象到 **_值类型_** 的形参上时，并不希望这个对象是保持不变的，即为：并不希望形参的类  
-型是 _const_ 的。因为 _param_ 是一个完全和 _expr_ 无关的对象，它是 _expr_ 的副本。_expr_ 不能被更改的事实并不能说  
-明 _param_ 是否可以被更改。这也就是为什么当推导 _param_ 的类型时，_expr_ 的 _constness_ 和 _volatileness_ 会被忽略  
-的原因，因为 _expr_ 不能被更改并不意味着它的副本也不能被更改。
+当传递一个 _const_ 类型的对象到 **_值类型_** 的形参上时，并不希望这个对象是保持不变的，即为：并不希望形参的类型是 _const_ 的。_param_ 是一个完全和 _cx_ 和 _rx_ 无关的对象，它是 _cx_ 或 _rx_ 的副本。_cx_ 和 _rx_ 不能被更改并不能说明 _param_ 不可以被更改。这也是为什么当推导 _param_ 的类型时，_expr_ 的 _constness_ 和 _volatileness_ 会被忽略的原因，因为 _expr_ 不能被更改并不意味着它的副本也不能被更改。
  
 ## _by-pointer_
 
-如果 _param_ 的类型为指针类型的话，那么在模板的类型推导期间，通过 _expr_ 的类型和 _ParamType_ 进行模式匹配  
-去确定 _T_。在模板的类型推导期间，指针和引用在本质上是相同的。
+如果 _param_ 的类型为指针类型的话，那么在模板的类型推导期间，通过 _expr_ 的类型和 _ParamType_ 进行模式匹配去确定 _T_。在模板的类型推导期间，指针和引用在本质上是相同的。
 
-当传递一个 _const_ 类型的对象到指针类型的形参上时，希望的是这个对象是保持不变的，即为：希望形参的类型是  
-_const T*_ 的。这也是为什么传递一个 _const_ 类型的对象到一个持有形参的类型为 _T*_ 的模板上时是安全的：因为对  
-象的 _constness_ 成为了 _T_ 的一部分。
+当传递一个 _const_ 类型的对象到指针类型的形参上时，希望的是这个对象是保持不变的，即为：希望形参的类型是 _const T*_ 的。这也是为什么传递一个 _const_ 类型的对象到一个持有形参的类型为 _T*_ 的模板上时是安全的：因为对象的 _constness_ 成为了 _T_ 的一部分。
 
 ```C++
   template<typename T>
@@ -252,11 +241,7 @@ _const T*_ 的。这也是为什么传递一个 _const_ 类型的对象到一个
 
 ```
 
-注意这种场景：_expr_ 是指向 _const_ 对象的 _const_ 指针，并且 _expr_ 会被传递给 _by-pointer_ 或  _by-value_ 的 _param_。当  
-_expr_ 被传递给 _f_ 时，无论是在 _by-pointer_ 还是 _by-value_ 的情况下，这个指针_expr_ 都会按位复制给 _param_ 。所以  
-此时 _expr_ 本身是 _pass-by-value_ 的，那么与 _by-value_ 的形参所对应的类型推导规则一样，_expr_ 的 _constness_ 会被忽  
-略掉，所推导出的 _param_ 的类型就是就是 _const T*_ 了。_expr_ 所指向的对象的 _constness_ 在类型推导期间是被保留  
-的，而 _expr_ 的 _constness_ 在拷贝 _expr_ 去创建一个新的指针 _param_ 时是被忽略掉的。
+注意这种场景：_expr_ 是指向 _const_ 对象的 _const_ 指针，并且 _expr_ 会被传递给 _by-pointer_ 或  _by-value_ 的 _param_。当 _expr_ 被传递给 _f_ 时，无论是在 _by-pointer_ 情况下还是在 _by-value_ 的情况下，这个指针 _expr_ 都会按位复制给 _param_ 。所以此时 _expr_ 本身是 _pass-by-value_ 的，那么与 _by-value_ 的形参所对应的类型推导规则一样，_expr_ 的 _constness_ 会被忽略掉，所推导出的 _param_ 的类型就是就是 _const T*_ 了。_expr_ 所指向的对象的 _constness_ 在类型推导期间是被保留的，而 _expr_ 的 _constness_ 在拷贝 _expr_ 去创建一个新的指针 _param_ 时是被忽略掉的。
 
 ```C++
   template<typename T>
@@ -329,12 +314,11 @@ _expr_ 被传递给 _f_ 时，无论是在 _by-pointer_ 还是 _by-value_ 的情
 
 ```
 
-# Item 2 理解 _auto_ 的类型推导
+# _Item 2_ 理解 _auto_ 的类型推导
 
 ## _auto_ 的类型推导和模板的类型推导的关系
 
-_auto_ 扮演的是模板的类型推导中的 _T_ 的角色，而变量的 _type specifier_ 充当的是 _ParamType_ 的作用，变量声明中的  
-= 右侧的表达式可以当作是模板的类型推导中的实参的角色。  
+_auto_ 扮演的是模板的类型推导中的 _T_ 的角色，而变量的 _type specifier_ 充当的是 _ParamType_ 的作用，变量声明中的 = 右侧的表达式可以当作是模板的类型推导中的实参的角色。  
 
 ```C++
   template<typename T>
@@ -352,8 +336,7 @@ _auto_ 扮演的是模板的类型推导中的 _T_ 的角色，而变量的 _typ
 
 ## _auto_ 的类型推导和模板的类型推导的异同
 
-_auto_ 的类型推导和模板的类型推导一般情况下都是相同的，只是 _auto_ 的类型推导会假设 _braced initializer_ 表示的  
-是 _std::initialier_list_，而模板的类型推导则不会。
+_auto_ 的类型推导和模板的类型推导一般情况下都是相同的，只是 _auto_ 的类型推导会假设 _braced initializer_ 表示的是 _std::initialier_list_，而模板的类型推导则不会。
 
 ```C++
   auto x = { 11, 23, 9 };     // x's type is
@@ -412,10 +395,9 @@ _auto_ 的类型推导和模板的类型推导一般情况下都是相同的，�
                                                             // but it has a warning. we ignore the warning now.
 ```
 
-# Item 3 理解 _decltype_
+# _Item 3_ 理解 _decltype_
 
-_decltype(auto)_ 可以用于声明函数返回值类型和用于声明变量类型，所遵循的规则是 _auto_ 指明了类型会被推导，而  
-_decltype_ 则说明了 _decltype_ 的规则应该在推导期间被使用。
+_decltype(auto)_ 可以用于声明函数返回值类型和用于声明变量类型，所遵循的规则是：其中的 _auto_ 指明了类型会被推导，而 _decltype_ 则说明了 _decltype_ 的规则应该在推导期间被使用。
 
 ## 用于声明函数返回值类型
 
@@ -491,11 +473,11 @@ _decltype_ 则说明了 _decltype_ 的规则应该在推导期间被使用。
   }
 ``` 
 
-# Item 4 了解如何查看所推导的类型
+# _Item 4_ 了解如何查看所推导的类型
 
 因为一些工具的结果可能是无用的和不准确的，所以理解 C++ 的类型推导规则仍然是必要的。
 
-# Item 5 首选 _auto_ 而不是显式类型声明
+# _Item 5_ 首选 _auto_ 而不是显式类型声明
 
 ## _auto_ 可以避免未初始化的变量和冗长的变量声明，可以使重构的过程简化
 
@@ -511,13 +493,7 @@ _auto_ 变量必须要进行初始化，所以可以避免未初始化的变量�
 
 ## _auto_ 可以避免类型不匹配所导致的效率问题
 
-_auto_ 和 _std::function_ 都可以被用来持有 _closure_，但是 _auto_ 声明的用于持有 _closure_ 的变量的类型和 _closure_ 的类型  
-是相同的，所使用的内存大小和 _closure_ 所需要的内存大小也是相同的。而 _std::function_ 声明的持有 _closure_ 的变量  
-的类型是 _std::function_ 模板的实例，对于任意的所给定的 _signature_ 来说，它的大小都是固定的。这个大小对于存  
-储 _closure_ 来说，可能是不够的。在这种场景下，_std::function_ 的构造函数就会去分配堆栈内存来存储 _closure_。导  
-致的结果就是 _std::function_ 对象通常会比 _auto_ 所声明的对象使用更多的内存。由于限制内联和产生间接调用的实  
-现细节，通过 _std::function_ 对象来调用 _closuer_ 几乎肯定要比通过 _auto_ 所声明的对象来调用 _closure_ 要慢。而且可  
-能还会产生内存溢出的异常。 
+_auto_ 和 _std::function_ 都可以被用来持有 _closure_，但是 _auto_ 声明的用于持有 _closure_ 的变量的类型和 _closure_ 的类型是相同的，所使用的内存大小和 _closure_ 所需要的内存大小也是相同的。而 _std::function_ 声明的持有 _closure_ 的变量的类型是 _std::function_ 模板的实例，对于任意的所给定的 _signature_ 来说，它的大小都是固定的。这个大小对于存储 _closure_ 来说，可能是不够的。在这种场景下，_std::function_ 的构造函数就会去分配堆栈内存来存储 _closure_。导致的结果就是 _std::function_ 对象通常会比 _auto_ 所声明的对象使用更多的内存。由于限制内联和产生间接调用的实现细节，通过 _std::function_ 对象来调用 _closuer_ 几乎肯定要比通过 _auto_ 所声明的对象来调用 _closure_ 要慢。而且可能还会产生内存溢出的异常。 
 
 ## _auto_ 可以避免类型不匹配所导致的可移植问题
 
@@ -526,12 +502,8 @@ _auto_ 和 _std::function_ 都可以被用来持有 _closure_，但是 _auto_ �
   …
   unsigned sz = v.size();
 ```  
-_v.size()_ 的官方的返回类型是 _std::vector<int>::size_type_，但是很少有开发者会注意到它。_std::vector<int>::size_type_ 被指定为是  
-_unsigned integral_ 类型，所以很多开发者认为使用 _unsigned_ 也足够了，所以就写成了上面那样。这可以有一些有  
-趣的后果。例如，在 _32-bit_ _Windows_ 上，_unsigned_ 和 _std::vector<int>::size_type_ 是相同的大小，但是在 _64-bit_ _Windows_  
-上，_unsigned_ 是 _32bits_ 而 _std::vector<int>::size_type_ 则是  _64bits_。这意味着在 _32-bit_ _Windows_ 上可以正确工作的代码可  
-能在 _64-bit_ _Windows_ 下就表现的是不正确的，然后当你将程序从 _32bits_ 移植到 _64bits_ 时，谁会想花时间在这种问  
-题上呢？
+
+_v.size()_ 的官方的返回类型是 _std::vector<int>::size_type_，但是很少有开发者会注意到它。_std::vector<int>::size_type_ 被指定为是 _unsigned integral_ 类型，所以很多开发者认为使用 _unsigned_ 也足够了，所以就写成了上面那样。这可以有一些有趣的后果。例如：在 _32-bit_ _Windows_ 上，_unsigned_ 和 _std::vector<int>::size_type_ 是相同的大小，但是在 _64-bit_ _Windows_ 上，_unsigned_ 是 _32bits_，而 _std::vector<int>::size_type_ 则是  _64bits_。这意味着：在 _32-bit_ _Windows_ 上可以正确工作的代码可能在 _64-bit_ _Windows_ 下就表现的是不正确的，然后当你将程序从 _32bits_ 移植到 _64bits_ 时，谁会想花时间在这种问题上呢？
 
 ```C++
   std::unordered_map<std::string, int> m;
@@ -543,16 +515,9 @@ _unsigned integral_ 类型，所以很多开发者认为使用 _unsigned_ 也足
   }
 ```  
 
-要意识到缺失了什么，需要记住 _std::unordered_map_ 的 _key_ 是 _const_ 的，所以在哈希表也就是 _std::unordered_map_  
-中的 _std::pair_ 的类型不是 _std::pair<std::string, int>_ 而是 _std::pair<const std::string, int>_。但是这却不是上面循环中  
-的变量 _p_ 的类型。结果就是编译器将会尽力寻找方法来将 _std::pair<const std::string, int>_ 对象也就是哈希表中的对  
-象转换为 _std::pair<std::string, int>_ 也就是 _p_ 的类型的对象。这可以通过以下方法来完成：通过拷贝
-_m_ 中的每一个  
-对象来创建 _p_ 想要绑定的类型的临时对象，然后再将引用 _p_ 绑定到这个临时对象上。在每次循环结束时，所对应  
-的临时变量都将会被销毁。如果你写了这个循环的话，你可能会被这个行为所惊讶到，因为几乎可以肯定的是你想  
-要只是将引用 _p_ 绑定到 _m_ 中的每个元素上而已。
+要意识到缺失了什么，需要记住 _std::unordered_map_ 的 _key_ 是 _const_ 的，所以在哈希表也就是 _std::unordered_map_ 中的 _std::pair_ 的类型不是 _std::pair<std::string, int>_ 而是 _std::pair<const std::string, int>_。但是这却不是上面循环中的变量 _p_ 的类型。结果就是编译器将会尽力寻找方法来将 _std::pair<const std::string, int>_ 对象也就是哈希表中的对象转换为 _std::pair<std::string, int>_ 也就是 _p_ 的类型的对象。这可以通过以下方法来完成：通过拷贝 _m_ 中的每一个对象来创建 _p_ 所想要绑定的类型的临时对象，然后再将引用 _p_ 绑定到这个临时对象上。在每次循环结束时，所对应的临时变量都将会被销毁。如果你写了这个循环的话，你可能会被这个行为所惊讶到，因为几乎可以肯定的是你想要只是将引用 _p_ 绑定到 _m_ 中的每个元素上而已。
 
-# Item 6 当 _auto_ 推导出的类型是 _undesired_ 时，使用 _the explicitly typed initializer idiom_
+# _Item 6_ 当 _auto_ 推导出的类型是 _undesired_ 时，使用 _the explicitly typed initializer idiom_
 
 ## 避免 _auto someVar = expression of **invisible** proxy class type_
 
@@ -565,26 +530,18 @@ _m_ 中的每一个
                                         // type
 ```  
 
-_std::vector::operator[]_ 一般返回的都是 _T&_，但是 _C++_ 禁止引用 _bit_。不能够返回 _bool&_，所以 _std::vector&lt;bool&gt;_ 的  
-_operator[]_ 返回的是一个表现的像是 _bool&_ 的对象。为了可以这样做，_std::vector&lt;bool&gt;::reference_ 必须在基本上所  
-有可以使用 _bool&_ 的上下文中都可以使用。在 _std::vector&lt;bool&gt;::reference_ 中的可以完成这个工作的一个特性是可  
-以隐式转换为 _bool_，是 _bool_ 而不是 _bool&_。所以此时 _highPriority_ 的类型是 _std::vector&lt;bool&gt;::reference_。
+_std::vector::operator[]_ 一般情况下返回的都是 _T&_，但是 _C++_ 禁止引用 _bit_。不能够返回 _bool&_，所以 _std::vector&lt;bool&gt;_ 的 _operator[]_ 返回的是一个表现地像是 _bool&_ 的对象。为了可以这样做，_std::vector&lt;bool&gt;::reference_ 必须在基本上所有可以使用 _bool&_ 的上下文中都可以使用。_std::vector&lt;bool&gt;::reference_ 中的可以完成这个工作的一个特性是可以隐式转换为 _bool_，是 _bool_ 而不是 _bool&_。所以此时 _highPriority_ 的类型是 _std::vector&lt;bool&gt;::reference_。
 
-
-_std::vector&lt;bool&gt;::reference_ 的一种实现是去包含一个指针，这个指针指向一个机器字，而这个机器字中保存着那  
-个 _bit_ 和那个 _bit_ 所对应的偏移量。因为此时涉及到是 _auto_ 的 _by-value_ 的类型推导规则，所以此时 _highPriority_ 也  
-就有了这个指针的副本了，在 _auto highPriority = features(w)[5];_ 这个语句结束后，因为临时对象会被销毁掉。所  
-以临时对象所对应的指针也会被销毁掉，那么 _highPriority_ 就包含有一个 _dangling_ 指针了。
+_std::vector&lt;bool&gt;::reference_ 的一种实现是去包含一个指针，这个指针指向一个机器字，而这个机器字中保存着那个 _bit_ 和那个 _bit_ 所对应的偏移量。因为此时涉及到是 _auto_ 的 _by-value_ 的类型推导规则，所以此时 _highPriority_ 也就有了这个指针的副本了，在 _auto highPriority = features(w)[5];_ 这个语句结束后，因为临时对象会被销毁掉。所以临时对象所对应的指针也会被销毁掉，那么 _highPriority_ 就包含有一个悬空指针了。
 
 ```C++
   bool highPriority = features(w)[5];   // declare highPriority's
                                         // type explicitly
 ```  
-在执行 _bool highPriority = features(w)[5];_ 时，会将 _std::vector&lt;bool&gt;::reference_ 对象隐式转换为 _bool_，以去初始化  
-_highPriority_。此时就没有 _dangling_ 指针的问题了。
 
-_std::vector&lt;bool&gt;::reference_ 就是 **_invisble_** _proxy class_，不能 **_直接_** 和 _auto_ 一起使用，因为 **_invisble_** _proxy class_ 这种  
-类型的对象通常不会被设计为比单语句存在的还久，所以创建这种类型的变量就是在违反基础库的设计假设。
+在执行 _bool highPriority = features(w)[5];_ 时，会将 _std::vector&lt;bool&gt;::reference_ 对象隐式转换为 _bool_，以去初始化 _highPriority_。此时就没有 _dangling_ 指针的问题了。
+
+_std::vector&lt;bool&gt;::reference_ 就是 **_invisble_** _proxy class_，不能 **_直接_** 和 _auto_ 一起使用，因为 **_invisble_** _proxy class_ 这种类型的对象通常不会被设计为比单语句存在的还久，所以创建这种类型的变量就是在违反基础库的设计假设。
 
 ## 必须 _auto someVar = static_cast&lt;T&gt;(expression of **invisible** proxy class type)_
 
@@ -600,13 +557,12 @@ _std::vector&lt;bool&gt;::reference_ 就是 **_invisble_** _proxy class_，不�
   float ep = calcEpsilon();   // impliclitly convert
                               // double → float
 ```  
-这很难表示出“我是故意缩小了这个函数所返回的值的精度。”但是使用 _the explicitly typed initializer idiom_ 的声明  
-却可以做到：  
+这很难表示出“我是故意缩小了这个函数所返回的值的精度。”但是使用 _the explicitly typed initializer idiom_ 的声明却可以做到  
 ```C++
   auto ep = static_cast<float>(calcEpsilon());
 ```
 
-# Item 7 创建对象时区分 _()_ 和 _{}_
+# _Item 7_ 创建对象时区分 _()_ 和 _{}_
 
 ## _braced initialization_ 的用法
 
@@ -627,10 +583,7 @@ _auto_ 声明
 
   auto z{0, 1};               // error, shit! C++ fuck you
 ```
-> 原文认为：“我通常会忽略 _equals-sign-plus-braces_ 语法，因为 _C++_ 通常把它和 _braces-only_ 做同样地处理。” 实  
-> 际测试不是这样，使用的编译器是 _c++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0_。_auto v{0, 1};_ 这样是无法通过编  
-> 译的并且 _auto v{0}_ 中的 _v_ 是 _int_ 类型而不是 _std::initializer_list_ 类型。
-> _C++ fuck you!_
+> 原文认为：“我通常会忽略 _equals-sign-plus-braces_ 语法，因为 _C++_ 通常把它和 _braces-only_ 做同样地处理。” 实际测试不是这样，使用的编译器是 _c++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0_。_auto v{0, 1};_ 这样是无法通过编译的并且 _auto v{0}_ 中的 _v_ 是 _int_ 类型而不是 _std::initializer_list_ 类型。_C++ fuck you!_
 
 ## _braced initialization_ 的特性
 
@@ -673,14 +626,9 @@ _braced initialization_ 可以免疫 _C++_ 的 _most vexing parse_。
   Widget w3{};                // calls Widget ctor with no args
 ```
 
-_braced initialization_ 可以让编译器强烈地优先选择持有 _std::initializer_list_ 的重载函数。此处的 **_强烈地优先选择_** 是  
-指：只要可以 **_implicit converting_** 的话，编译器强就会去选择持有 _std::initializer_list_ 的重载函数，就算此时的这  
-个 **_implicit converting_** 是 _implicit narrowing converting_ 的会导致报错，编译器也会去选择持有 _std::initializer_list_  
-的重载函数。
+_braced initialization_ 可以让编译器强烈地优先选择持有 _std::initializer_list_ 的重载函数。**_强烈地优先选择_** 是指：只要可以 **_implicit converting_** 的话，编译器强就会去选择持有 _std::initializer_list_ 的重载函数，就算此时的这个 **_implicit converting_** 是 _implicit narrowing converting_ 的会导致报错，编译器也会去选择持有 _std::initializer_list_ 的重载函数。
 
-> 只有当没有办法将 _braced initializer_ 中的实参的类型转换 _std::initializer_list_ 中的类型时，编译器才会回退到一般  
-> 的重载决议中，但是注意经过经过重载决议后，如果编译器仍然有机会去选择持有 _std::initializer_list_ 的重载函  
-> 数的话，那么编译器强仍然会去选择持有 _std::initializer_list_ 的重载函数。
+> 只有当没有办法将 _braced initializer_ 中的实参的类型转换 _std::initializer_list_ 中的类型时，编译器才会回退到一般的重载决议中，但是注意经过重载决议后，如果又有机会去选择持有 _std::initializer_list_ 的重载函数的话，那么编译器强仍然会去选择持有 _std::initializer_list_ 的重载函数。
 
 ```C++
   class Widget {
@@ -707,8 +655,7 @@ _braced initialization_ 可以让编译器强烈地优先选择持有 _std::init
 
 
 _braced initialization_ 对于常规的拷贝构造函数和移动构造函数会有不同。
-> 原文认为：“甚至那些常规的拷贝构造和移动构造也可以被 _std::initializer_list_ 构造函数所劫持。”实际测试不是  
-> 这样，使用的编译器是 _c++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0_。
+> 原文认为：“甚至那些常规的拷贝构造和移动构造也可以被 _std::initializer_list_ 构造函数所劫持。”实际测试不是这样，使用的编译器是 _c++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0_。
 
 * 原文认为的常规的拷贝构造和移动构造情况
 
@@ -767,15 +714,13 @@ _braced initialization_ 对于常规的拷贝构造函数和移动构造函数�
   doSomeWork<std::vector<int>>(10, 20);
 ```
 
-如果创建 _localObject_ 时 _doSomeWork_ 使用了 _()_ 的话，那么 _std::vector_ 就是有 _10_ 个元素。如果创建 _localObject_ 时   
-_doSomeWork_ 使用了 _{}_ 的话，那么 _std::vector_ 就是有 _2_ 个元素。哪一个是正确的？_doSomeWork_ 的作者是不知道  
-的，只有调用者知道。_()_ 和 _{}_ 只使用其中之一最好。
+如果创建 _localObject_ 时 _doSomeWork_ 使用了 _()_ 的话，那么 _std::vector_ 就是有 _10_ 个元素。如果创建 _localObject_ 时  _doSomeWork_ 使用了 _{}_ 的话，那么 _std::vector_ 就是有 _2_ 个元素。哪一个是正确的？_doSomeWork_ 的作者是不知道的，只有调用方知道。_()_ 和 _{}_ 只使用其中之一就好。
 
-# Item 8 首选 _nullptr_ 而不是 _0_ 和 _NULL_
+# _Item 8_ 首选 _nullptr_ 而不是 _0_ 和 _NULL_
 
 ## _nullptr_ 在任意情况下都可以做为空指针
 
-_nullptr_ 在任意情况下都可以做为空指针，而 _0_ 和 _NULL_ 只有在指针被使用的情况下才可以做为空指针，否则将 _0_ 和 _NULL_ 做为它们本身的 _integral_ 类型。
+_nullptr_ 在任意情况下都可以做为空指针，而 _0_ 和 _NULL_ 只有在只有指针被使用的情况下才可以做为空指针，否则将 _0_ 和 _NULL_ 做为它们本身的 _integral_ 类型。
 
 * _0_ 和 _NULL_ 可以做为空指针的情况   
 
@@ -818,8 +763,7 @@ _nullptr_ 在任意情况下都可以做为空指针，而 _0_ 和 _NULL_ 只有
   }
 ```  
 
-因为此时是在只有指针被使用的环境下，所以可以将 _0_ 隐式转换为 _std::shared_ptr&lt;Widget&gt;_ 类型的形参。_NULL_ 和  
-_std::unique_ptr&lt;Widget&gt;_ 类型的形参也是这样的情况。
+因为此时是在只有指针被使用的环境下，所以可以将 _0_ 隐式转换为 _std::shared_ptr&lt;Widget&gt;_ 类型的形参。_NULL_ 和 _std::unique_ptr&lt;Widget&gt;_ 类型的形参也是这样的情况。
 
 * _0_ 和 _NULL_ 不可以做为空指针的情况
 
@@ -859,11 +803,9 @@ _std::unique_ptr&lt;Widget&gt;_ 类型的形参也是这样的情况。
   auto result3 = lockAndCall(f3, f3m, nullptr);   // fine
 ``` 
 
-因为在 _lockAndCall_ 所对应的模板的类型推导下，会将 _0_ 所对应的 _ptr_ 的类型推导为 _integral_ 类型，而 _integral_ 类  
-型是无法隐式转换为 _std::shared_ptr&lt;Widget&gt;_ 类型的，所以是错误的。_NULL_ 和 _std::unique_ptr&lt;Widget&gt;_ 类型的  
-形参也是这样的情况。
+因为在 _lockAndCall_ 所对应的模板的类型推导规则下，会将 _0_ 所对应的 _ptr_ 的类型推导为 _integral_ 类型，而 _integral_ 类型是无法被隐式转换为 _std::shared_ptr&lt;Widget&gt;_ 类型的，所以是错误的。_NULL_ 和 _std::unique_ptr&lt;Widget&gt;_ 类型的形参也是这样的情况。
 
-# Item 9 首选 _alias declaration_ 而不是 _typedef_
+# _Item 9_ 首选 _alias declaration_ 而不是 _typedef_
 
 ## _alias declaration_ 是支持模板化的
 
@@ -891,12 +833,11 @@ _alias declaration_ 是支持模板化的，而 _typedef_ 是不支持模板化�
   MyAllocList<Widget>::type lw;                   // client code
 ```  
 
-# Item 10 首选 _scoped enum_ 而不是 _unscoped enum_
+# _Item 10_ 首选 _scoped enum_ 而不是 _unscoped enum_
 
 ## _scoped enum_ 可以降低 _namespace_ 的污染
 
- _scoped enum_ 是不会将其所对应的 _enumerator_ 的名称泄露到那个包含着它的作用域中的，而 _unscoped enum_ 是会  
- 的。
+ _scoped enum_ 是不会将其所对应的 _enumerator_ 的名称泄露到那个包含着它的作用域中的，而 _unscoped enum_ 是会的。
 
 * _scoped enum_
 
@@ -928,8 +869,7 @@ _alias declaration_ 是支持模板化的，而 _typedef_ 是不支持模板化�
 
 ## _scoped enum_ 所对应的 _enumerator_ 是不可以被隐式转换的
 
-_scoped enum_ 所对应的 _enumerator_ 是不可以被隐式转换的，而 _unscoped enum_ 所对应的 _enumerator_ 是可以被隐  
-式转换的。
+_scoped enum_ 所对应的 _enumerator_ 是不可以被隐式转换的，而 _unscoped enum_ 所对应的 _enumerator_ 是可以被隐式转换的。
 
 * _scoped enum_
 
@@ -967,8 +907,7 @@ _scoped enum_ 所对应的 _enumerator_ 是不可以被隐式转换的，而 _un
 
 ## _scoped enum_ 可以直接进行前置声明来减少编译依赖
 
-_scoped enum_ 可以直接进行前置声明来减少编译依赖，而 _unscoped enum_ 则需要在指明 _underlying type_ 的情况下  
-才可以进行前置声明。
+_scoped enum_ 可以直接进行前置声明来减少编译依赖，而 _unscoped enum_ 则需要在指明 _underlying type_ 的情况下才可以进行前置声明。
  
 * _scoped enum_
 
@@ -984,17 +923,15 @@ _scoped enum_ 可以直接进行前置声明来减少编译依赖，而 _unscope
   enum Color : int;           // fine
 ``` 
 
-# Item 11 首选 _deleted function_ 而不是 _private undefined function_
+# _Item 11_ 首选 _deleted function_ 而不是 _private undefined function_
 
 ## _deleted function_ 是在编译阶段报错的
 
-_deleted function_ 是在编译阶段报错的，而 _private undefined function_ 则是在链接阶段报错的。_deleted function_ 是  
-应该被声明为 _public_ 而不是 _private_ 的。
+_deleted function_ 是在编译阶段报错的，而 _private undefined function_ 则是在链接阶段报错的。_deleted function_ 是应该被声明为 _public_ 而不是 _private_ 的。
 
 ## _deleted function_ 是可以用于任何函数的
 
-_deleted function_ 是可以用于任何函数的，包括成员函数、非成员函数和模板实例，而 _private undefined function_  
-是只可以用于成员函数的。
+_deleted function_ 是可以用于任何函数的，包括成员函数、非成员函数和模板实例，而 _private undefined function_ 是只可以用于成员函数的。
 
 * 成员函数
 
@@ -1037,9 +974,7 @@ _deleted function_ 是可以用于任何函数的，包括成员函数、非成�
 
 ## _deleted function_ 是可以用于模板特化的
 
-_deleted function_ 是可以用于模板特化的，而 _private undefined function_ 是不可以的。如果在类中有一个函数模  
-板，并且你想通过 _private_ 声明来 _disable_ 它的一些实例的话，那么这样做是不可以的。因为不能给成员函数模板  
-的特化一个和主模板是不同的访问级别。
+_deleted function_ 是可以用于模板特化的，而 _private undefined function_ 是不可以的。如果在类中有一个函数模板，并且你想通过 _private_ 声明来 _disable_ 它的一些实例的话，那么这样做是不可以的。因为不能给成员函数模板的特化一个和主模板是不同的访问级别。
 
 * _deleted function_
 
@@ -1074,7 +1009,7 @@ _deleted function_ 是可以用于模板特化的，而 _private undefined funct
  };
 ``` 
 
-# Item 12 使用 _override_ 来声明重写函数
+# _Item 12_ 使用 _override_ 来声明重写函数
 
 ## 重写的条件
 
@@ -1151,13 +1086,11 @@ _base function_ 和 _derived function_ 的 _reference qualifier_ 必须一致。
   };
 ``` 
 
-# Item 13 首选 _const_iterator_ 而不是 _iterator_
+# _Item 13_ 首选 _const_iterator_ 而不是 _iterator_
 
 ## _const_iterator_ 符合只要有可能使用 _const_ 就应该去使用 _const_ 的规则
 
-只要有可能使用 _const_ 就应该去使用 _const_，这个规则在 _C++11_ 之前就是一直有的。但是在 _C++98_ 中，当使用到   
-_iterator_ 时，这个原则就不适用了。而在 _C++11_ 中，这个原则就很适用了。_container_ 的  成员函数 _cbegin_ 和 _cend_   
-都产生的是 _const_iterator_。
+只要有可能使用 _const_ 就应该去使用 _const_，这个规则在 _C++11_ 之前就是一直有的。但是在 _C++98_ 中，当使用到 _iterator_ 时，这个原则就不适用了。而在 _C++11_ 中，这个原则就很适用了。_container_ 的  成员函数 _cbegin_ 和 _cend_ 都产生的是 _const_iterator_。
 
 ```C++
   std::vector<int> values;                        // as before
@@ -1171,9 +1104,9 @@ _iterator_ 时，这个原则就不适用了。而在 _C++11_ 中，这个原则
   values.insert(it, 1998);
 ```
 
-# Item 14 当函数不会抛出异常时声明函数为 _noexcept_
+# _Item 14_ 当函数不会抛出异常时声明函数为 _noexcept_
 
-## _C++98_ 的 _exception specification_  的格式
+## _C++98_ 的 _exception specification_ 的格式
 
 ```
   int f(int x) throw();                           // no exceptions from f: C++98 style
@@ -1183,9 +1116,7 @@ _iterator_ 时，这个原则就不适用了。而在 _C++11_ 中，这个原则
 
 ## _C++98_ 的 _exception specification_ 的缺点
 
-在 _C++98_ 中，必须要总结出一个函数的所有可能会抛出的异常类型，所以如果这个函数的实现被更改了的话，那  
-么它的 _exception specification_ 可能也需要更改。而改变一个函数的  _exception specification_  是可能会破坏客户代码  
-的，这是因为调用方可能是依赖于原来的 _exception specification_ 的。
+必须要总结出一个函数所有的可能会抛出的异常类型，所以如果这个函数的实现被更改了的话，那么它的 _exception specification_ 可能也需要更改。而改变一个函数的  _exception specification_  是可能会破坏客户的代码的，因为调用方可能是依赖于原来的 _exception specification_ 的。
 
 ## _C++11_ 的 _exception specification_ 的格式
 
@@ -1197,10 +1128,7 @@ _iterator_ 时，这个原则就不适用了。而在 _C++11_ 中，这个原则
 
 ## _C++11_ 的 _exception specification_ 的优点
 
-在 _C++11_ 开发期间，达成了一个共识：关于函数的异常抛出行为，真正有意义的信息是它是否有异常。黑或白，  
-函数要么可能会抛出异常，要么保证不会抛出异常。_maybe-or-never_ 二分法是 _C++11_ 的 _exception specification_  
-的基础，本质上取代了 _C++98_ 的 _exception specification_。_C++98-style_ 的 _exception specification_ 仍然是有效的，  
-但是是被废弃的。在 _C++11_ 中，无条件的 _noexcept_ 是对应于那些保证不会抛出异常的函数的。
+在 _C++11_ 开发期间，达成了这样的一个共识：关于函数的异常抛出行为，真正有意义的信息是函数是否有异常。黑或白，函数要么可能会抛出异常，函数要么保证不会抛出异常。_maybe-or-never_ 二分法构成了 _C++11_ 的 _exception specification_ 的基础，本质上取代了 _C++98_ 的 _exception specification_。_C++98-style_ 的 _exception specification_ 仍然是有效的，但是是被废弃的。在 _C++11_ 中，无条件的 _noexcept_ 是对应于那些保证不会抛出异常的函数的。
 
 ## _noexcept_ 允许编译器去生成更好的对象代码
 
@@ -1228,27 +1156,14 @@ _iterator_ 时，这个原则就不适用了。而在 _C++11_ 中，这个原则
   …
 ``` 
 
-当一个新元素被添加到 _std::vector_ 时，_std::vector_ 可能已经没有这个元素的空间了，即为：_std::vector_ 的大小等于它  
-的容量了。当发生这种情况时，_std::vector_ 会分配一个新的大的内存块去保存它的元素，并将它的元素从旧内存块  
-转移到新内存块上。在 _C++98_ 中，是通过将每一个元素从旧内存拷贝到新内存来完成的，然后再去销毁旧内存上   
-的对象。这种方法给 _push_back_ 提供了强异常安全保证：如果在拷贝期间抛出了一个异常的话，那么 _std::vector_ 的  
-状态是保持不变的。因为直到全部元素都被成功拷贝到新内存后，旧内存上的全部元素才会被销毁。
+当一个新元素被添加到 _std::vector_ 时，_std::vector_ 可能已经没有这个元素的空间了，即为：_std::vector_ 的大小等于它的容量了。当发生这种情况时，_std::vector_ 会分配一个新的大的内存块去保存它的元素，并将它的元素从旧内存块转移到新内存块上。在 _C++98_ 中，是通过将每一个元素从旧内存拷贝到新内存来完成的，然后再去销毁旧内存上的对象。这种方法给 _push_back_ 提供了强异常安全保证：如果在拷贝期间抛出了一个异常的话，那么 _std::vector_ 的状态是保持不变的。因为直到全部元素都被成功拷贝到新内存后，旧内存上的全部元素才会被销毁。
 
-在 _C++11_ 中，一个自然的优化是：对于 _std::vector_ 的元素，会使用移动来代替拷贝。不幸地是，这样做是冒着违  
-反 _push_back_ 的异常安全保证风险的。如果 _n_ 个元素已经从旧内存移走了，然后在移动第 _n+1_ 
-个元素期间抛出了  
-一个异常，那么 _push_back_ 操作是不可以完成的。但是原来的 _std::vector_ 已经被更改了：因为 _n_ 个元素已经被移动  
-走了。不可能恢复原来的状态，因为试图移动每一个元素回到原来的旧内存都可能会产生异常。
+在 _C++11_ 中，一个自然的优化是：对于 _std::vector_ 的元素，会使用移动来代替拷贝。不幸地是，这样做是冒着违反 _push_back_ 的异常安全保证风险的。如果 _n_ 个元素已经从旧内存移走了，然后在移动第 _n+1_ 
+个元素期间抛出了一个异常，那么 _push_back_ 操作是不可以完成的。但是原来的 _std::vector_ 已经被更改了：因为 _n_ 个元素已经被移动走了。不可能恢复原来的状态，因为试图移动每一个元素回到原来的旧内存都可能会产生异常。
 
-这是一个严重的问题，因为 _legacy_ 代码的行为可能是依赖于 _push_back_ 的强异常安全保证的。因此，_C++11_ 的实  
-现不能悄悄地使用 _move operation_ 来替换 _push_back_ 中的 _copy operation_，除非确认 _move operation_ 不会抛出异  
-常。不会抛出异常时，_move operation_ 代替 _copy operation_ 是安全的，唯一的附加影响是将会提升性能。
+这是一个严重的问题，因为 _legacy_ 代码的行为可能是依赖于 _push_back_ 的强异常安全保证的。因此，_C++11_ 的实现不可以悄悄地使用所对应的 _move operation_ 来替换 _push_back_ 中的 _copy operation_，除非确认 _move operation_ 不会抛出异常。不会抛出异常时，_move operation_ 代替 _copy operation_ 是安全的，唯一的附加影响是将会提升性能。
 
-_std::vector::push_back_ 利用了 **_move if you can, but copy if you must_** 的策略的优势，它不是唯一一个在标准库中这  
-样做的函数。其他的利用了 _C++98_ 的强异常安全保证的函数也是使用了相同的方式，比如：_std::vector::reserve_ 和  
- _std::deque::insert_ 等。如果 _move operation_ 被认为是不会抛出异常异常的话，那么全部的这些函数会使用 _C++11_   
-的 _move operation_ 来代替 _C++98_ 的 _copy operation_。但是这些函数如何可以知道 _move operation_ 是否不会产生异  
-常呢？答案是明显的：去检查 _move operation_ 是否被声明为了 _noexcept_。
+_std::vector::push_back_ 利用了 **_move if you can, but copy if you must_** 的策略的优势，它不是唯一一个在标准库中这样做的函数。其他的利用了 _C++98_ 的强异常安全保证的函数也是使用了相同的方式，比如：_std::vector::reserve_ 和 _std::deque::insert_ 等。如果 _move operation_ 被认为是不会抛出异常异常的话，那么全部的这些函数会使用 _C++11_ 的 _move operation_ 来代替 _C++98_ 的 _copy operation_。但是这些函数如何可以知道 _move operation_ 是否不会产生异常呢？答案是明显的：去检查 _move operation_ 是否被声明为了 _noexcept_。
 
 ```C++
   template <class T, size_t N>
@@ -1264,48 +1179,23 @@ _std::vector::push_back_ 利用了 **_move if you can, but copy if you must_** �
   };
 ```  
 
-这些函数是 **_有条件地_** _noexcept_ 的：它们是否是 _noexcept_ 的是依赖于 _noexcept clause_ 中的表达式是否是 _noexcept_  
-的。例如：给定两个 _Widget_ 类型的 _array_，只有当 _array_ 中的单独的元素的交换是 _noexcept_ 时，即为：_Widget_ 的  
-_swap_ 是 _noexcept_ 的时，这两个 _array_ 的交换才会是 _noexcept_ 的。因此，_Widget_ 的 _swap_ 的作者决定了 _Widget_ 的  
-_array_ 的交换是否是 _noexcept_ 的。这依次决定了其他的像 _Widget_ 的 _array_ 的 _array_ 这样的 _swap_ 是否是 _noexcept_  
-的。类似地，还有两个包含着 _Widget_ 的 _std::pair_ 对象的交换是否是 _noexcept_ 的是依赖于 _Widget_ 的  _swap_ 是否是  
-_noexcept_ 的。只有当低级别成分的交换是 _noexcept_ 的时，高级别的数据结构才可以是 _noexcept_ 的，这个事实激励  
-你只要可以就应该去提供 _noexcept_ 的 _swap_ 函数。
+这些函数是 **_有条件地_** _noexcept_ 的：这些函数是否是 _noexcept_ 的是依赖于 _noexcept clause_ 中的表达式是否是 _noexcept_ 的。例如：给定两个 _Widget_ 类型的 _array_，只有当 _array_ 中的单独的元素的交换是 _noexcept_ 时，即为：_Widget_ 的 _swap_ 是 _noexcept_ 的时，这两个 _Widget_ 所对应的 _array_ 的交换才会是 _noexcept_ 的。因此，_Widget_ 的 _swap_ 的作者决定了 _Widget_ 的 _array_ 的交换是否是 _noexcept_ 的。这依次决定了其他的像 _Widget_ 的 _array_ 的 _array_ 这样的 _swap_ 是否是 _noexcept_ 的。类似地，还有两个包含着 _Widget_ 的 _std::pair_ 对象的交换是否是 _noexcept_ 的是依赖于 _Widget_ 的  _swap_ 是否是 _noexcept_ 的。只有当低级别成分的交换是 _noexcept_ 的时，高级别的数据结构才可以是 _noexcept_ 的，这个事实激励你只要可以就应该去提供 _noexcept_ 的 _swap_ 函数。
 
 ## _noexcept_ 是接口，只有当愿意长期来维护一个 _noexcept_ 实现时，才应该声明一个函数为 _noexcept_
 
-只有当愿意长期来维护一个 _noexcept_ 实现时，才应该声明一个函数为 _noexcept_。因为如果你开始时声明了一个函  
-数为 _noexcept_，但是后续却后悔了的话，那么你的选择是有限的。你可以从函数的声明中删除 _noexcept_，即为：  
-改变它的接口，但这是冒着破坏客户的代码的风险的。你还可以改变函数的实现，以让一个异常可以 _escape_，但  
-还是保持原始的但现在是错误的 _exception specification_。如果你这样做了，当这个异常尝试离开函数时，你的程序将会被终止。
+只有当你愿意长期来维护一个 _noexcept_ 实现时，你才应该声明一个函数为 _noexcept_。如果你在开始时把一个函数声明为了 _noexcept_，但是后续却后悔了的话，那么你的选择是很有限的。你可以从函数的声明中删除 _noexcept_，即为：改变它的接口，但这是冒着破坏客户的代码的风险的。你还可以改变函数的实现，以让一个异常可以 _escape_，但还是保持原始的但现在是错误的 _exception specification_。如果你这样做了，当这个异常尝试离开函数时，你的程序将会被终止。
 
 ## _exception-neutral_ 的函数不是 _noexcept_ 的
 
-事实上，大多数函数都是 _exception-neutral_ 的。这些函数它们本身是不会抛出异常的，但是它们所调用的函数是  
-可能会抛出异常的。当这种情况发生时，_exception-neutral_ 的函数允许它们所调用的函数所抛出的异常通过它们的  
-路到达更上层的调用链路的处理程序。_exception-neutral_ 的函数永远不是 _noexcept_ 的，因为它们还是可能会抛出  
-**_just passing through_** 的异常的。因此，大多数函数很恰当地缺少了 _noexcept_ 名称。
-
+事实上，大多数函数都是 _exception-neutral_ 的。这些函数本身是不会抛出异常的，但是它们所调用的函数是可能会抛出异常的。当这种情况发生时，_exception-neutral_ 的函数允许它们所调用的函数所抛出的异常通过它们的路到达更上层的调用链路的处理程序。_exception-neutral_ 的函数永远不是 _noexcept_ 的，因为它们还是可能会抛出 **_just passing through_** 的异常的。因此大多数函数很恰当地缺少了 _noexcept_ 名称。
 
 ## 扭曲函数的实现以去让 _noexcept_ 成为可能是不合理的
 
-扭曲函数的实现以去让 _noexcept_ 成为可能是不合理的。如果一个简单的函数实现可能会产生异常的话，比如：调  
-用可能会抛出异常的函数，那么你可以付出努力来将这些抛出的异常对调用方进行隐藏，比如：捕获所有的异常并  
-使用状态码或特殊返回值来代替它，这不仅会使得你的函数的实现变得非常复杂，还通常也会使得调用点的代码变  
-得复杂。例如：调用方必须要检查状态码或者特殊返回值。这些复杂度的运行时间成本，比如：额外的分支和更大  
-的函数会给指令缓存施加更大的压力，可能会超出你希望通过 _noexcept_ 所实现的加速，而且代码更难以理解和维  
-护了。这将是糟糕的软件工程。
+扭曲函数的实现以去让 _noexcept_ 成为可能是不合理的。**_Is putting the cart before the horse. Is not seeing the forest for the trees_.** 选择你最爱的比喻。如果一个简单的函数实现可能会产生异常的话，比如：调用可能会抛出异常的函数，那么你可以付出努力来将这些抛出的异常对调用方进行隐藏，比如：捕获所有的异常并使用状态码或特殊返回值来代替它，这不仅会使得你的函数的实现变得非常复杂，还会通常使得调用点的代码变得复杂。例如：调用方必须要检查状态码或者特殊返回值。这些复杂度的运行时间成本，比如：额外的分支和更大的函数会给指令缓存施加更大的压力，可能会超出你希望通过 _noexcept_ 所实现的加速，而且代码更难以理解和维护了。这将是糟糕的软件工程。
 
 ## 所有的内存释放函数和析构函数默认都是隐式 _noexcept_ 的
 
-对于一些函数来说，成为 _noexcept_ 的是非常重要的，它们默认就应该是那样。在 _C++98_ 中，允许内存释放函数，  
-即为：_operator delete and operator delete[]_，和析构函数去抛出异常被认为是一个糟糕的设计，而在 _C++11_ 中，  
-这种风格规则已经被升级为是一个语言规则了。所有的内存释放函数和析构函数，包括用户定义的和编译器生成  
-的，默认都是隐式 _noexcept_ 的。因此不需要声明它们为 _noexcept_。进行声明也不会伤害任何东西，只是不常见而  
-已。只有当类的数据成员，包括所继承的成员和被包含在其他数据成员中的成员，明确地声明了它们的析构函数可  
-能会抛出异常时，比如：声明为 _noexcept(false)_，才是仅有的析构函数不是隐式 _noexcept_ 的情况。这样的析构函  
-数是不常见的。在标准库中是没有这样的析构函数的，如果标准库所使用的对象的析构函数抛出了一个异常的话，  
-比如：这个对象是在 _container_ 中的，是被传递到算法中的，那么程序的行为是未定义的。
+对于一些函数来说，成为 _noexcept_ 的是非常重要的，它们默认就应该是那样。在 _C++98_ 中，允许内存释放函数，即为：_operator delete_ 和 _operator delete[]_，和析构函数去抛出异常被认为是一个糟糕的设计，而在 _C++11_ 中，这种风格规则已经被升级为是一个语言规则了。所有的内存释放函数和析构函数，包括用户定义的和编译器生成的，默认都是隐式 _noexcept_ 的。因此不需要声明它们为 _noexcept_。进行声明也不会伤害任何东西，只是不常见而已。只有当类的数据成员，包括所继承的成员和被包含在其他数据成员中的成员，明确地声明了它们的析构函数可能会抛出异常时，比如：声明为 _noexcept(false)_，才是仅有的析构函数不是隐式 _noexcept_ 的情况。这样的析构函数是不常见的。在标准库中是没有这样的析构函数的，如果标准库所使用的对象的析构函数抛出了一个异常的话，比如：这个对象是在 _container_ 中的，是被传递到算法中的，那么程序的行为是未定义的。
 
 ## 没有声明为 _noexcept_ 的函数也可以是 _noexcept_ 的
 
@@ -1322,20 +1212,14 @@ _noexcept_ 的。只有当低级别成分的交换是 _noexcept_ 的时，高级
     cleanup();                // perform cleanup actions
   }
 ```  
-此处，_doWork_ 是被声明为 _noexcept_ 的，尽管 _doWork_ 调用了 _non-noexcept_ 函数 _setup_ 和 _cleanup_ 函数。这似乎  
-是矛盾的，但却是可以的，那就是当 _setup_ 和 _cleanup_ 在文档中说明了它们永远不会抛出异常，尽管它们没有被声  
-明为 _noexcept_。有好的理由将这样不会抛出异常的函数不声明为 _noexcept_，例如：它们可能是 _C_ 库的一部分，甚  
-至一些已经从 _C_ 标准库移动到 _std namespace_ 的函数仍然缺少着 _exception specification_，比如：_std::strlen_ 没有被  
-声明为 _noexcept_。又或者它们是决定不使用 _C++98_ 的 _exception specification_，但还没有被修改为使用 _C++11_ 的  
-_exception specification_ 的 _C++98_ 的库。
 
-# Item 15 只要有可能就使用 _constexpr_
+此处，_doWork_ 是被声明为 _noexcept_ 的，尽管 _doWork_ 调用了 _non-noexcept_ 函数 _setup_ 和 _cleanup_ 函数。这似乎是矛盾的，但却是是可以的，那就是当 _setup_ 和 _cleanup_ 函数在文档中说明了它们是永远不会抛出异常的，尽管它们没有被声明为 _noexcept_。有好的理由将这样不会抛出异常的函数不声明为 _noexcept_，例如：它们可能是 _C_ 库的一部分，甚至一些已经从 _C_ 标准库移动到 _std namespace_ 的函数仍然缺少着 _exception specification_，比如：_std::strlen_ 没有被声明为 _noexcept_。又或者它们是决定不使用 _C++98_ 的 _exception specification_，但还没有被修改为使用 _C++11_ 的 _exception specification_ 的 _C++98_ 的库。
+
+# _Item 15_ 只要有可能就使用 _constexpr_
 
 ## _constexpr_ 对象
 
-_constexpr_ 对象的值在编译期间就是已知的，所以需要使用在编译期间就是已知的值来进行初始化，而 _const_ 对象  
-不需要使用在编译期间就是已知的值来进行初始化。也就是说：所有 _constexpr_ 对象都是 _const_ 的，但所有 _const_  
-对象不都是 _constexpr_ 的。
+_constexpr_ 对象的值在编译期间就是已知的，所以需要使用在编译期间就是已知的值来进行初始化，而 _const_ 对象不需要使用在编译期间就是已知的值来进行初始化。也就是说：所有 _constexpr_ 对象都是 _const_ 的，但所有 _const_ 对象不都是 _constexpr_ 的。
 
 ```C++
   int sz;                               // non-constexpr variable
@@ -1368,10 +1252,7 @@ _constexpr_ 对象的值在编译期间就是已知的，所以需要使用在�
 
 ## _constexpr_ 函数
 
-如果你传递给 _constexpr_ 函数的实参的值是在编译期间就是已知的话，那么这个 _constexpr_ 函数的结果将会在编译  
-期间被计算。如果你传递给 _constexpr_ 函数的实参的值不是在编译期间就是已知的话，那么这个 _constexpr_ 函数的  
-结果将会在运行期间被计算。构造函数和其他成员函数也可以是 _constexpr_ 的。因为如果所传入的实参是在编译期  
-间就是已知的话，那么所构造的对象的数据成员的值也是在编译期间就是已知的。所以可以是 _constexpr_ 的。
+如果你传递给 _constexpr_ 函数的实参的值是在编译期间就是已知的话，那么这个 _constexpr_ 函数的结果将会在编译期间被计算。如果你传递给 _constexpr_ 函数的实参的值不是在编译期间就是已知的话，那么这个 _constexpr_ 函数的结果将会在运行期间被计算。构造函数和其他成员函数也可以是 _constexpr_ 的。因为如果所传入的实参是在编译期间就是已知的话，那么所构造的对象的数据成员的值也是在编译期间就是已知的。所以可以是 _constexpr_ 的。
 
 ```C++
   class Point {
@@ -1400,16 +1281,13 @@ _constexpr_ 对象的值在编译期间就是已知的，所以需要使用在�
 
 ## 只要有可能就使用 _constexpr_ 的优势
 
-_constexpr_ 对象可以在只读内存中被创建。这意味着：你可以在模板的实参中或者在要指定 _enumerator_ 值的表达式  
-中使用像 _mid.xValue() * 10_ 这样的的表达式了。这意味着：在编译期间所完成的工作和运行期间所完成的工作之间  
-传统上是相当严格的界限开始变得模糊了，一些传统上是在运行期间所完成的计算现在可以迁移到编译期间来进行  
-了。迁移的代码越多，你的程序将会运行的更快，当然编译也会更耗时。
+_constexpr_ 对象能在只读内存中被创建。这意味着：你可以在模板的实参中或者在要指定 _enumerator_ 值的表达式中使用像 _mid.xValue() * 10_ 这样的的表达式了。这意味着：在编译期间所完成的工作和运行期间所完成的工作之间传统上是相当严格的界限开始变得模糊了，一些传统上是在运行期间所完成的计算现在可以迁移到编译期间来进行了。迁移的代码越多，你的程序将会运行的更快，当然编译也会更耗时。
 
 ## _constexpr_ 是接口，只有当愿意长期来维护一个 _constexpr_ 实现时，才应该声明一个对象或函数为 _constexpr_
 
 _constexpr_ 是接口，只有当愿意长期来维护一个 _constexpr_ 实现时，才应该声明一个对象或函数为 _constexpr_。
 
-# Item 16 使 _const_ 成员函数成为线程安全的
+# _Item 16_ 使 _const_ 成员函数成为线程安全的
 
 ## _mutable_ 的用法
 
@@ -1440,13 +1318,11 @@ _constexpr_ 是接口，只有当愿意长期来维护一个 _constexpr_ 实现�
     mutable RootsType rootVals{};
   };
 ```  
-_std::mutex m_ 被声明为了 _mutable_，因为 _m_ 的加锁和解锁是 _non-const_ 成员函数，但却是在 _const_ 成员函数 _roots_   
-中，如果 _m_ 没有被声明为 _mutable_ 的话，那么 _m_ 将会被认为 _const_ 对象。
+_std::mutex m_ 被声明为了 _mutable_，因为 _m_ 的加锁和解锁是 _non-const_ 成员函数，但却是在 _const_ 成员函数 _roots_ 中，如果 _m_ 没有被声明为 _mutable_ 的话，那么 _m_ 将会被认为 _const_ 对象。
 
 ## _std::atomic_ 与 _std::mutex_
 
-对于单个要求同步的变量或内存区域来说，使用 _std::atomic_ 是适当的，但是一旦你有两个或多个要求做为整体来  
-进行操作的变量或内存区域的话，那么你应该去使用 _std::mutex_。
+对于单个要求同步的变量或内存区域来说，使用 _std::atomic_ 是适当的，但是一旦你有两个或多个要求做为整体来进行操作的变量或内存区域的话，那么你应该去使用 _mutex_。
 
 ```C++
   class Widget {
@@ -1470,10 +1346,8 @@ _std::mutex m_ 被声明为了 _mutable_，因为 _m_ 的加锁和解锁是 _non
   };
 ```
 
-* 第一个线程调用了 _Widget::magicValue_，看到了 _cacheValid_ 为 _false_，执行两个成本高的计算后将它们的和分  
-  配给了 _cachedValue_。
-* 在那时，第二个线程调用了 _Widget::magicValue_，也看到了 _cacheValid_ 为 _false_，因此也执行了和第一个线程  
-已经完成的是相同的成本大的计算。实际上，“第二个线程”可能是其他多个线程。
+* 第一个线程调用了 _Widget::magicValue_，看到了 _cacheValid_ 为 _false_，执行两个成本高的计算后将它们的和分配给了 _cachedValue_。
+* 在那时，第二个线程调用了 _Widget::magicValue_，也看到了 _cacheValid_ 为 _false_，因此也执行了和第一个线程已经完成的是相同的成本大的计算。实际上，“第二个线程”可能是其他多个线程。
   
 ```C++
   class Widget {
@@ -1497,10 +1371,9 @@ _std::mutex m_ 被声明为了 _mutable_，因为 _m_ 的加锁和解锁是 _non
 ```  
 
 * 一个线程调用了 _Widget::magicValue_，并执行到了 _cacheValid_ 被设置为 _true_ 的那一点。
-* 此时，第二个线程调用了 _Widget::magicValue_，然后会检查 _cacheValid_。看到的它为 _true_ 后，这个线程会返回  
-_cachedValue_，尽管第一个线程还没有对它的赋值。因此，所返回的值是错误的。
+* 此时，第二个线程调用了 _Widget::magicValue_，然后会检查 _cacheValid_。看到的它为 _true_ 后，这个线程会返回 _cachedValue_，尽管第一个线程还没有对它的赋值。因此，所返回的值是错误的。
 
-# Item 17 理解特殊成员函数的生成
+# _Item 17_ 理解特殊成员函数的生成
 
 ## _default constructor_ 被生成的条件
 
@@ -1514,39 +1387,23 @@ _cachedValue_，尽管第一个线程还没有对它的赋值。因此，所返�
 
 只有当类中没有用户声明的 _move operation_、_copy operation_ 和析构函数时，_move operation_ 才会被生成。
 
-如果声明了其中一个 _move operation_ 的话，那么会阻止编译器生成另一个 _move operation_。因为只要声明了其中  
-一个 _move operation_，就表明了编译器所生成的 _move operation_ 的 _memberwise move_ 是不合适的，所以应该阻止  
-编译器生成另一个 _move operation_。
+如果声明了其中一个 _move operation_ 的话，那么会阻止编译器生成另一个 _move operation_。因为只要声明了其中一个 _move operation_，就表明了编译器所生成的 _move operation_ 的 _memberwise move_ 是不合适的，所以应该阻止编译器生成另一个 _move operation_。
 
-如果声明了 _copy operation_ 的话，那么会阻止编译器生成 _move operation_。因为只要声明了 _copy operation_，就表  
-明了编译器所生成的 _copy operation_ 的 _memberwise copy_ 是不合适的，编译器也会认为如果 _memberwise copy_ 都  
-不合适的话，那么 _memberwise move_ 也是不合适的。所以应该阻止编译器生成 _move operation_。
+如果声明了任意一个 _copy operation_ 的话，那么会阻止编译器生成 _move operation_。因为只要声明了 _copy operation_，就表明了编译器所生成的 _copy operation_ 的 _memberwise copy_ 是不合适的，编译器也会认为如果 _memberwise copy_ 都不合适的话，那么 _memberwise move_ 也是不合适的。所以应该阻止编译器生成 _move operation_。
 
-如果声明了析构函数的话，那么会阻止编译器生成 _move operation_。因为只要声明了析构函数，就表明了需要在  
-析构函数中做特殊处理，那么编译器所生成的 _move operation_ 的 _memberwise move_ 是不合适的了，所以应该阻止  
-编译器生成 _move operation_。
-
+如果声明了析构函数的话，那么会阻止编译器生成 _move operation_。因为只要声明了析构函数，就表明了需要在析构函数中做特殊处理，那么编译器所生成的 _move operation_ 的 _memberwise move_ 是不合适的了，所以应该阻止编译器生成 _move operation_。
 
 ## _copy operation_ 被生成的条件
 
-只有当类中没有用户声明的 _copy constructor_ 时，_copy constructor_ 才会被生成；同样，只有当类中没有用户声明的   
-_copy assignment operator_ 时，_copy assignment operator_ 才会被生成；如果 _move operation_ 有被声明了的话，那  
-么 _copy operation_ 会被删除。
+只有当类中没有用户声明的 _copy constructor_ 时，_copy constructor_ 才会被生成；同样只有当类中没有用户声明的 _copy assignment operator_ 时，_copy assignment operator_ 才会被生成；如果 _move operation_ 有被声明了的话，那么 _copy operation_ 会被删除。
 
-如果声明了其中一个 _copy operation_ 的话，那么 **_应该_** 阻止编译器生成另一个 _copy operation_。因为只要声明了其  
-中一个 _copy operation_，就表明了编译器所生成的 _copy operation_ 的 _memberwise copy_ 是不合适的，所以应该阻止  
-编译器生成另一个 _copy operation_。但注意是 **_应该_**，但是并没有，因为这会破坏 _C++98_ 的代码。
+如果声明了其中一个 _copy operation_ 的话，那么 **_应该_** 阻止编译器生成另一个 _copy operation_。因为只要声明了其中一个 _copy operation_，就表明了编译器所生成的 _copy operation_ 的 _memberwise copy_ 是不合适的，所以应该阻止编译器生成另一个 _copy operation_。但注意是 **_应该_**，但是并没有，因为这会破坏 _C++98_ 的代码。
 
-如果声明了 _move operation_ 的话，那么会阻止编译器生成 _copy operation_。因为只要声明了 _move operation_，就表  
-明了编译器所生成的 _move operation_ 的 _memberwise move_ 是不合适的，编译器也会认为如果 _memberwise move_  
-都不合适的话，那么 _memberwise copy_ 也是不合适的。所以应该阻止编译器生成 _copy operation_。
+如果声明了任意一个 _move operation_ 的话，那么会阻止编译器生成 _copy operation_。因为只要声明了 _move operation_，就表明了编译器所生成的 _move operation_ 的 _memberwise move_ 是不合适的，编译器也会认为如果 _memberwise move_ 都不合适的话，那么 _memberwise copy_ 也是不合适的。所以应该阻止编译器生成 _copy operation_。
 
-如果声明了析构函数的话，那么 **_应该_** 阻止编译器生成 _copy operation_。因为只要声明了析构函数，就表明了需要  
-在析构函数中做特殊处理，那么编译器所生成的 _copy operation_ 的 _memberwise copy_ 是不合适的了，所以应该阻  
-止编译器生成 _move operation_。但注意是 **_应该_**，但是并没有，因为这会破坏 _C++98_ 的代码。
+如果声明了析构函数的话，那么 **_应该_** 阻止编译器生成 _copy operation_。因为只要声明了析构函数，就表明了需要在析构函数中做特殊处理，那么编译器所生成的 _copy operation_ 的 _memberwise copy_ 是不合适的了，所以应该阻止编译器生成 _move operation_。但注意是 **_应该_**，但是并没有，因为这会破坏 _C++98_ 的代码。
 
-所以，如果你声明了任意一个 _copy constructor_、_copy assignment operator_ 和析构函数的话，那么你应该把这三个  
-都声明出来，否则虽然仍然是可以编译和运行的，但却是被 _C++11_ 废弃的。
+所以，如果你声明了任意一个 _copy constructor_、_copy assignment operator_ 和析构函数的话，那么你应该把这三个都声明出来，否则虽然仍然是可以编译和运行的，但却是被 _C++11_ 废弃的。
 
 ## 成员函数模板永远不会阻止特殊成员函数的生成
 
@@ -1561,11 +1418,10 @@ _copy assignment operator_ 时，_copy assignment operator_ 才会被生成；�
     …
   };
 ```  
-当 _T_ 是 _Widget_ 时，这些模板是可以被实例化去产生出 _copy constructor_ 和 _copy assignment operator_ 的 _signature_   
-的，但是这并不会阻止编译器生成特殊成员函数。
+当 _T_ 是 _Widget_ 时，这些模板是可以被实例化去产生出 _copy constructor_ 和 _copy assignment operator_ 的 _signature_ 的，但是这并不会阻止编译器生成特殊成员函数。
 
 
-# Item 18 对于 _exclusive-ownership_ 的资源管理使用 _std::unique_ptr_
+# _Item 18_ 对于 _exclusive-ownership_ 的资源管理使用 _std::unique_ptr_
 
 ## 对于 _exclusive-ownership_ 的资源管理使用 _std::unique_ptr&lt;T&gt;_
 
@@ -1573,17 +1429,13 @@ _copy assignment operator_ 时，_copy assignment operator_ 才会被生成；�
 
 ## 禁止使用 _std::unique_ptr&lt;T[]&gt;_
 
-_std::unique_ptr&lt;T&gt;_ 没有 _operator[]_，而 _std::unique_ptr&lt;T[]&gt;_ 没有 _operator*_ 和 _operator->_。_std::unique_ptr&lt;T[]&gt;_   
-较少被使用，因为 _std::array_、_std::vector_ 和 _std::string_ 相比于原始数组几乎总是更好的数据结构选择。所以只有在  
-使用 _C-like_ 的 _API_，才需要使用原始数组。
+_std::unique_ptr&lt;T&gt;_ 没有 _operator[]_，相应地 _std::unique_ptr&lt;T[]&gt;_ 没有 _operator*_ 和 _operator->_。_std::unique_ptr&lt;T[]&gt;_ 较少被使用，这是因为 _std::array_、_std::vector_ 和 _std::string_ 相比于原始数组几乎总是更好的数据结构选择。所以只有在使用 _C-like_ 的 _API_，才需要使用原始数组。
 
 ## _std::unique_ptr_ 适合做为工厂函数的返回类型
 
-因为对于工厂函数来说，它们并不知道调用方会使用 _exclusive ownership_ 语义还是 _shared ownership_ 语义，又因  
-为 _std::unique_ptr_ 是可以被简单高效地转换为 _std::shared_ptr_ 的，所以 _std::unique_ptr_ 适合做为工厂函数的返回类  
-型。
+因为对于工厂函数来说，它们并不知道调用方会使用 _exclusive ownership_ 语义还是 _shared ownership_ 语义，又因为 _std::unique_ptr_ 是可以被简单高效地转换为 _std::shared_ptr_ 的，所以 _std::unique_ptr_ 适合做为工厂函数的返回类型。
 
-# Item 19 对于 _shared-ownership_ 的资源管理使用 _std::shared_ptr_
+# _Item 19_ 对于 _shared-ownership_ 的资源管理使用 _std::shared_ptr_
 
 ## 对于 _shared-ownership_ 的资源管理使用 _std::shared_ptr&lt;T&gt;_
 
@@ -1591,16 +1443,12 @@ _std::unique_ptr&lt;T&gt;_ 没有 _operator[]_，而 _std::unique_ptr&lt;T[]&gt;
 
 ## 禁止使用 _std::shared_ptr&lt;T[]&gt;_
 
-_std::shared_ptr_ 不能用于数组。没有 _std::shared_ptr&lt;T[]&gt;_。禁止指定一个 _custom deleter_ 去执行数组的删除。因为  
-首先，_std::shared_ptr_ 没有提供 _operator[]_；其次，_std::shared_ptr_ 支持 _derived-to-base_ 指针的转换，这种转换对于  
-单个对象是合理的，但是当应用于数组时，就是错误的了。因为 _std::array_、_std::vector_ 和 _std::string_ 相比于原始数  
-组几乎总是更好的数据结构选择，所以只有在使用 _C-like_ 的 _API_，才需要使用原始数组。
+_std::shared_ptr_ 不能用于数组。没有 _std::shared_ptr&lt;T[]&gt;_。禁止指定一个 _custom deleter_ 去执行数组的删除。因为首先，_std::shared_ptr_ 没有提供 _operator[]_；其次，_std::shared_ptr_ 支持 _derived-to-base_ 指针的转换，这种转换对于单个对象是合理的，但是当应用于数组时，就是错误的了。因为 _std::array_、_std::vector_ 和 _std::string_ 相比于原始数组几乎总是更好的数据结构选择，所以只有在使用 _C-like_ 的 _API_，才需要使用原始数组。
 
 
 ## 使用 _std::shared_ptr_ 的成本
 
-因为 _std::shared_ptr_ 会涉及到动态分配的 _control block_、任意大小的 _deleter_ 和 _allocator_、_virtual function_ 机制和原  
-子引用计数操作，所以是有成本的。
+因为 _std::shared_ptr_ 会涉及到动态分配的 _control block_、任意大小的 _deleter_ 和 _allocator_、_virtual function_ 的机制和原子引用计数操作，所以是有成本的。
 
 ## 禁止使用原始指针类型的变量来创建 _std::shared_ptr_
 
@@ -1665,20 +1513,11 @@ _std::shared_ptr_ 不能用于数组。没有 _std::shared_ptr&lt;T[]&gt;_。禁
 
 ## _enable_shared_from_this_ 模板
 
-如果想要根据 _this_ 指针来安全地创建 _std::shared_ptr_ 的话，那么需要继承 _std::enable_shared_from_this_ 模板。它定  
-义有一个成员函数 _shared_from_this_，这个函数会创建一个指向当前对象的指针的 _std::shared_ptr_，但是不会重复  
-创建所对应的 _control block_。所以，无论什么时候你想要一个指向和 _this_ 指针一样的对象的 _std::shared_ptr_ 时，你  
-都可以在成员函数中使用 _shared_from_this_。这样就可以避免当使用原始指针类型的变量来创建 _std::shared_ptr_ 时  
-所遇到的问题了。
+如果想要根据 _this_ 指针来安全地创建 _std::shared_ptr_ 的话，那么需要继承 _std::enable_shared_from_this_ 模板。它定义有一个成员函数，它会创建一个指向当前对象的 _std::shared_ptr_，但是不会重复创建 _control block_。这个成员函数是 _shared_from_this_，所以，无论什么时候你想要一个指向和 _this_ 指针一样的对象的 _std::shared_ptr_ 时，你都可以在成员函数中使用 _shared_from_this_。这样就可以避免当使用原始指针类型的变量来创建 _std::shared_ptr_ 时所遇到的问题了。
 
-_shared_from_this_ 会在内部找出当前对象的 _control block_，然后 _shared_from_this_ 会创建一个新的指向那个所找出  
-的 _control block_ 的 _std::shared_ptr_。这种设计依赖于当前对象已经有了它所对应的 _control block_ 了。为了可以这  
-样，必须已经存在一个当前对象的 _std::shared_ptr_。如果这样的 _std::shared_ptr_ 不存在的话，即为：当前对象没有  
-所对应的 _control block_ 的话，那么行为将是未定义的。
+_shared_from_this_ 会在内部找出当前对象的 _control block_，然后会创建一个新的指向那个所找出的 _control block_ 的 _std::shared_ptr_。这种设计依赖于当前对象已经有了它所对应的 _control block_ 了。为了可以这样，必须已经存在一个当前对象的 _std::shared_ptr_，比如：已经在成员函数之外调用了 _shared_from_this_。如果这样的 _std::shared_ptr_ 不存在的话，即为：当前对象没有所对应的 _control block_ 的话，那么行为将是未定义的。
 
-为了避免客户在 _std::shared_ptr_ 指向所对应的对象之前就去调用执行了 _shared_from_this_ 的成员函数，那些继承自   
-_std::enable_shared_from_this_ 的类通常会声明它们的构造函数为 _private_，并让客户通过返回类型为 _std::shared_ptr_  
-的工厂函数来让创建对象。
+为了避免客户在 _std::shared_ptr_ 指向某对象前就先去调用了执行了 _shared_from_this_ 的成员函数，那些继承自 _std::enable_shared_from_this_ 的类通常会声明它们的构造函数为 _private_，并让客户通过返回类型为 _std::shared_ptr_  的工厂函数来让创建对象。 
 
 ```C++
   class Widget: public std::enable_shared_from_this<Widget> {
@@ -1705,21 +1544,15 @@ _std::enable_shared_from_this_ 的类通常会声明它们的构造函数为 _pr
   };
 ``` 
 
-# Item 20 对于可能会悬空的 _std::shared_ptr-like_ 指针使用 _std::weak_ptr_
+# _Item 20_ 对于可能会悬空的 _std::shared_ptr-like_ 指针使用 _std::weak_ptr_
 
 ## _std::weak_ptr_ 不能阻止它所对应的 _std::shared_ptr_ 去悬空 
 
-_std::weak_ptr_ 是根据 _std::shared_ptr_ 来创建的，但是并不会改变它所对应的对象的引用计数，也就是并不会改变它  
-所对应的 _std::shared_ptr_ 所对应的对象的引用计数，所以它并不能阻止它所对应的 _std::shared_ptr_ 去悬空。 
+_std::weak_ptr_ 是根据 _std::shared_ptr_ 来创建的，但是并不会改变它所对应的对象的引用计数，也就是并不会改变它所对应的 _std::shared_ptr_ 所对应的对象的引用计数，所以它并不能阻止它所对应的 _std::shared_ptr_ 去悬空。 
 
 ## _std::weak_ptr_ 的 _expired_ 函数不能阻止它所对应的 _std::shared_ptr_ 去悬空
 
-_std::weak_ptr_ 的 _expired_ 函数表示的是它是否过期了，也就是表示的是它所对应的 _std::shared_ptr_ 是否悬空了，因  
-为_std::weak_ptr_ 并不能阻止它所对应的 _std::shared_ptr_ 去悬空，所以在使用 _std::weak_ptr_ 的 _expired_ 函数判断它  
-没有过期后，它仍然随时都有可能会过期。假设 _std::weak_ptr_ 有解引用操作。如果在调用 _std::weak_ptr_ 的 _expired_   
-函数和解引用操作之间，另一个线程 _reassign_ 或者销毁了最后一个指向所对应的对象的 _std::shared_ptr_ 话，那么这  
-个解引用操作会导致 _undefined behavior_。所以 _std::weak_ptr_ 的 _expired_ 函数表示的只是当前此刻它是否过期了，  
-并不能阻止它所对应的 _std::shared_ptr_ 去悬空。 
+_std::weak_ptr_ 的 _expired_ 函数表示的是它是否过期了，也就是表示的是它所对应的 _std::shared_ptr_ 是否悬空了，因为_std::weak_ptr_ 并不能阻止它所对应的 _std::shared_ptr_ 去悬空，所以在使用 _std::weak_ptr_ 的 _expired_ 函数判断它自己没有过期后，它仍然随时都有可能会过期。现在假设 _std::weak_ptr_ 有解引用操作。如果在调用 _std::weak_ptr_ 的 _expired_ 函数和解引用操作之间，另一个线程 _reassign_ 或者销毁了最后一个指向所对应的对象的 _std::shared_ptr_ 话，那么这个解引用操作会导致 _undefined behavior_。所以 _std::weak_ptr_ 的 _expired_ 函数表示的只是当前此刻它是否过期了，并不能阻止它所对应的 _std::shared_ptr_ 去悬空。 
 
 ## 使用 _std::weak_ptr_ 来检查 _std::shared_ptr_ 是否悬空的方法
 
@@ -1755,21 +1588,13 @@ _throw_ 方法
 
 ## _std::weak_ptr_ 的使用场景
 
-缓存。在返回类型为 _std::shared_ptr_ 的工厂函数中存在有缓存，缓存中所保存的指针需要能够探测这些指针何时才  
-是悬空的，以便于在工厂函数的客户在使用完了工厂函数所返回的对象之后，可以将缓存中的所对应的指针进行销  
-毁。此时在缓存中需要使用的是 _std::weak_ptr_。
+缓存。在返回类型为 _std::shared_ptr_ 的工厂函数中存在有缓存，缓存中所保存的指针需要能够探测这些指针何时才是悬空的，以便于在工厂函数的客户在使用完了工厂函数所返回的对象之后，可以将缓存中的所对应的指针进行销毁。此时在缓存中需要使用的是 _std::weak_ptr_。
 
-观察者设计模式。这种设计模式的主要组件是 _subject_，是状态可能会改变的对象，和 _observer_，是状态改变发生  
-时将要被通知的对象。在大部分的实现中，每一个 _subject_ 都包含一个数据成员，在这个数据成员中保存着指向所  
-对应的 _observer_ 的指针。如果 _subject_ 确定某个 _observer_ 已经被销毁了的话，那么 _subject_ 就不会尝试去访问这个  
-_observer_ 了。所以让每个 _subject_ 都持有一个 _std::weak_ptr_ 的 _container_，这个 _container_ 中的每个 _std::weak_ptr_ 都  
-指向一个 _observer_。这样的话，_subject_ 就可以在使用指针之前先去确认指针是否是悬空的了。 
+观察者设计模式。这种设计模式的主要组件是 _subject_，是状态可能会改变的对象，和 _observer_，是状态改变发生时将要被通知的对象。在大部分的实现中，每一个 _subject_ 都包含一个数据成员，在这个数据成员中保存着指向所对应的 _observer_ 的指针。如果 _subject_ 确定其中的某个 _observer_ 已经被销毁了的话，那么 _subject_ 就不会尝试去访问这个 _observer_ 了。所以让每个 _subject_ 都持有一个 _std::weak_ptr_ 的 _container_，这个 _container_ 中的每个 _std::weak_ptr_ 都指向一个 _observer_。这样的话，_subject_ 就可以在使用指针之前先去确认指针是否是悬空的了。 
 
-防止 _std::shared_ptr_ 互相嵌套。假设有 _A_、_B_ 和 _C_ 三个对象，其中 _A_ 和 _C_ 持有指向 _B_ 的 _std::shared_ptr_，如果存在  
-一个 _B_ 到 _A_ 的指针的话，那么这个指针必须是 _std::weak_ptr_ 而不能是 _std::shared_ptr_，否则会造成 _std::shared_ptr_   
-互相嵌套，发生资源泄露。
+防止 _std::shared_ptr_ 互相嵌套。假设有 _A_、_B_ 和 _C_ 三个对象，其中 _A_ 和 _C_ 持有指向 _B_ 的 _std::shared_ptr_，如果存在一个 _B_ 到 _A_ 的指针的话，那么这个指针必须是 _std::weak_ptr_ 而不能是 _std::shared_ptr_，否则会造成 _std::shared_ptr_ 互相嵌套，发生资源泄露。
 
-# Item 21 首选 _std::make_unique_ 和 _std::make_shared_ 而不是直接使用 _new_
+# _Item 21_ 首选 _std::make_unique_ 和 _std::make_shared_ 而不是直接使用 _new_
 
 ## _std::make_unique_ 和 _std::make_shared_ 可以消除代码重复
 
@@ -1791,42 +1616,27 @@ _observer_ 了。所以让每个 _subject_ 都持有一个 _std::weak_ptr_ 的 _
                                                             // leak!
 ```  
 
-当编译器按照下面这样的顺序来执行操作时：  
+当编译器按照下面这样的顺序来执行操作：  
 * 执行 _new Widget_。
 * 执行 _computePriority_。
 * 执行 _std::shared_ptr_ 的构造函数。
 
-如果在运行时 _computePriority_ 产生了一个异常的话，那么动态分配的 _Widget_ 将会被泄露，因为它永远不会被存  
-储到那个应该管理它的 _std::shared_ptr_ 中。
+ 如果生成了这样的代码，并在运行时 _computePriority_ 产生了一个异常的话，那么动态分配的 _Widget_ 将会被泄露，因为它永远不会被存储到那个应该管理它的 _std::shared_ptr_ 中。
 
-使用 _std::make_shared_ 可以避免资源泄露
+使用 _std::make_shared_ 可以避免资源泄露。
 
  ```C++
   processWidget(std::make_shared<Widget>(),       // no potential
                   computePriority());             // resource leak
  ```  
 
-在运行时，_std::make_shared_ 或 _computePriority_ 都可以先被调用。如果 _std::make_shared_ 先被调用了的话，那么指  
-向动态分配的 _Widget_ 的原始指针是可以在 _computePriority_ 被调用之前，就被安全存储到所返回的 _std::shared_ptr_  
-中的。如果 _computePriority_ 随后产生了一个异常的话，那么 _std::shared_ptr_ 的析构函数会销毁它拥有的 _Widget_。  
-如果 _computePriority_ 先被调用了，并产生了一个异常的话，那么 _std::make_shared_ 不会被执行，因此是不用担心  
-动态分配的 _Widget_ 的。
+在运行时，_std::make_shared_ 或 _computePriority_ 都可以先被调用。如果 _std::make_shared_ 先被调用了的话，那么指向动态分配的 _Widget_ 的原始指针是可以在 _computePriority_ 被调用之前，就被安全存储到 _std::make_shared_ 所返回的 _std::shared_ptr_ 中的。如果 _computePriority_ 随后产生了一个异常的话，那么 _std::shared_ptr_ 的析构函数会销毁它拥有的 _Widget_。 如果 _computePriority_ 先被调用了，并产生了一个异常的话，那么 _std::make_shared_ 不会被执行，因此是不用担心动态分配的 _Widget_ 的。
 
 ## _std::make_shared_ 可以提高效率
 
-直接使用 _new_ 需要两次内存分配。因为每个 _std::shared_ptr_ 都指向有一个 _control block_，而这个 _control block_ 的内  
-存是在 _std::shared_ptr_ 的构造函数中被分配的，所以需要一次对象的内存分配，还需要一次 _control block_ 的内存分  
-配。
+直接使用 _new_ 需要两次内存分配。因为每个 _std::shared_ptr_ 都指向有一个 _control block_，而这个 _control block_ 的内存是在 _std::shared_ptr_ 的构造函数中被分配的，所以需要一次对象的内存分配，还需要一次 _control block_ 的内存分配。
 
-使用 _std::make_shared_ 只需要一次内存分配。这是因为 _std::make_shared_ 分配了一块可以同时保存 _control block_ 和  
-_Widget_ 的内存，因为代码只包含了一次内存分配调用，所以提高了效率。此外，使用 _std::make_shared_ 可以避免  
-一些在 _control block_ 中所需要的 _bookkeeping information_，这潜在地减少了程序的 _memory footprint_ 总量。但是   
-_control block_ 还包含着 _weak count_，记录着有多少个 _std::weak_ptr_ 引用了这个 _control block_。只要有 _std::weak_ptr_   
-引用着 _control block_，这个 _control block_ 就必须保持存在。只要这个 _control block_ 存在，包含着这个 _control block_   
-的内存也就必须存在。_std::make_shared_ 所分配的内存只有当引用着这个内存的最后一个 _std::shared_ptr_ 和最后一  
-个 _std::weak_ptr_ 都被销毁后，才能被释放。如果对象是非常大的，并且此对象所对应的最后一个 _std::shared_ptr_ 和  
-最后一个 std::shared_ptr 之间的析构时间又是非常重要的话，那么在销毁这个对象和释放这个对象所占用的内存  
-之间会有延迟，而直接使用 _new_ 则没有这个问题。
+使用 _std::make_shared_ 只需要一次内存分配。这是因为 _std::make_shared_ 分配了一块可以同时保存 _control block_ 和 _Widget_ 的内存，因为代码只有一次内存分配调用，所以提高了效率。使用 _std::make_shared_ 可以避免一些在 _control block_ 中所需要的 _bookkeeping information_，这潜在地减少了程序的 _memory footprint_ 总量。但是 _control block_ 还包含着 _weak count_，这个 _weak count_ 记录着有多少个 _std::weak_ptr_ 引用了这个 _control block_。只要有 _std::weak_ptr_ 引用着 _control block_，这个 _control block_ 就必须保持存在。只要这个 _control block_ 存在，包含着这个 _control block_ 的内存也就必须存在。所以 _std::make_shared_ 所分配的内存只有当引用着这个内存的最后一个 _std::shared_ptr_ 和最后一个 _std::weak_ptr_ 都被销毁后，才能被释放。如果对象是非常大的，并且此对象所对应的最后一个 _std::shared_ptr_ 和最后一个 std::shared_ptr 之间的析构时间又是非常重要的话，那么在销毁这个对象和释放这个对象所占用的内存之间会有延迟，而直接使用 _new_ 则没有这个问题。
 
 ## _std::make_unique_ 和 _std::make_shared_ 不可以指定 _custom deleter_
 
@@ -1868,22 +1678,15 @@ _std::make_unique_ 和 _std::make_shared_ 不可以使用 _braced initializer_�
 
 ## _std::make_shared_ 不可以用于那些有着私有版本的 _operator new_ 和 _operator delete_ 的类
 
-一些类定义有私有版本的 _operator new_ 和 _operator delete_。这些函数的存在说明了：全局版本的 _operator new_ 和   
-_operator delete_ 对于这些类的对象是不合适的。类所对应的私有版本的 _operator new_ 和 _operator delete_ 是被用于  
-分配和释放特定该类大小的内存块的，但是 _std::allocate_shared_ 所需要的内存的大小是不等于动态分配的对象的大  
-小的，而是等于动态分配的对象的大小再加上 _control block_ 的大小的。所以使用 _std::make_shared_ 去创建那些有着  
-私有版本的 _operator new_ 和 _operator delete_ 的类的对象通常不是一个好主意。
+一些类定义有私有版本的 _operator new_ 和 _operator delete_。这些函数的存在说明了：全局版本的 _operator new_ 和 _operator delete_ 对于这些类的对象是不合适的。类的私有版本的 _operator new_ 和 _operator delete_ 是被用于分配和释放特定大小的内存块的，但是 _std::allocate_shared_ 所需要的内存的大小是不等于动态分配的对象的大小的，而是要再加上 _control block_ 的大小的。所以使用 _make_ 函数去创建有着私有版本的 _operator new_ 和 _operator delete_ 的类的对象通常不是一个好主意。
 
-# Item 22 当使用 _Pimpl Idiom_ 时，在源文件中定义特殊成员函数
+# _Item 22_ 当使用 _Pimpl Idiom_ 时，在源文件中定义特殊成员函数
 
 ## _Pimpl Idiom_ 是通过减少类的客户和类的实现之间的编译依赖来缩短编译时间的
 
-在头文件中，定义指针类型的对象时，可以只有指针类型的声明而没有指针类型的定义，这样就不需要包含指针类  
-型所对应的头文件了，_Pimpl Idiom_ 就是在头文件使用已经被声明，但没有被定义的指针，这样就减少了类的客户  
-和类的实现之间的编译依赖，缩短了编译时间。
+在头文件中，定义指针类型的对象时，可以只有指针类型的声明而没有指针类型的定义，这样的话就不需要包含指针类型所对应的头文件了，_Pimpl Idiom_ 就是在头文件使用已经被声明，但没有被定义的指针，这样就减少了类的客户和类的实现之间的编译依赖，缩短了编译时间。
 
 
 ## 使用 _std::unique_ptr_ 实现 _Pimpl Idiom_ 时，需要特殊处理
 
-使用 _std::unique_ptr_ 实现 _Pimpl Idiom_ 时，必须要在头文件中声明特殊成员函数，在源文件中实现特殊成员函数，  
-并且成员函数必须要在 _Pimpl_ 的定义后。
+使用 _std::unique_ptr_ 实现 _Pimpl Idiom_ 时，必须要在头文件中声明特殊成员函数，然后在源文件中实现特殊成员函数，并且成员函数必须要在 _Pimpl_ 的定义后。
