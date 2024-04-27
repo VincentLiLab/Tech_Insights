@@ -97,6 +97,10 @@
   - [_std::move_ 是转换而不是移动](#stdmove-是转换而不是移动)
   - [_std::forward_ 是转换而不是转发](#stdforward-是转换而不是转发)
   - [_std::move_ 并不能保证转换后的结果是可以被移动的，禁止将可以被移动的对象声明为 _const_](#stdmove-并不能保证转换后的结果是可以被移动的禁止将可以被移动的对象声明为-const)
+- [_Item 24_ 区分 _universal reference_ 和右值引用](#item-24-区分-universal-reference-和右值引用)
+  - [_\&\&_ 是 _universal reference_ 的场景](#-是-universal-reference-的场景)
+  - [_\&\&_ 是右值引用的场景](#-是右值引用的场景)
+  - [_universal references_ 可以是左值引用或右值引用](#universal-references-可以是左值引用或右值引用)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -1744,3 +1748,59 @@ _std::forward_ 的形参的类型是 _univeral reference_，这表示它的形�
   };
 ```  
 在 _Annotation_ 的构造函数的成员初始值列表中，_std::move(text)_ 的结果是一个 _const std::string_ 的右值。这个右值不可以被传递到 _std::string_ 的移动构造函数中，因为 _std::string_ 的移动构造函数持有的是 _non-const std::string_ 的右值引用。然而，这个右值是可以被传递到 _std::string_ 的 _copy constructor_ 中的，因为允许 _lvalue-reference-to-const_ 去绑定一个 _const_ 右值。因此 _Annotation_ 的成员初始化执行的会是 _std::string_ 的 _copy constructor_，尽管 _text_ 已经被转换为了一个右值。这样的行为对于维护 _const-correctness_ 是必不可少的。将值移出对象之外通常会修改这个对象，所以，语言不允许将 _const_ 对象传递给那些像移动构造函数一样的可能会修改它们的函数。
+
+# _Item 24_ 区分 _universal reference_ 和右值引用
+
+## _&&_ 是 _universal reference_ 的场景 
+
+如果函数模板的形参的类型是严格为 _T&&_ 且 _T_ 会被推导的话，那么 _&&_ 是 _universal reference_。
+
+```C++
+  template<typename T>
+  void f(T&& param);          // param is a universal reference
+``` 
+
+如果一个对象是严格使用 _auto&&_ 所声明的话，那么 _&&_ 是 _universal reference_。
+
+```C++
+  auto&& var2 = var1;         // var2 is a universal reference
+```  
+
+## _&&_ 是右值引用的场景
+
+如果函数模板的形参的类型不是严格为 _T&&_ 或 _T_ 不会被推导的话，那么 _&&_ 是右值引用。
+
+```C++
+  template<typename T>
+  void f(std::vector<T>&& param);                           // param is an rvalue reference
+```
+
+```C++
+  template<typename T>
+  void f(const T&& param);                                  // param is an rvalue reference
+```  
+
+```C++
+  template<class T, class Allocator = allocator<T>>       
+  class vector {                                          
+  public:
+    void push_back(T&& x);                                  // x is an rvalue reference, because
+                                                            // there’s no type deduction in this case. 
+                                                            // That’s because push_back can’t exist 
+                                                            // without a particular vector instantiation 
+                                                            // for it to be part of, and the type of that 
+                                                            // instantiation
+                                                            // fully determines the declaration for push_back.
+    …
+  };
+``` 
+
+如果一个对象不是严格使用 _auto&&_ 所声明的话，那么 _&&_ 是右值引用。
+
+```C++
+  const auto&& var2 = var1;                                 // var2 is a rvalue reference
+```  
+
+## _universal references_ 可以是左值引用或右值引用
+
+如果 _universal references_ 是被右值所初始化的话，那么 _universal references_ 对应的是右值引用。如果 _universal references_ 是被左值所初始化的话，那么 _universal references_ 对应的是左值引用。
