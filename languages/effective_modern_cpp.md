@@ -108,6 +108,8 @@
   - [对于 _return-by-value_ 的函数所返回的右值引用和 _universal reference_，可以使用 _std::move_ 或 _std::forward_ 来提高效率](#对于-return-by-value-的函数所返回的右值引用和-universal-reference可以使用-stdmove-或-stdforward-来提高效率)
   - [_RVO_ _return value optimization_](#rvo-return-value-optimization)
   - [禁止在 _return-by-value_ 的函数所返回的局部对象上使用 _std::move_](#禁止在-return-by-value-的函数所返回的局部对象上使用-stdmove)
+- [_Item 26_ 避免重载 _univeral reference_](#item-26-避免重载-univeral-reference)
+  - [避免重载 _univeral reference_](#避免重载-univeral-reference)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -1912,3 +1914,26 @@ _RVO_ 的优化：当满足 _RVO_ 的条件时，编译器可以直接在为函�
 ## 禁止在 _return-by-value_ 的函数所返回的局部对象上使用 _std::move_
 
 对于是要返回局部对象的 _return-by-value_ 的函数，当不满足 _RVO_ 所需要的条件时，此时编译器会隐式地应用 _std::move_ 到所返回的局部对象上。因此，当在 _return-by-value_ 的函数所要返回的局部对象上使用了 _std::move_ 时，如果函数原先是满足 _RVO_ 所需要的条件的话，那么现在破坏了，因为所返回的不是局部对象，而是右值引用了；如果函数原先是不满足 _RVO_ 所需要的条件的话，那么编译器也是会隐式地应用 _std::move_ 到所返回的局部对象上的。所以禁止在 _return-by-value_ 的函数所返回的局部对象上使用 _std::move_，可能破坏 _ROV_ 优化。
+
+# _Item 26_ 避免重载 _univeral reference_
+
+## 避免重载 _univeral reference_
+
+因为重载 _universal reference_ 几乎总是会导致 _universal reference_ 的重载函数的在不期望被调用的情况下却被调用到，所以避免重载 _univeral reference_。
+
+```C++
+  class Person {
+  public:
+    explicit Person(Person& n)          // instantiated from
+    : name(std::forward<Person&>(n)) {} // perfect-forwarding
+                                        // template
+
+    explicit Person(int idx);           // as before
+
+    Person(const Person& rhs);          // copy ctor
+    …                                   // (compiler-generated)
+};
+```  
+
+传递 _int_ 之外的 _integral_ 类型，比如：_std::size_t_、_short_ 和 _long_ 等，将会调用的是 _universal reference_ 的重载函数而不是 _int_ 的重载函数，这会导致编译失败。
+
