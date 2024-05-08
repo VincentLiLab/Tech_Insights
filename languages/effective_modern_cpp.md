@@ -114,6 +114,9 @@
   - [_tag dispatch_](#tag-dispatch)
   - [_std::enable\_if_](#stdenable_if)
 - [_Item 28_ 理解引用折叠](#item-28-理解引用折叠)
+- [_Item 29_ 假设 _move operation_ 是不存在的、成本大的和不可使用的](#item-29-假设-move-operation-是不存在的成本大的和不可使用的)
+  - [移动并不一定比拷贝快](#移动并不一定比拷贝快)
+  - [标准 _container_ 与有 _STL_ 接口的内建数组的区别](#标准-container-与有-stl-接口的内建数组的区别)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -2014,3 +2017,15 @@ class Person {
 # _Item 28_ 理解引用折叠
 
 因为共有两种引用：左值引用和右值引用，所以有四种可能的 _reference-reference_ 组合：_lalue to lvalue_、_lvalue to rvalue_、_rvalue to lvalue_ 和 _rvalue to rvalue_。如果引用的引用是在所允许的环境下所产生的话，比如：在模板实例化过程中，那么按照下面的规则来将引用的引用折叠为一个单引用：如果任意一个引用是左值引用的话，那么组合的结果就是左值引用。否则，也就是如果全部都是右值引用的话，那么组合的结果是右值引用。
+
+# _Item 29_ 假设 _move operation_ 是不存在的、成本大的和不可使用的
+
+## 移动并不一定比拷贝快
+
+很多的 _string_ 的实现都利用了 _small string optimization_ _SSO_。当使用了 _SSO_ 时，**_小_** _string_，比如：不超过 _15_ 个字符容量的 _string_，是被存储在 _std::string_ 对象中的，不会使用堆分配的内存空间。对于使用了基于 _SSO_ 的实现的小 _string_ 来说，移动并不会比拷贝还快，因为此时会一个个地去移动字符，而不是去复制 _string_ 所对应的指针。
+
+## 标准 _container_ 与有 _STL_ 接口的内建数组的区别
+
+标准 _container_ 都是将它们的内容存储在堆上的。在概念上，这些 _container_ 类型的对象持有的只是一个指针，是将这个指针做为的数据成员的，这个指针指向是存储着所对应的 _container_ 的内容的堆内存。这个实现是非常复杂的，但是对于现在的分析来说并不重要。这个指针的存在使得可以在恒定的时间内来移动整个 _container_ 的内容：将指向 _container_ 的内容的指针从源 _container_ 拷贝到目标 _container_ 中，并将源 _container_ 的指针设置为空。
+
+有 _STL_ 接口的内建数组 _std::array_ 没有这样的一个指针，因为 _std::array_ 的内容是被直接存储在 _std::array_ 对象中的。移动或拷贝 _std::array_ 需要移动或拷贝其中的每一个元素。
