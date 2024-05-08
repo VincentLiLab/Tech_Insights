@@ -113,6 +113,7 @@
 - [_Item 27_ 熟悉重载 _univeral reference_ 的替代方法](#item-27-熟悉重载-univeral-reference-的替代方法)
   - [_tag dispatch_](#tag-dispatch)
   - [_std::enable\_if_](#stdenable_if)
+- [_Item 28_ 理解引用折叠](#item-28-理解引用折叠)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -2008,4 +2009,8 @@ class Person {
   private:
     std::string name;
 };
+```
 
+# _Item 28_ 理解引用折叠
+
+因为共有两种引用：左值引用和右值引用，所以有四种可能的 _reference-reference_ 组合：_lalue to lvalue_、_lvalue to rvalue_、_rvalue to lvalue_ 和 _rvalue to rvalue_。如果引用的引用是在所允许的环境下所产生的话，比如：在模板实例化过程中，那么按照下面的规则来将引用的引用折叠为一个单引用：如果任意一个引用是左值引用的话，那么组合的结果就是左值引用。否则，也就是如果全部都是右值引用的话，那么组合的结果是右值引用。
