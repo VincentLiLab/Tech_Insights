@@ -110,6 +110,9 @@
   - [禁止在 _return-by-value_ 的函数所返回的局部对象上使用 _std::move_](#禁止在-return-by-value-的函数所返回的局部对象上使用-stdmove)
 - [_Item 26_ 避免重载 _univeral reference_](#item-26-避免重载-univeral-reference)
   - [避免重载 _univeral reference_](#避免重载-univeral-reference)
+- [_Item 27_ 熟悉重载 _univeral reference_ 的替代方法](#item-27-熟悉重载-univeral-reference-的替代方法)
+  - [_tag dispatch_](#tag-dispatch)
+  - [_std::enable\_if_](#stdenable_if)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -1822,6 +1825,8 @@ _std::forward_ 的形参的类型是 _univeral reference_，这表示它的形�
 
 ## _std::forward_ 用于 _univeral reference_，而不能用于右值引用
 
+虽然在右值引用上使用 _std::forward_ 可以表现出正确的行为，但是代码是冗长的、易错的和不符合语言习惯的，所以禁止在右值引用上使用 _std::forward_。
+
 ## 只能在最后一次使用完右值引用和 _universal reference_ 后，再去使用 _std::move_ 或 _std::forward_
 
 ```C++
@@ -1936,4 +1941,71 @@ _RVO_ 的优化：当满足 _RVO_ 的条件时，编译器可以直接在为函�
 ```  
 
 传递 _int_ 之外的 _integral_ 类型，比如：_std::size_t_、_short_ 和 _long_ 等，将会调用的是 _universal reference_ 的重载函数而不是 _int_ 的重载函数，这会导致编译失败。
+
+# _Item 27_ 熟悉重载 _univeral reference_ 的替代方法
+
+## _tag dispatch_
+
+_dispatch function_ 持有没被限制的 _univeral reference_ 形参，它不是重载的。_implementation function_ 是重载的，这些重载函数都持有 _univeral reference_ 形参，但是重载函数的重载决议不只依赖于 _univeral reference_ 形参，还依赖于一个 _tag_ 形参，_tag_ 用来确定哪个重载函数会被调用到。
+
+```C++
+  template<typename T>
+  void logAndAdd(T&& name)
+  {
+      logAndAddImpl(
+      std::forward<T>(name),
+      std::is_integral<typename std::remove_reference<T>::type>()
+      );
+  }
+```
+
+```C++
+  template<typename T>                                      // non-integral
+  void logAndAddImpl(T&& name, std::false_type)             // argument:
+  {                                                         // add it to
+    auto now = std::chrono::system_clock::now();            // global data
+    log(now, "logAndAdd");                                  // structure
+    names.emplace(std::forward<T>(name));
+  } 
+``` 
+
+```C++
+  std::string nameFromIdx(int idx);                         // as in Item 26
+
+  void logAndAddImpl(int idx, std::true_type)               // integral
+  {                                                         // argument: look
+      logAndAdd(nameFromIdx(idx));                          // up name and
+  }                                                         // call logAndAdd
+                                                            // with it
+``` 
+
+## _std::enable_if_
+
+_std::enable_if_ 给了你一种方法可以迫使编译器表现地就好像某个特定的模板不存在一样。这些模板被认为是无效的。默认情况下，全部的模板都是有效的。但是只有当满足了 _std::enable_if_ 所指定的条件时，使用了 _std::enable_if_ 的模板才是有效的。
+
+```C++
+class Person {
+  public:
+    template<
+      typename T,
+      typename = std::enable_if_t<
+        !std::is_base_of<Person, std::decay_t<T>>::value
+        &&
+        !std::is_integral<std::remove_reference_t<T>>::value
+      >
+    > 
+    explicit Person(T&& n)              // ctor for std::strings and
+    : name(std::forward<T>(n))          // args convertible to
+    { … }                               // std::strings
+
+    explicit Person(int idx)            // ctor for integral args
+    : name(nameFromIdx(idx))
+    { … }
+
+    
+    …  
+                                        // copy and move ctors, etc.
+  private:
+    std::string name;
+};
 
