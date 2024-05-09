@@ -117,6 +117,12 @@
 - [_Item 29_ 假设 _move operation_ 是不存在的、成本大的和不可使用的](#item-29-假设-move-operation-是不存在的成本大的和不可使用的)
   - [移动并不一定比拷贝快](#移动并不一定比拷贝快)
   - [标准 _container_ 与有 _STL_ 接口的内建数组的区别](#标准-container-与有-stl-接口的内建数组的区别)
+- [_Item 30_ 熟悉完美转发失败的场景](#item-30-熟悉完美转发失败的场景)
+  - [_braced initializer_](#braced-initializer)
+  - [_0_ 或 _NULL_ 来做为空指针](#0-或-null-来做为空指针)
+  - [只有声明的 _integral static const_ 的数据成员](#只有声明的-integral-static-const-的数据成员)
+  - [重载的函数名和模板名](#重载的函数名和模板名)
+  - [_bitfield_](#bitfield)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -2029,3 +2035,88 @@ class Person {
 标准 _container_ 都是将它们的内容存储在堆上的。在概念上，这些 _container_ 类型的对象持有的只是一个指针，是将这个指针做为的数据成员的，这个指针指向是存储着所对应的 _container_ 的内容的堆内存。这个实现是非常复杂的，但是对于现在的分析来说并不重要。这个指针的存在使得可以在恒定的时间内来移动整个 _container_ 的内容：将指向 _container_ 的内容的指针从源 _container_ 拷贝到目标 _container_ 中，并将源 _container_ 的指针设置为空。
 
 有 _STL_ 接口的内建数组 _std::array_ 没有这样的一个指针，因为 _std::array_ 的内容是被直接存储在 _std::array_ 对象中的。移动或拷贝 _std::array_ 需要移动或拷贝其中的每一个元素。
+
+# _Item 30_ 熟悉完美转发失败的场景
+
+## _braced initializer_
+
+因为在模板函数的 _univeral reference_ 场景中，编译器不会将 _braced initializer_ 推到为 _std::initializer_list_，所以也就不能转发 _braced initializer_。解决方法是：先使用 _auto_ 来声明一个局部变量，再将这个局部变量转递给转发函数。
+
+```C++
+  template<typename T>
+  void fwd(T&& param)                   // accept any argument
+  {
+    f(std::forward<T>(param));          // forward it to f
+  }
+```  
+
+```C++
+  fwd({ 1, 2, 3 });                     // error! doesn't compile
+``` 
+
+```C++
+  auto il = { 1, 2, 3 };                // il's type deduced to be
+                                        // std::initializer_list<int>
+  
+  fwd(il);                              // fine, perfect-forwards il to f
+```
+
+
+## _0_ 或 _NULL_ 来做为空指针
+
+因为当将 _0_ 或 _NULL_ 做为空指针来传递给模板时，所推导出的是 _integral_ 类型，而不是指针类型，所以 _0_ 和 _NULL_ 都不可以做为空指针来被完美转发。解决方法是：传递 _nullptr_ 而不是 _0_ 或 _NULL_。
+
+## 只有声明的 _integral static const_ 的数据成员
+
+因为在通常情况下，不需要在类中定义 _integral static const_ 的数据成员，声明就足够了，也就是不需要为它们分配内存；又因为在编译器所生成的代码中，引用通常是被视为指针的，因此存在 _univeral reference_ 就必须存在所对应的指针所指向的内存空间；所以 _univeral reference_ 不能指向 _integral static const_ 的数据成员，完美转发会失败。解决方法是：对 _integral static const_ 的数据成员进行定义。
+
+## 重载的函数名和模板名
+
+因为重载的函数名和模板名不是类型，只是名字而已，所以不会有类型推导，也就不会发生完美转发了。解决方法是：指定具体的重载函数和模板实例化。
+
+```C++
+  template<typename T>
+  T workOnVal(T param)                  // template for processing values
+  { … }
+  
+  fwd(workOnVal);                       // error! which workOnVal
+                                        // instantiation?
+```  
+
+```C++
+  using ProcessFuncType =                         // make typedef;
+  int (*)(int);                                   // see Item 9
+
+  ProcessFuncType processValPtr = processVal;     // specify needed
+                                                  // signature for
+                                                  // processVal
+  fwd(processValPtr);                             // fine
+  
+  fwd(static_cast<ProcessFuncType>(workOnVal));   // also fine
+```
+
+## _bitfield_
+
+因为在编译器所生成的代码中，引用通常是被视为指针的，没有方法去创建指向任意位的指针，也就没有方法去创建绑定任意位的引用，所以 _univeral reference_ 不能指向 _bitfield_，完美转发会失败。解决方法是：让 _univeral reference_ 指向 _bitfield_ 的副本。
+
+```C++
+  struct IPv4Header {
+    std::uint32_t version:4,
+                  IHL:4,
+                  DSCP:6,
+                  ECN:2,
+                  totalLength:16;
+    …
+  };
+```   
+ 
+```C++
+  fwd(h.totalLength);                   // error!
+```  
+
+```C++
+  // copy bitfield value; see Item 6 for info on init. form
+  auto length = static_cast<std::uint16_t>(h.totalLength);
+  
+  fwd(length);                          // forward the copy
+```
