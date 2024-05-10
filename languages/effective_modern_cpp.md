@@ -130,6 +130,7 @@
   - [_\[=\]_ 会误导性地暗示 _lambda_ 是 _self-contained_ 的](#-会误导性地暗示-lambda-是-self-contained-的)
 - [_Item 32_ 使用初始化捕获来将对象移动到 _closure_ 中](#item-32-使用初始化捕获来将对象移动到-closure-中)
   - [初始化捕获](#初始化捕获)
+- [_Item 33_ 在 _auto\&\&_ 形参上使用 _decltype_ 来进行完美转发](#item-33-在-auto-形参上使用-decltype-来进行完美转发)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -2246,4 +2247,15 @@ _[=]_ 会误导性地暗示 _lambda_ 是 _self-contained_ 的，_lambda_ 所对�
   auto func = [pw = std::move(pw)]                // init data mbr
               { return pw->isValidated()          // in closure w/
                       && pw->isArchived(); };     // std::move(pw)
+```
+
+# _Item 33_ 在 _auto&&_ 形参上使用 _decltype_ 来进行完美转发
+
+```C++
+  auto f =
+    [](auto&& param)
+    {
+      return
+        func(normalize(std::forward<decltype(param)>(param)));
+    };
 ```
