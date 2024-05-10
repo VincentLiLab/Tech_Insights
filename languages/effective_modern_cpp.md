@@ -128,6 +128,8 @@
   - [默认捕获会隐式捕获 _this_ 指针容易产生悬空 _this_ 指针](#默认捕获会隐式捕获-this-指针容易产生悬空-this-指针)
   - [_\[\&\]_ 没有显示指明让人印象深刻](#-没有显示指明让人印象深刻)
   - [_\[=\]_ 会误导性地暗示 _lambda_ 是 _self-contained_ 的](#-会误导性地暗示-lambda-是-self-contained-的)
+- [_Item 32_ 使用初始化捕获来将对象移动到 _closure_ 中](#item-32-使用初始化捕获来将对象移动到-closure-中)
+  - [初始化捕获](#初始化捕获)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -2214,3 +2216,34 @@ class Person {
 ## _[=]_ 会误导性地暗示 _lambda_ 是 _self-contained_ 的
 
 _[=]_ 会误导性地暗示 _lambda_ 是 _self-contained_ 的，_lambda_ 所对应的 _closure_ 之外的数据的改动是不会影响到这个 _closure_ 本身的。
+
+# _Item 32_ 使用初始化捕获来将对象移动到 _closure_ 中
+
+## 初始化捕获
+
+使用初始化捕获可以指定 _lambda_ 所生成的 _closure class_ 中的数据成员的名字和初始化数据成员的表达式。
+
+下面展示了如何可以使用初始化捕获来将 _std::unique_ptr_ 移动到 _closure_ 中：  
+```C++
+  class Widget {                                  // some useful type
+  public:
+    …
+
+    bool isValidated() const;
+    bool isProcessed() const;
+    bool isArchived() const;
+
+  private:
+    …
+  };
+
+  auto pw = std::make_unique<Widget>();           // create Widget; see
+                                                  // Item 21 for info on
+                                                  // std::make_unique
+
+  …                                               // configure *pw
+
+  auto func = [pw = std::move(pw)]                // init data mbr
+              { return pw->isValidated()          // in closure w/
+                      && pw->isArchived(); };     // std::move(pw)
+```
