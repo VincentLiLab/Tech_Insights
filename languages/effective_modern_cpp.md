@@ -123,6 +123,11 @@
   - [只有声明的 _integral static const_ 的数据成员](#只有声明的-integral-static-const-的数据成员)
   - [重载的函数名和模板名](#重载的函数名和模板名)
   - [_bitfield_](#bitfield)
+- [_Item 31_ 避免默认捕获模式](#item-31-避免默认捕获模式)
+  - [捕获的范围](#捕获的范围)
+  - [默认捕获会隐式捕获 _this_ 指针容易产生悬空 _this_ 指针](#默认捕获会隐式捕获-this-指针容易产生悬空-this-指针)
+  - [_\[\&\]_ 没有显示指明让人印象深刻](#-没有显示指明让人印象深刻)
+  - [_\[=\]_ 会误导性地暗示 _lambda_ 是 _self-contained_ 的](#-会误导性地暗示-lambda-是-self-contained-的)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -2120,3 +2125,92 @@ class Person {
   
   fwd(length);                          // forward the copy
 ```
+
+# _Item 31_ 避免默认捕获模式
+
+## 捕获的范围
+
+只能捕获到那些在创建出 _lambda_ 的作用域中是可见的 _non-static_ 局部变量和形参。
+
+## 默认捕获会隐式捕获 _this_ 指针容易产生悬空 _this_ 指针
+
+当是默认捕获时，是可以在 _lambda_ 中使用类的 _non-static_ 成员的，因为默认捕获会隐式捕获 _this_ 指针，注意是隐式捕获 _this_ 指针，而不是隐式捕获类的 _non-static_ 成员。
+
+```C++
+  class Widget {
+  public:
+    …                                                       // ctors, etc.
+    void addFilter() const;                                 // add an entry to filters
+
+  private:
+    int divisor;                                            // used in Widget's filter
+  };
+```  
+ 
+```C++
+  void Widget::addFilter() const
+  {
+    filters.emplace_back(
+      [=](int value) { return value % divisor == 0; }       // ok! implicit use of this pointer
+    );                                  
+  }
+```  
+
+```C++
+  void Widget::addFilter() const
+  {
+    filters.emplace_back(                                   // error!
+        [](int value) { return value % divisor == 0; }      // divisor
+    );                                                      // not
+  }                                                         // available
+``` 
+
+```C++
+  using FilterContainer =                                   // as before
+    std::vector<std::function<bool(int)>>;
+
+  FilterContainer filters;                                  // as before
+
+  void doSomeWork()
+  {
+    auto pw =                                               // create Widget; see
+      std::make_unique<Widget>();                           // Item 21 for
+                                                            // std::make_unique
+    
+    pw->addFilter();                                        // add filter that uses
+                                                            // Widget::divisor
+    …
+  }                                                         // destroy Widget; filters
+                                                            // now holds dangling pointer!
+```  
+
+## _[&]_ 没有显示指明让人印象深刻
+
+比起 _[&]_ 所表达的 **_确保没有任何悬空_** 的警告，显式写出名字会更让人印象深刻。
+
+```C++
+  using FilterContainer =                                   // see Item 9 for
+      std::vector<std::function<bool(int)>>;                // "using", Item 2
+                                                            // for std::function
+
+  FilterContainer filters;                                  // filtering funcs
+```   
+
+```C++
+  void addDivisorFilter()
+  {
+    auto calc1 = computeSomeValue1();
+    auto calc2 = computeSomeValue2();
+
+    auto divisor = computeDivisor(calc1, calc2);
+
+    filters.emplace_back(                                   // danger!
+      [&](int value) { return value % divisor == 0; }       // ref to
+    );                                                      // divisor
+  }                                                         // will
+                                                            // dangle!
+```   
+
+## _[=]_ 会误导性地暗示 _lambda_ 是 _self-contained_ 的
+
+_[=]_ 会误导性地暗示 _lambda_ 是 _self-contained_ 的，_lambda_ 所对应的 _closure_ 之外的数据的改动是不会影响到这个 _closure_ 本身的。
