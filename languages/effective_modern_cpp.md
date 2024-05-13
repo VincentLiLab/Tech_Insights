@@ -136,6 +136,11 @@
   - [_task-based_ 和 _thread-based_ 编程](#task-based-和-thread-based-编程)
   - [_task-based_ 编程可以直接获取异步运行的函数的返回值](#task-based-编程可以直接获取异步运行的函数的返回值)
   - [_task-based_ 编程可以避免线程耗尽问题和线程 _oversubscription_ 问题](#task-based-编程可以避免线程耗尽问题和线程-oversubscription-问题)
+- [_Item 36_ 如果异步是必须要的话，那么指明 _std::launch::async_](#item-36-如果异步是必须要的话那么指明-stdlaunchasync)
+  - [_std::launch::async_](#stdlaunchasync)
+  - [_std::launch::deferred_](#stdlaunchdeferred)
+  - [_std::launch::async | std::launch::deferred_](#stdlaunchasync--stdlaunchdeferred)
+  - [禁止使用 _std::launch::async | std::launch::deferred_](#禁止使用-stdlaunchasync--stdlaunchdeferred)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -2295,6 +2300,65 @@ _thread-based_ 编程
 
 ## _task-based_ 编程可以避免线程耗尽问题和线程 _oversubscription_ 问题
 
-软件线程是一种有限资源。当你尝试创建的软件线程多于系统可以提供的软件线程时，_std::system_error_ 异常会被抛出，就会发生线程耗尽问题。当 _ready-to-run_ 的软件线程，比如：非阻塞的软件线程，多于硬件线程时，就会发生 _oversubscription_ 问题。因为当发生这两个问题时，使用了 _default launch policy_ 的 _std::async_ 可以允许调度器将所指定的函数安排到那个需要这个所指定的函数的结果的线程上，而不会再去创建新的软件线程， 所以 _task-based_ 编程可以通过使用 _default launch policy_ 的 _std::async_ 来避免这两个问题。但是注意此时会带来线程负载的问题。
+软件线程是一种有限资源。当你尝试创建的软件线程多于系统可以提供的软件线程时，_std::system_error_ 异常会被抛出，就会发生线程耗尽问题。当 _ready-to-run_ 的软件线程，比如：非阻塞的软件线程，多于硬件线程时，就会发生线程 _oversubscription_ 问题。因为当发生这两个问题时，使用了 _default launch policy_ 的 _std::async_ 可以允许调度器将所指定的函数安排到那个需要这个所指定的函数的结果的线程上，而不会再去创建新的软件线程，所以 _task-based_ 编程可以通过使用 _default launch policy_ 的 _std::async_ 来避免这两个问题。但是注意此时会带来线程负载的问题。
 
 _state-of-the-art_ 线程调度器利用 _system-wide_ 线程池从而避免了 _oversubscription_，它通过 _work-stealing_ 算法提升了硬件核心之间的负载均衡。_C++_ 标准不需要使用线程池或 _work-stealing_，老实说，_C++11_ 的并发规范的一些技术特色使得利用这个技术变得很困难，比我们想象的要困难。然而，一些开发商在它们的标准库实现中利用了这个技术，我们有理由期待在这方面会继续取得进展。如果你在你的并发开发中采用了 _task-based_ 方法的话，那么当这个技术变得更加普遍的时候，你就会自动获得了这个技术的益处了。另一方面，如果你是直接使用了 _std::thread_ 的话，你就要自己承担处理线程耗尽、_oversubscription_ 和负载均衡的责任了，更不用说你的这些问题的解决方法如何与运行在同一台机器上的其他进程中的程序中所实现的方案所协调。
+
+
+# _Item 36_ 如果异步是必须要的话，那么指明 _std::launch::async_
+
+## _std::launch::async_
+
+_std::launch::async_ 表示所对应的函数必须异步运行，必须运行在一个不同的线程上。这就可能会遇到程耗尽问题和线程 _oversubscription_ 问题。
+
+## _std::launch::deferred_
+
+* _std::launch::deferred_ 表示：只有当 _std::async_ 所返回的 _future_ 的 _get_ 或 _wait_ 被调用时，所对应的函数才会同步运行，必须运行在相同的线程上。这不会遇到程耗尽问题和线程 _oversubscription_ 问题。
+
+## _std::launch::async | std::launch::deferred_
+
+_std::async_ 的 _default launch policy_，就是没有显式指定时所会使用的那个 _launch policy_，不是 _std::launch::async_ 或 _std::launch::deferred_，而是 _std::launch::async | std::launch::deferred_。
+
+```C++
+  auto fut1 = std::async(f);                      // run f using
+                                                  // default launch
+                                                  // policy
+  
+  auto fut2 = std::async(std::launch::async |     // run f either
+                          std::launch::deferred,  // async or
+                          f);                     // deferred
+``` 
+
+当发生线程耗尽问题或线程 _oversubscription_ 问题时，使用了 _default launch policy_ 或 _std::launch::async | std::launch::deferred_ 的 _std::async_ 可以允许调度器将所指定的函数安排到那个需要这个所指定的函数的结果的线程上，而不会再去创建新的软件线程，此时调用 _get_ 或 _wait_ 就是在并发调用所指定的函数，而如果没有调用 _get_ 或 _wait_ 的话，那么所指定的函数将永远不会被运行。
+
+当没有发生线程耗尽问题或线程 _oversubscription_ 问题时，使用了 _default launch policy_ 或使用了 _std::launch::async | std::launch::deferred_ 的 _std::async_ 可以允许调度器将所指定的函数安排到新创建的软件线程上。
+
+## 禁止使用 _std::launch::async | std::launch::deferred_
+
+使用 _std::launch::async | std::launch::deferred_ 时，不确定所指定函数访问的是哪个线程的变量，因为此时可能是在 **_旧线程中_** ，也有可能是在 **_新线程中_**，如果所指定的函数会访问线程中的变量，无法确定访问的是哪个线程中的变量。
+
+使用 _std::launch::async | std::launch::deferred_ 时，所指定的函数永远不会被执行到，因为此时如果确实发生了而你不知道发生线程耗尽问题或线程 _oversubscription_ 问题时，所指定的函数将永远不会被执行到，简直是致命 _bug_。
+
+使用 _std::launch::async | std::launch::deferred_ 时，所指定的函数永远不会被执行到，因为此时如果确实发生了而你不知道发生线程耗尽问题或线程 _oversubscription_ 问题时， 所对应的 _wait_ 调用所对应的循环将是死循环，简直是致命 _bug_。
+
+
+```C++
+  using namespace std::literals;        // for C++14 duration
+                                        // suffixes; see Item 34
+
+  void f()                              // f sleeps for 1 second,
+  {                                     // then returns
+    std::this_thread::sleep_for(1s);
+  }
+  
+
+  auto fut = std::async(f);             // run f asynchronously
+                                        // (conceptually)
+
+  while (fut.wait_for(100ms) !=         // loop until f has
+  std::future_status::ready)            // finished running...
+  {                                     // which may never happen!
+    …
+  }
+
+``` 
