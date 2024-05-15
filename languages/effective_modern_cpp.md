@@ -141,6 +141,13 @@
   - [_std::launch::deferred_](#stdlaunchdeferred)
   - [_std::launch::async | std::launch::deferred_](#stdlaunchasync--stdlaunchdeferred)
   - [禁止使用 _std::launch::async | std::launch::deferred_](#禁止使用-stdlaunchasync--stdlaunchdeferred)
+- [_Item 37_ 使 _std::thread_ 在所有路径上都为 _unjoinable_](#item-37-使-stdthread-在所有路径上都为-unjoinable)
+  - [_unjoinable_ _std::thread_ 和 _joinable_ _std::thread_](#unjoinable-stdthread-和-joinable-stdthread)
+  - [调用 _unjoinable_ _std::thread_ 的 _join_ 或 _detach_ 会产生 _undefined behavior_](#调用-unjoinable-stdthread-的-join-或-detach-会产生-undefined-behavior)
+  - [调用 _joinable_ _std::thread_ 的析构函数会导致程序终止](#调用-joinable-stdthread-的析构函数会导致程序终止)
+  - [_RAII_](#raii)
+  - [通过 _RAII_ 来使 _std::thread_ 在所有路径上都为 _unjoinable_](#通过-raii-来使-stdthread-在所有路径上都为-unjoinable)
+  - [在数据成员的列表最后再去声明 _std::thread_ 对象](#在数据成员的列表最后再去声明-stdthread-对象)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -2362,3 +2369,133 @@ _std::async_ 的 _default launch policy_，就是没有显式指定时所会使�
   }
 
 ``` 
+
+# _Item 37_ 使 _std::thread_ 在所有路径上都为 _unjoinable_
+
+## _unjoinable_ _std::thread_ 和 _joinable_ _std::thread_
+
+_unjoinable_ _std::thread_：
+* _default-constructed_ _std::thread_。这些 _std::thread_ 没有可以执行的函数，因此没有所对应的底层执行的线程。
+* 已经被移动走的 _std::thread_ 对象。移动走的结果是某个 _std::thread_ 过去所对应的底层执行的线程现在对应上一个不同的 _std::thread_ 了。
+* 已经被 _join_ 的 _std::thread_。在 _join_ 后，这个 _std::thread_ 不再对应于那个已经结束运行的底层执行的线程了。
+* 已经被 _detach_ 的 _std::thread_。_detach_ 会断开某个 _std::thread_ 对象和这个 _std::thread_ 对象所对应的底层执行的线程之间的联系。 
+
+_joinable_ _std::thread_ ：不是 _unjoinable_ 的  _std::thread_，_joinable_ _std::thread_ 对应的是正在运行或可以运行的底层异步执行的线程。例如：被阻塞的或正在等待被调度的底层线程所对应的 _std::thread_ 就是 _joinable_ _std::thread_。已经运行至结束的底层线程所对应的 _std::thread_ 对象也是 _joinable_ _std::thread_。
+
+## 调用 _unjoinable_ _std::thread_ 的 _join_ 或 _detach_ 会产生 _undefined behavior_ 
+
+调用 _unjoinable_ _std::thread_ 的 _join_ 或 _detach_ 会产生 _undefined behavior_，只能调用 _joinable_ _std::thread_ 的 _join_ 或 _detach_。
+
+## 调用 _joinable_ _std::thread_ 的析构函数会导致程序终止
+
+调用 _joinable_ _std::thread_ 的析构函数会导致程序终止，而调用 _unjoinable_ _std::thread_ 的析构函数被调用不会导致程序终止。
+
+```C++
+  constexpr auto tenMillion = 10000000;           // see Item 15
+                                                  // for constexpr
+  
+  bool doWork(std::function<bool(int)> filter,    // returns whether
+  int maxVal = tenMillion)                        // computation was
+  {                                               // performed; see
+                                                  // Item 2 for
+                                                  // std::function
+
+    std::vector<int> goodVals;                    // values that
+                                                  // satisfy filter
+
+    std::thread t([&filter, maxVal, &goodVals]    // populate
+                  {                               // goodVals
+                    for (auto i = 0; i <= maxVal; ++i)
+                    { if (filter(i)) goodVals.push_back(i); }
+                  });
+
+    auto nh = t.native_handle();                  // use t's native
+    …                                             // handle to set
+                                                  // t's priority
+                                                  
+    if (conditionsAreSatisfied()) {
+      t.join();                                   // let t finish
+      performComputation(goodVals);
+      return true;                                // computation was
+    }                                             // performed
+
+      return false;                               // computation was
+  }                                               // not performed
+```  
+
+为什么要设计成调用 _joinable_ _std::thread_ 的析构函数会导致程序终止呢？因为隐式 _join_ 和隐式 _detach_ 都是不合适的：  
+* 隐式 _join_。在这个场景下，_std::thread_ 的析构函数会等待它的底层异步运行的线程完成。这听起来是合理的，但是这可能会导致非常难以追踪的性能异常。例如：如果 _conditionsAreSatisfied()_ 已经返回了 _false_ 而  _doWork_ 还在等待所有的值在应用到它的 _filter_ 的话，那么就不合理了。
+* 隐式 _detach_。在这个场景下， _detach_ 会断开某个 _std::thread_ 对象和这个 _std::thread_ 对象所对应的底层执行的线程之间的联系。底层线程会继续运行。这个方法听起来和 _join_ 方法一样合理，但是它可以导致的调试问题是更糟糕的。例如：在 _doWork_ 中，_goodVals_ 是按 _by-reference_ 的方式所捕捉的局部变量。这个 _goodVals_ 是在 _lambda_ 中通过调用 _push_back_ 被更改的。假定在这个 _lambda_ 异步运行时 _conditionsAreSatisfied()_ 返回了 _false_。那么在这个场景下，_doWork_ 将会结束，它的局部变量，包括 _goodVals_，都将会被销毁。_doWork_ 的 _stack frame_ 会被弹出，_doWork_ 的线程将从 _doWork_ 的调用点继续执行。这个调用点后的语句在某个时间点会调用其他的函数调用，至少会有一个函数可能最终会使用到那些曾经是被 _doWork_ 的 _stack frame_ 所占用的一部分或全部内存。让我们把这个函数称为 _f_。在 _f_ 运行时，_doWork_ 所创建的 _lambda_ 也将继续异步运行。这个 _lambda_ 可能会在过去是存放 _goodVals_ 而现在是在 _f_ 的 _stack frame_ 中了的栈内存上调用 _push_back_。这个调用会更改过去是存放 _goodVals_ 的内存，这意味着：从 _f_ 的角度看，它的 _stack frame_ 中的内存的内容可能会被莫名其妙的改变。想象下调式这个的乐趣。
+
+_Standardization Committee_ 认为销毁 _joinable_ _std::thread_ 是非常可怕的，所以就禁止了隐式 _join_ 和隐式 _detach_ 方法，而是指定销毁 _joinable_ _std::thread_ 会导致程序终止。
+
+## _RAII_
+
+_RAII_ **_Resource Acquisition Is Initialization_** 指的是将必须要执行的操作放到析构函数中。比如：_std::fstream_ 对象，它们的析构函数会关闭它们所对应的文件。
+
+## 通过 _RAII_ 来使 _std::thread_ 在所有路径上都为 _unjoinable_
+
+因为 _joinable_ _std::thread_ 的析构函数被调用会导致程序终止，所以应该使 _std::thread_ 在所有路径上都为 _unjoinable_，这个操作是必须要执行的，所以应该将这个必须要执行的操作放到析构函数中，所以应该通过 _RAII_ 来使 _std::thread_ 在所有路径上都为 _unjoinable_。
+
+
+```C++
+  class ThreadRAII {
+  public:
+    enum class DtorAction { join, detach };       // see Item 10 for
+                                                  // enum class info
+    
+    ThreadRAII(std::thread&& t, DtorAction a)     // in dtor, take
+    : action(a), t(std::move(t)) {}               // action a on t
+    
+    ~ThreadRAII()
+    {                                             // see below for
+      if (t.joinable()) {                         // joinability test
+        if (action == DtorAction::join) {
+          t.join();
+        } else {
+          t.detach();
+        }
+
+      }
+    }
+
+    std::thread& get() { return t; } // see below
+    
+    private:
+      DtorAction action;
+      std::thread t;
+    };
+``` 
+
+```C++
+  bool doWork(std::function<bool(int)> filter,    // as before
+              int maxVal = tenMillion)
+  {
+    std::vector<int> goodVals;                    // as before
+    
+    ThreadRAII t( // use RAII object
+      std::thread([&filter, maxVal, &goodVals]
+                  {
+                  for (auto i = 0; i <= maxVal; ++i)
+                  { if (filter(i)) goodVals.push_back(i); }
+                  }),
+                  ThreadRAII::DtorAction::join    // RAII action
+    );
+
+    auto nh = t.get().native_handle();
+    …
+
+    if (conditionsAreSatisfied()) {
+      t.get().join();
+      performComputation(goodVals);
+      return true;
+    }
+
+    return false;
+  }
+```  
+
+## 在数据成员的列表最后再去声明 _std::thread_ 对象
+
+在数据成员的列表最后再去声明 _std::thread_ 对象。这保证了：在 _std::thread_ 对象被构造出时，所有处在它们之前的数据成员都已经被初始化过了，因此这些数据也可以被那些 _std::thread_ 数据成员所对应的异步运行的线程所访问了。
+
