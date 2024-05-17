@@ -150,6 +150,12 @@
   - [在数据成员的列表最后再去声明 _std::thread_ 对象](#在数据成员的列表最后再去声明-stdthread-对象)
 - [_Item 38_ 注意各种各样的线程 _handle_ 的析构函数](#item-38-注意各种各样的线程-handle-的析构函数)
   - [_future_ 的析构函数的行为](#future-的析构函数的行为)
+- [_Item 39_ 对于 _one-shot_ 事件通信考虑 _void future_](#item-39-对于-one-shot-事件通信考虑-void-future)
+  - [_one-shot_ 事件通信](#one-shot-事件通信)
+  - [_condition variable_ 方法](#condition-variable-方法)
+  - [_shared boolean flag_](#shared-boolean-flag)
+  - [_condition variable_ \& _boolean_ 方法](#condition-variable--boolean-方法)
+  - [_void future_ 方法](#void-future-方法)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -2517,3 +2523,159 @@ _RAII_ **_Resource Acquisition Is Initialization_** 指的是将必须要执行�
   auto fut = pt.get_future();           // get future for pt
 ```  
 因为 _fut_ 不是通过 _async_ 所创建的，所以它不会指向调用 _std::async_ 所创建的 _shared state_，所以它的析构函数不会被阻塞。
+
+# _Item 39_ 对于 _one-shot_ 事件通信考虑 _void future_ 
+
+## _one-shot_ 事件通信
+
+_one-shot_ 事件通信是一个 _task_ 只需要告诉另一个异步运行的 _task_ 一次发生了一个特定的事件。
+
+## _condition variable_ 方法
+
+```C++
+  std::condition_variable cv;           // condvar for event
+  
+  std::mutex m;                         // mutex for use with cv
+```  
+_reacting task_ 
+
+```C++
+  …                                     // prepare to react
+
+  {                                     // open critical section
+
+    std::unique_lock<std::mutex> lk(m); // lock mutex
+
+    cv.wait(lk);                        // wait for notify;
+                                        // this isn't correct!
+    
+    …                                   // react to event
+                                        // (m is locked)
+  
+  }                                     // close crit. section;
+                                        // unlock m via lk's dtor
+  
+  …                                     // continue reacting
+                                        // (m now unlocked)
+```
+_deacting task_
+
+```C++
+  …                                     // detect event
+  
+  cv.notify_one();                      // tell reacting task
+```  
+
+_condition variable_ 方法的优点是这个方法简单。
+
+_condition variable_ 方法的缺点：  
+* 如果 _detecting task_ 在 _reacting task_ 等待之前就已经通知了 _condvar_ 的话，那么 _reacting task_ 将会挂起。按照通知 _condvar_ 去唤醒另一个 _task_ 的顺序，其他的 _task_ 必须先等待这个 _condvar_。如果 _detecting task_ 碰巧是在 _reacting task_ 执行 _wait_ 之前先执行了通知的话，那么 _reacting task_ 将丢失这个通知，它将会永远等待。
+* _wait_ 语句没有考虑到 _spurious wakeup_。在很多语言的线程 _API_ 中，不只是在 _C++_ 线程 _API_ 中，等待某个 _condition variable_ 的代码可能会在这个 _condition variable_ 没有被通知的情况下就被唤醒了。这样的唤醒被称为 _spurious wakeup_。合适的代码可以通过确认那个被等待的条件确实真正地产生了，并将这个确认操作做为唤醒后的首个动作来处理这种 _spurious wakeup_ 问题。_C++_ _condvar_ _API_ 非常容易解决这种 _spurious wakeup_ 问题，因为它允许将被用来测试那个被等待的条件的 _lambda_ 或其他函数对象传递给 _wait_。也就是说，在 _reacting task_ 中的 _wait_ 调用看起来像是下面这样。想要利用这个能力需要 _reacting task_ 能够确定它正在等待的条件是否发生了。但是在我们已经考虑到的情景中，_reacting task_ 正在等待的条件是发生了一个 _detecting task_ 负责识别的事件。_reacting task_ 可能没有方法来确定它正在等待的事件是否已经发生了。这也是为什么要等待 _condition variable_。  
+```C++
+  cv.wait(lk,
+    []{ return whether the event has occurred; });
+``` 
+
+## _shared boolean flag_
+
+_reacting task_ 
+
+```C++
+  …                                     // prepare to react
+  
+  while (!flag);                        // wait for event  
+  
+  …                                     // react to event
+```
+
+_deacting task_
+
+```C++
+  std::atomic<bool> flag(false);        // shared flag; see
+                                        // Item 40 for std::atomic
+
+  …                                     // detect event
+
+  flag = true;                          // tell reacting task
+```  
+
+_shared boolean flag_ 方法的优点是：不需要 _mutex_，如果 _detecting task_ 在 _reacting task_ 开始轮询前就先设置了 _flag_ 的话，那么是没有问题的，没有类似的 _spurious wakeup_ 问题。
+
+_shared boolean flag_ 方法的缺点是会在 _reacting task_ 中花费成本进行轮询。在 _reacting task_ 等待 _flag_ 被设置期间，肯定是会被阻塞的，但它却仍然在运行。因此这个 _reacting task_ 占用了其他的 _task_ 可以去使用的硬件线程，_reacting task_ 在每次开始或者结束它所对应的 _time slice_ 时，都会带来上下文切换的成本，_reacting task_ 还可以只让一个 _CPU_ 保持运行，让其他的 _CPU_ 关闭去节省能耗。真正被阻塞的 _task_ 不会做这些事情。这正是 _condvar-based_ 方法的优势，因为在 _wait_ 调用中的 _task_ 是真正被阻塞的。
+
+## _condition variable_ & _boolean_ 方法 
+
+_reacting task_ 
+
+```C++
+  …                                               // prepare to react
+  
+  {                                               // as before
+    std::unique_lock<std::mutex> lk(m);           // as before
+    
+    cv.wait(lk, [] { return flag; });             // use lambda to avoid
+                                                  // spurious wakeups
+    
+    …                                             // react to event
+                                                  // (m is locked)
+  }
+  
+  …                                               // continue reacting
+                                                  // (m now unlocked)
+```
+
+_deacting task_
+
+```C++
+  std::condition_variable cv;                     // as before
+  std::mutex m;
+  bool flag(false);                               // not std::atomic
+  
+  …                                               // detect event
+  
+  {
+    std::lock_guard<std::mutex> g(m);             // lock m via g's ctor
+    
+    flag = true;                                  // tell reacting task
+                                                  // (part 1)
+  
+  }                                               // unlock m via g's dtor
+  
+  cv.notify_one();                                // tell reacting task
+                                                  // (part 2)
+
+``` 
+
+_condition variable_ & _boolean_ 方法的优点是：不管 _reacting task_ 等待是否是在 _detecting task_ 通知之前，这个方法都可以工作，这个方法就算出现了 _spurious wakeup_ 也可以工作，不需要轮询。
+
+_condition variable_ & _boolean_ 方法的缺点是 _detecting task_ 仍然在按照非常奇怪的方式与 _reacting task_ 通信。通知 _condition variable_ 是告诉 _reacting task_ 它正在等待的事件已经发生了，但是 _reacting task_ 还必须要去检查这个 _flag_ 才能确定。设置了这个 _flag_ 是告诉了 _reacting task_ 那个事件是真正地发生了，但是 _detecting task_ 仍然要通知 _condition variable_，为的是 _reacting task_ 将被唤醒以去检查那个 _flag_。这个方法可以工作，但似乎不是非常干净。
+
+## _void future_ 方法
+
+```C++
+  std::promise<void> p;                 // promise for
+                                        // communications channel
+```  
+
+_reacting task_  
+
+```C++
+  …                                     // prepare to react
+  
+  p.get_future().wait();                // wait on future
+                                        // corresponding to p
+  
+  …                                     // react to event
+```
+
+_detecting task_
+
+```C++
+  …                                     // detect event
+  
+  p.set_value();                        // tell reacting task
+```  
+
+_void future_ 方法的优点是：不需要 _mutex_，不管 _detecting task_ 是否会在 _reacting task_ 等待前先设置了它的 _std::promise_，都可以工作，并且不受 _spurious wakeup_ 的影响。
+
+_void future_ 方法的缺点是 _std::promise_ 可能只能被设置一次。_std::promise_ 和 _future_ 之间的通信通道是 _one-shot_ 机制：它不可以被重复使用。
