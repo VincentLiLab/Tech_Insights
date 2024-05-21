@@ -156,6 +156,10 @@
   - [_shared boolean flag_](#shared-boolean-flag)
   - [_condition variable_ \& _boolean_ 方法](#condition-variable--boolean-方法)
   - [_void future_ 方法](#void-future-方法)
+- [_Item 40_ 并发使用 _std::atomic_ 特殊内存使用 _volatile_](#item-40-并发使用-stdatomic-特殊内存使用-volatile)
+  - [_std::atomic_ 的所有成员函数都是原子的](#stdatomic-的所有成员函数都是原子的)
+  - [_std::atomic_ 会对代码的重新排序施加限制](#stdatomic-会对代码的重新排序施加限制)
+  - [_volatile_ 会禁止对所对应的内存上的操作执行优化](#volatile-会禁止对所对应的内存上的操作执行优化)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -2679,3 +2683,93 @@ _detecting task_
 _void future_ 方法的优点是：不需要 _mutex_，不管 _detecting task_ 是否会在 _reacting task_ 等待前先设置了它的 _std::promise_，都可以工作，并且不受 _spurious wakeup_ 的影响。
 
 _void future_ 方法的缺点是 _std::promise_ 可能只能被设置一次。_std::promise_ 和 _future_ 之间的通信通道是 _one-shot_ 机制：它不可以被重复使用。
+
+# _Item 40_ 并发使用 _std::atomic_ 特殊内存使用 _volatile_
+
+## _std::atomic_ 的所有成员函数都是原子的
+
+_std::atomic_ 的所有成员函数都是原子的，而且这些原子操作都是使用特殊机器指令实现的，比利用 _mutex_ 更加高效，而 _volatile_ 并不保证对它的操作是原子的。
+
+## _std::atomic_ 会对代码的重新排序施加限制
+
+_std::atomic_ 会对代码的重新排序施加限制，这个限制是源代码中位于写 _std::atomic_ 变量之前的代码不得放在这个写 _std::atomic_ 变量之后，而 _volatile_ 并不会对代码的重新排序施加限制。
+
+不使用 _std::atomic_ 时：
+
+```C++
+  bool valAvailable(false);
+  
+  auto imptValue = computeImportantValue();       // compute value
+  
+  valAvailable = true;                            // tell other task
+                                                  // it's available
+```
+
+当人们看到这个代码时，我们知道，_imptValue_ 的赋值是发生在 _valAvailable_ 的赋值之前的，这是重要的，但是编译器看到的所有只是一对独立变量的赋值而已。通常情况下，编译器被允许去重新排序这些不相关的赋值，可能重新排序为下面这样，这是错误的。
+
+```C++
+  bool valAvailable(false);
+  
+  valAvailable = true;                            // tell other task
+                                                  // it's available
+
+  auto imptValue = computeImportantValue();       // compute value
+```
+
+使用 _std::atomic_ 时：
+
+```C++
+  std::atomic<bool> valAvailable(false);
+  
+  auto imptValue = computeImportantValue();       // compute value
+  
+  valAvailable = true;                            // tell other task
+                                                  // it's available
+```
+
+因为 _std::atomic_ 会对代码的重新排序施加限制，所以代码仍然为上面这样，这是正确的。
+
+## _volatile_ 会禁止对所对应的内存上的操作执行优化
+
+_volatile_ 会禁止对所对应的内存上的操作执行优化，而 _std::atomic_ 并不会禁止对所对应的内存上的操作执行优化。
+
+因为对于 **_常规_** 内存上的操作，是允许编译器执行优化的，
+
+```C++
+  auto y = x;                           // read x
+  y = x;                                // read x again
+  x = 10;                               // write x
+  x = 20;                               // write x again
+```  
+
+所以编译器可以优化为下面这样。
+
+```C++
+  auto y = x;                           // read x
+  
+  x = 20;                               // write x
+```
+
+因为对于 **_特殊_** 内存上的操作，比如：被用于 _memory-mapped I/O_ 的内存和进程间共享的内存上的操作，是禁止编译器执行优化的，
+
+```C++
+  volatile int x;
+```  
+
+```C++
+  auto y = x;                           // read x
+  y = x;                                // read x again
+  x = 10;                               // write x
+  x = 20;                               // write x again
+```   
+
+所以需要使用 _volatile_ 来禁止对所对应的内存上的操作执行优化。
+
+```C++
+  auto y = x;                           // read x
+  y = x;                                // read x again
+  x = 10;                               // write x
+  x = 20;                               // write x again
+```  
+
+如果 _x_ 对应的是 _radio transmitter_ 的控制端口的话，那么这可能是代码正在像这个 _ratio_ 发送命令，值 _10_ 所对应的命令和 _20_ 所对应的命令是不同的。优化了第一个赋值语句将会改变发往这个 _ratio_ 的命令的顺序。
