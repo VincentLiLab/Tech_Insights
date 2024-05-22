@@ -160,6 +160,7 @@
   - [_std::atomic_ 的所有成员函数都是原子的](#stdatomic-的所有成员函数都是原子的)
   - [_std::atomic_ 会对代码的重新排序施加限制](#stdatomic-会对代码的重新排序施加限制)
   - [_volatile_ 会禁止对所对应的内存上的操作执行优化](#volatile-会禁止对所对应的内存上的操作执行优化)
+- [_Item 41_ 对于移动是成本小的且总是会被拷贝的可拷贝的形参考虑 _pass-by-value_](#item-41-对于移动是成本小的且总是会被拷贝的可拷贝的形参考虑-pass-by-value)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -1971,7 +1972,7 @@ _RVO_ 的优化：当满足 _RVO_ 的条件时，编译器可以直接在为函�
 
 ## 避免重载 _univeral reference_
 
-因为重载 _universal reference_ 几乎总是会导致 _universal reference_ 的重载函数的在不期望被调用的情况下却被调用到，所以避免重载 _univeral reference_。
+因为重载 _universal reference_ 几乎总是会导致 _universal reference_ 的重载函数在不期望被调用的情况下却被调用到，所以避免重载 _univeral reference_。
 
 ```C++
   class Person {
@@ -1993,16 +1994,16 @@ _RVO_ 的优化：当满足 _RVO_ 的条件时，编译器可以直接在为函�
 
 ## _tag dispatch_
 
-_dispatch function_ 持有没被限制的 _univeral reference_ 形参，它不是重载的。_implementation function_ 是重载的，这些重载函数都持有 _univeral reference_ 形参，但是重载函数的重载决议不只依赖于 _univeral reference_ 形参，还依赖于一个 _tag_ 形参，_tag_ 用来确定哪个重载函数会被调用到。
+_dispatch function_ 持有没被限制的 _univeral reference_ 形参，它不是重载的。_implementation function_ 持有 _univeral reference_ 形参，它们是重载的，但是重载函数的重载决议不只依赖于 _univeral reference_ 形参，还依赖于一个 _tag_ 形参，_tag_ 用来确定哪个重载函数会被调用到。
 
 ```C++
   template<typename T>
   void logAndAdd(T&& name)
   {
-      logAndAddImpl(
-      std::forward<T>(name),
-      std::is_integral<typename std::remove_reference<T>::type>()
-      );
+    logAndAddImpl(
+    std::forward<T>(name),
+    std::is_integral<typename std::remove_reference<T>::type>()
+    );
   }
 ```
 
@@ -2773,3 +2774,37 @@ _volatile_ 会禁止对所对应的内存上的操作执行优化，而 _std::at
 ```  
 
 如果 _x_ 对应的是 _radio transmitter_ 的控制端口的话，那么这可能是代码正在像这个 _ratio_ 发送命令，值 _10_ 所对应的命令和 _20_ 所对应的命令是不同的。优化了第一个赋值语句将会改变发往这个 _ratio_ 的命令的顺序。
+
+# _Item 41_ 对于移动是成本小的且总是会被拷贝的可拷贝的形参考虑 _pass-by-value_
+
+使用重载或 _universal reference_ 而不是 _pass-by-value_，除非能证实对于你需要的形参类型，_pass-by-value_ 能产生可接受的高效的代码。
+
+```C++
+  class Widget {                                  // Approach 1:
+  public:                                         // overload for
+    void addName(const std::string& newName)      // lvalues and
+    { names.push_back(newName); }                 // rvalues
+    
+    void addName(std::string&& newName)
+    { names.push_back(std::move(newName)); }
+    …
+  
+  private:
+    std::vector<std::string> names;
+  };
+  
+  class Widget {                                  // Approach 2:
+  public:                                         // use universal
+    template<typename T>                          // reference
+    void addName(T&& newName)
+    { names.push_back(std::forward<T>(newName)); }
+    …
+  };
+
+  class Widget {                                  // Approach 3:
+  public:                                         // pass by value
+  void addName(std::string newName)
+  { names.push_back(std::move(newName)); }
+  …
+  };
+```  
