@@ -89,6 +89,7 @@
   - [_std::make\_unique_ 和 _std::make\_shared_ 不可以指定 _custom deleter_](#stdmake_unique-和-stdmake_shared-不可以指定-custom-deleter)
   - [_std::make\_unique_ 和 _std::make\_shared_ 不可以使用 _braced initializer_](#stdmake_unique-和-stdmake_shared-不可以使用-braced-initializer)
   - [_std::make\_shared_ 不可以用于那些有着私有版本的 _operator new_ 和 _operator delete_ 的类](#stdmake_shared-不可以用于那些有着私有版本的-operator-new-和-operator-delete-的类)
+  - [禁止完美转发 _new expression_](#禁止完美转发-new-expression)
 - [_Item 22_ 当使用 _Pimpl Idiom_ 时，在源文件中定义特殊成员函数](#item-22-当使用-pimpl-idiom-时在源文件中定义特殊成员函数)
   - [_Pimpl Idiom_ 是通过减少类的客户和类的实现之间的编译依赖来缩短编译时间的](#pimpl-idiom-是通过减少类的客户和类的实现之间的编译依赖来缩短编译时间的)
   - [使用 _std::unique\_ptr_ 实现 _Pimpl Idiom_ 时，需要特殊处理](#使用-stdunique_ptr-实现-pimpl-idiom-时需要特殊处理)
@@ -161,6 +162,10 @@
   - [_std::atomic_ 会对代码的重新排序施加限制](#stdatomic-会对代码的重新排序施加限制)
   - [_volatile_ 会禁止对所对应的内存上的操作执行优化](#volatile-会禁止对所对应的内存上的操作执行优化)
 - [_Item 41_ 对于移动是成本小的且总是会被拷贝的可拷贝的形参考虑 _pass-by-value_](#item-41-对于移动是成本小的且总是会被拷贝的可拷贝的形参考虑-pass-by-value)
+- [_Item 42_ 考虑使用 _emplacement_ 来代替 _insertion_](#item-42-考虑使用-emplacement-来代替-insertion)
+  - [_container_ 中的 _emplacement_ 和 _insertion_](#container-中的-emplacement-和-insertion)
+  - [_emplacement_ 不需要生成临时变量](#emplacement-不需要生成临时变量)
+  - [_copy initialization_ 和 _direct initialization_](#copy-initialization-和-direct-initialization)
 
 # _Item 1_ 理解模板的类型推导
 
@@ -1749,12 +1754,47 @@ _std::make_unique_ 和 _std::make_shared_ 不可以使用 _braced initializer_�
 
 一些类定义有私有版本的 _operator new_ 和 _operator delete_。这些函数的存在说明了：全局版本的 _operator new_ 和 _operator delete_ 对于这些类的对象是不合适的。类的私有版本的 _operator new_ 和 _operator delete_ 是被用于分配和释放特定大小的内存块的，但是 _std::allocate_shared_ 所需要的内存的大小是不等于动态分配的对象的大小的，而是要再加上 _control block_ 的大小的。所以使用 _make_ 函数去创建有着私有版本的 _operator new_ 和 _operator delete_ 的类的对象通常不是一个好主意。
 
+## 禁止完美转发 _new expression_
+
+```C++
+  std::list<std::shared_ptr<Widget>> ptrs;
+```   
+```C++
+  void killWidget(Widget* pWidget);
+```  
+
+```C++
+  ptrs.push_back(std::shared_ptr<Widget>(new Widget, killWidget));
+```  
+
+```C++
+  ptrs.push_back({ new Widget, killWidget });
+```
+
+不管哪种方式，一个临时的 _std::shared_ptr_ 将会在调用 _push_back_ 之前被构造。_push_back_ 的形参是 _std::shared_ptr_ 的引用，所以形参必须指向 _std::shared_ptr_。
+
+考虑下面潜在的事件顺序：  
+* 在上面的两个调用中，一个临时的 _std::shared_ptr&lt;Widget&gt;_ 对象是被构造出来以去持有 _new Widget_ 所生成的原始指针的。称这个对象为 _temp_。
+* _push_back_ 按 _by-value_ 的形式持有 _temp_。在持有 _temp_ 的副本的 _list node_ 的分配期间，一个 _out-of-memory_ 异常抛出了。
+* 当这个异常传播到 _push_back_ 外面时，_temp_ 是被销毁的。
+做为唯一的 _std::shared_ptr_，它指向着它所管理的 _Widget_，它会自动释放所管理的 _Widget_，在这个场景中，是通过调用 _killWidget_。
+
+尽管一个异常发生了，但是没有东西泄露：在 _push_back_ 中通过 _new Widget_ 所创建的 _Widget_ 是在被创建以去管理 _temp_ 的 _std::shared_ptr_ 的析构函数中进行释放的。
+
+现在考虑：如果调用的是 _emplace_back_ 完美转发了 _new expression_ 而不是 _push_back_ 的话，那么会发生什么：  
+```C++
+  ptrs.emplace_back(new Widget, killWidget);
+```  
+* _new Widget_ 所生成的原始指针是被完美转发给 _emplace_back_ 的，并且在 _emplace_back_ 中将会分配一个 _list node_。这个分配失败，一个 _out-of-memory_ 异常被抛出。
+*  当这个异常传播到 _push_back_ 外面时，唯一可以获取堆上的 _Widget_ 的原始指针就丢失了。这个 _Widget_ 和它所拥有的所有资源被泄露了。
+
+所以，禁止完美转发 _new expression_，因为这会导致资源泄露。
+
 # _Item 22_ 当使用 _Pimpl Idiom_ 时，在源文件中定义特殊成员函数
 
 ## _Pimpl Idiom_ 是通过减少类的客户和类的实现之间的编译依赖来缩短编译时间的
 
 在头文件中，定义指针类型的对象时，可以只有指针类型的声明而没有指针类型的定义，这样的话就不需要包含指针类型所对应的头文件了，_Pimpl Idiom_ 就是在头文件使用已经被声明，但没有被定义的指针，这样就减少了类的客户和类的实现之间的编译依赖，缩短了编译时间。
-
 
 ## 使用 _std::unique_ptr_ 实现 _Pimpl Idiom_ 时，需要特殊处理
 
@@ -2808,3 +2848,43 @@ _volatile_ 会禁止对所对应的内存上的操作执行优化，而 _std::at
   …
   };
 ```  
+
+# _Item 42_ 考虑使用 _emplacement_ 来代替 _insertion_
+
+## _container_ 中的 _emplacement_ 和 _insertion_
+
+_emplacement_：_emplace_、_emplace_front_、_emplace_back_ 和 _emplace_after_ 等。
+
+_insertion_：_insert_、_push_front_、_push_back_ 和 _insert_after_ 等。
+
+## _emplacement_ 不需要生成临时变量
+
+```C++
+  std::vector<std::string> vs;          // container of std::string
+  vs.push_back("xyzzy");                // add string literal
+``` 
+
+```C++
+  vs.push_back(std::string("xyzzy"));   // create temp. std::string
+                                        // and pass it to push_back
+``` 
+
+因为 _insertion_ 不是使用完美转发的，所以当所传递的实参的类型不是所对应的 _container_ 所持有的类型时，是需要生成临时变量的。
+
+```C++
+  std::vector<std::string> vs;          // container of std::string
+  vs.emplace_back("xyzzy");                // add string literal
+``` 
+
+因为 _emplacement_ 是使用完美转发的，可以直接将所传递的实参完美转发给所对应的构造函数，所以当所传递的实参的类型不是所对应的 _container_ 所持有的类型时，是不需要生成临时变量的。
+
+所以 _emplacement_ 不需要生成临时变量，而 _insertion_ 需要生成临时变量，前者效率高。
+
+## _copy initialization_ 和 _direct initialization_
+
+```C++
+  std::regex r1 = nullptr;              // copy initialization error! won't compile
+  
+  std::regex r2(nullptr);               // direct initialization compiles
+```   
+_copy initialization_ 不允许使用 _explicit_ 构造函数。_direct initialization_ 允许使用 _explicit_ 构造函数。
