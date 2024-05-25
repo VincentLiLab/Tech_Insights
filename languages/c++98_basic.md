@@ -579,7 +579,7 @@ _derived class object_(_derived class object_) 需要在 _derived class_ 的构�
 ```C++
   class Base {
   public:
-    Base* operator=(const Base &) {
+    Base& operator=(const Base &) {
       ...
     }
     ...
@@ -587,7 +587,7 @@ _derived class object_(_derived class object_) 需要在 _derived class_ 的构�
 
 class Derived : public Base {
 public:
-  Derived* operator=(const Derived &d) {
+  Derived& operator=(const Derived &d) {
     Base::operator=(d);
     ...
   }
@@ -717,7 +717,7 @@ _virtual function_ 是在类中使用 _virtual_ 修饰的函数。
   public:
     Widget();
     Widget(const Widget &);
-    Widget* operator=(const Widget &);
+    Widget& operator=(const Widget &);
     ...
   };
 
@@ -732,7 +732,7 @@ _virtual function_ 是在类中使用 _virtual_ 修饰的函数。
   }
 
   template <class T, short size>
-  Widget<T, size>* Widget<T, size>::operator=(const Widget &) {
+  Widget<T, size>& Widget<T, size>::operator=(const Widget &) {
     ...
   }
 ```
