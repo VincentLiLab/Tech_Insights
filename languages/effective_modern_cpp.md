@@ -728,7 +728,7 @@ _braced initialization_ 可以让编译器强烈地优先选择持有 _std::init
 > 就是这么 **_强烈地优先选择_**。_C++_ 你是有病吗？学你算我倒霉。
 
 
-_braced initialization_ 对于常规的拷贝构造函数和移动构造函数会有不同。
+_braced initialization_ 对于常规的 _copy constructor_ 和 _move constructor_ 会有不同。
 > 原文认为：“甚至那些常规的拷贝构造和移动构造也可以被 _std::initializer_list_ 构造函数所劫持。”实际测试不是这样，使用的编译器是 _c++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0_。
 
 * 原文认为的常规的拷贝构造和移动构造情况
