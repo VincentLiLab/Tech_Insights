@@ -26,6 +26,7 @@
     - [占位参数](#占位参数)
     - [重载函数](#重载函数)
     - [友元函数](#友元函数)
+    - [_operator_](#operator)
 - [类](#类)
   - [数据成员](#数据成员)
     - [非静态数据成员](#非静态数据成员)
@@ -353,7 +354,47 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 
 ### 友元函数
 
-友元函数本质是全局函数，只是增加了对类成员的访问权限而已，将友元函数放在哪个类声明中，就可以在这个友元函数中访问该类的全部成员，包括私有成员。
+友元函数本质是全局函数，只是增加了对类成员的访问权限而已，将友元函数放在哪个类声明中，就可以在这个友元函数中访问该类的全部成员，包括私有成员。_operator<<_ 只能通过友元函数来完成，因为如果使用类成员数据来完成的话，都需要在标准 _std::ostream_ 中完成，这是不可以的。注意返回值是 _std::ostream&_，这样才能支持链式访问。
+
+```C++
+  class Widget {
+  public:
+    friend std::ostream& operator<<(std::ostream &c, const Widget &w) {
+      ...
+    }
+    ...
+};
+```
+
+### _operator_
+
+class Widget {
+public:
+  Widget& operator++() {
+    this->_value++;
+    return *this;
+  }
+
+  Widget operator++(int) {
+    Widget w(*this);
+    this->_value++;
+    return w;
+  }
+
+   Widget operator+(const Widget &w) {
+    ...
+  }
+
+private:
+  _value;  
+};
+
+* _Widget& operator++()_：前置 _++_，返回 _Widget&_。
+* _Widget operator++(int)_：后置 _++_，占位参数，返回 _Widget_。
+* _Widget operator+(const Widget &w)_：返回 _Widget_ 以支持链式访问，比如：_w1 + w2 + w3_。
+* _._、_::_、_?_ 和 _sizeof_ 不能有所对应的 _operator_。
+* _=_、_()_、_[]_ 和 _->_ 只能使用类成员数据完成。
+* 形参类型必须有类本身存在，隐含的 _this_ 也算实参之一。  
 
 # 类
 
