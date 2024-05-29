@@ -28,10 +28,10 @@
     - [友元函数](#友元函数)
     - [_operator_](#operator)
 - [类](#类)
-  - [数据成员](#数据成员)
-    - [非静态数据成员](#非静态数据成员)
-    - [静态数据成员](#静态数据成员)
-    - [静态数据成员不可以使用非静态数据成员](#静态数据成员不可以使用非静态数据成员)
+  - [成员](#成员)
+    - [非静态成员](#非静态成员)
+    - [静态成员](#静态成员)
+    - [静态成员不可以使用非静态成员](#静态成员不可以使用非静态成员)
   - [构造函数](#构造函数)
     - [构造函数的作用](#构造函数的作用)
     - [_default constructor_](#default-constructor)
@@ -158,7 +158,7 @@ _C++_ 的编译器会将 _int i_ 优化为 _int register i_。
   int v1 = 0;
   int v2 = 0;
 
-  (v1 > v2 ? v1 : v2) = 1;              // ok! 
+  (v1 > v2 ? v1 : v2) = 1;              // fine! 
 ```
 
 在 _C_ 中：
@@ -169,7 +169,7 @@ _C++_ 的编译器会将 _int i_ 优化为 _int register i_。
 
   (v1 > v2 ? v1 : v2) = 1;              // error!  
 
-  *(v1 > v2 ? &v1 : &v2) = 1;           // ok! 
+  *(v1 > v2 ? &v1 : &v2) = 1;           // fine! 
 ```
 
 _(v1 > v2) ? v1 : v2_ 是右值，不能赋值，而 _(v1 > v2 ? &v1 : &v2)_ 也是右值，但是经过 _&_ 后可以做为左值。
@@ -253,7 +253,7 @@ _v_ 和 _rv_ 具有相同的值和地址
     ...
   }
 
-  Function(0) = 0;            // ok!
+  Function(0) = 0;            // fine!
 ```
 
 ```C++
@@ -293,7 +293,7 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 默认参数的后面必须都是默认参数。
 
 ```C++
-  void Function(int x, int y = 0, int z = 0);     // ok!   
+  void Function(int x, int y = 0, int z = 0);     // fine!   
 
   void Function(int x, int y = 0, int z);          // error! 
 ```
@@ -309,7 +309,7 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 
   Function(0);                          // error!
 
-  Function(0, 0);                       // ok!
+  Function(0, 0);                       // fine!
 
 ``` 
 
@@ -354,7 +354,7 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 
 ### 友元函数
 
-友元函数本质是全局函数，只是增加了对类成员的访问权限而已，将友元函数放在哪个类声明中，就可以在这个友元函数中访问该类的全部成员，包括私有成员。_operator<<_ 只能通过友元函数来完成，因为如果使用类成员数据来完成的话，都需要在标准 _std::ostream_ 中完成，这是不可以的。注意返回值是 _std::ostream&_，这样才能支持链式访问。
+友元函数本质是全局函数，只是增加了对类成员的访问权限而已，将友元函数放在哪个类声明中，就可以在这个友元函数中访问该类的全部成员，包括私有成员。_operator<<_ 只能通过友元函数来完成，因为如果使用类的函数成员来完成的话，都需要在标准 _std::ostream_ 中完成，这是不可以的。注意返回值是 _std::ostream&_，这样才能支持链式访问。
 
 ```C++
   class Widget {
@@ -367,7 +367,7 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 ```
 
 ### _operator_
-
+```C++
 class Widget {
 public:
   Widget& operator++() {
@@ -388,35 +388,36 @@ public:
 private:
   _value;  
 };
+```
 
 * _Widget& operator++()_：前置 _++_，返回 _Widget&_。
 * _Widget operator++(int)_：后置 _++_，占位参数，返回 _Widget_。
 * _Widget operator+(const Widget &w)_：返回 _Widget_ 以支持链式访问，比如：_w1 + w2 + w3_。
 * _._、_::_、_?_ 和 _sizeof_ 不能有所对应的 _operator_。
-* _=_、_()_、_[]_ 和 _->_ 只能使用类成员数据完成。
+* _=_、_()_、_[]_ 和 _->_ 只能使用类函数成员完成。
 * 形参类型必须有类本身存在，隐含的 _this_ 也算实参之一。  
 
 # 类
 
-## 数据成员
+## 成员
 
-### 非静态数据成员
+### 非静态成员
   
-同一个类可以定义多个对象，每个对象都有自己的存储空间用来存储自己的非静态数据成员，即为非静态数据成员属于每个对象，而不是类。可以通过 _this_ 指针来访问非静态数据成员，不可以通过 _class::_ 来访问非静态数据成员。
+同一个类可以定义多个对象，每个对象都有自己的存储空间用来存储自己的非静态成员，即为非静态成员属于每个对象，而不是类。可以通过 _this_ 指针来访问非静态成员，不可以通过 _class::_ 来访问非静态成员。
 
-### 静态数据成员
+### 静态成员
 
-同一类定义的所有对象共享静态数据成员，即为静态数据成员是属于类的而不是属于各个对象。必须要先初始化静态数据成员后，才可以进行使用。因为类中只是声明并没有分配内存，初始化是在要求编译器来分配内存。可以通过 _class::_ 来访问静态数据成员，不可以通过 _this_ 指针来访问非静态数据成员。静态数据成员不可以使用非静态数据成员，只可以使用静态数据成员。
+同一类定义的所有对象共享静态成员，即为静态成员是属于类的而不是属于各个对象。必须要先初始化静态数据成员后，才可以进行使用。因为类中只是声明并没有分配内存，初始化是在要求编译器来分配内存。可以通过 _class::_ 来访问静态成员，不可以通过 _this_ 指针来访问非静态成员。静态成员不可以使用非静态成员，只可以使用静态成员。
 
-### 静态数据成员不可以使用非静态数据成员
+### 静态成员不可以使用非静态成员
 
-静态数据成员不可以使用非静态数据成员，只可以使用静态数据成员。
+静态成员不可以使用非静态成员，只可以使用静态成员。
 
 ## 构造函数
 
 ### 构造函数的作用
 
-构造函数被用来初始化对象中的数据成员，特别是私有属性的数据成员，因为不能在对象外初始化对象的私有数据，所以需要在构造函数中使用初始化列表进行，并且对象不能像调用函数成员一样调用构造函数。
+构造函数被用来初始化对象中的数据成员，特别是私有属性的数据成员，因为不能在对象外初始化对象的私有数据成员，所以需要在构造函数中使用初始化列表进行，并且对象不能像调用函数成员一样调用构造函数。
 
 ### _default constructor_
 
@@ -501,8 +502,8 @@ _copy elision_ 可以避免调用多余的 _copy constructor_。可以通过指�
       ...
   }
 
-  Widget w1 = 0;              // ok! copy initialization 
-  Widget w2 = w1;             //error! direct initialization
+  Widget w1 = 0;              // fine! copy initialization 
+  Widget w2 = w1;             // error! direct initialization
 ```
 _copy initialization_ 不允许使用 _explicit_ 构造函数。_direct initialization_ 允许使用 _explicit_ 构造函数。
 
@@ -575,7 +576,7 @@ _copy initialization_ 不允许使用 _explicit_ 构造函数。_direct initiali
 
 ### 覆盖
 
-_derived class_ 中的同名成员会将 _base class_ 中的同名成员覆盖，同名成员可以是变量、枚举、函数等，注意函数的名字相同即可，返回类型和函数特征标不同也可以覆盖。发生覆盖时访问 _base class_ 中的成员需要使用 _bass class ::_ 进行指定。
+_derived class_ 中的同名成员会将 _base class_ 中的同名成员覆盖，同名成员可以是变量、枚举、函数、_typedef_ 和类等，注意函数的名字相同即可，返回类型和函数特征标不同也可以覆盖。发生覆盖时访问 _base class_ 中的成员需要使用 _bass class ::_ 进行指定。
 
 ### _base class_ 的引用或指针可以引用或指向 _derived class_ 的对象
 
@@ -587,7 +588,8 @@ _base class object_(_derived class object_) 是以 _derived class_ 中的 _base 
 
 ### _derived class object_(_derived class object_)
 
-_derived class object_(_derived class object_) 需要在 _derived class_ 的构造函数的初始化列表中初始化 _base class_ 部分。
+* 当 _derived class_ 的 _copy constructor_ 是被生成的时，会自动以 _derived class_ 中的 _base class_ 部分为参数来调用 _base class_ 的用户定义的或被生成的 _copy constructor_。
+* 当 _derived class_ 的 _copy constructor_ 不是被生成的，而是被用户所定义的时，注意不会自动以 _derived class_ 中的 _base class_ 部分为参数来调用 _base class_ 的 _copy constructor_，需要自己进行显式操作。
 
 ```C++
   class Base {
@@ -610,12 +612,12 @@ _derived class object_(_derived class object_) 需要在 _derived class_ 的构�
 
 ### _base class object_ = _derived class object_
 
-以 _derived class_ 中的 _base class_ 部分为参数，来调用 _base class_ 的 _copy operator_。
+以 _derived class_ 中的 _base class_ 部分为参数，来调用 _base class_ 的 _copy assignment operator_。
 
 ### _derived class object_ = _derived class object_
 
-* 当 _derived class_ 的 _copy operator_ 是被生成的时，会自动以 _derived class_ 中的 _base class_ 部分为参数来调用 _base class_ 的 _copy operator_。
-* 当 _derived class_ 的 _copy operator_ 不是被生成的，而是被用户所定义的时，注意不会自动以 _derived class_ 中的 _base class_ 部分为参数来调用 _base class_ 的 _copy operator_，需要自己进行显式操作。
+* 当 _derived class_ 的 _copy assignment operator_ 是被生成的时，会自动以 _derived class_ 中的 _base class_ 部分为参数来调用 _base class_ 的户定义的或被生成的 _copy assignment operator_。
+* 当 _derived class_ 的 _copy assignment operator_ 不是被生成的，而是被用户所定义的时，注意不会自动以 _derived class_ 中的 _base class_ 部分为参数来调用 _base class_ 的 _copy assignment operator_，需要自己进行显式操作。
 
 ```C++
   class Base {
@@ -674,7 +676,7 @@ public:
   };
 
   SingerWaiter sw(0);
-  sw._value = 1;              // ok!
+  sw._value = 1;              // fine!
 ```
 
 因为如果使用的是 _public_ 的话，那么会出现二义性问题，所以需要使用 _public virtual_ 来解决二义性问题，注意必须要在初始化列表中显式地调用 _virtual base class_ _Worker_ 的构造函数。
@@ -780,7 +782,7 @@ _virtual function_ 是在类中使用 _virtual_ 修饰的函数。
 
 ### 类模板的声明和实现都必须在头文件中
 
-类模板的声明和实现都必须在头文件中。在类模板的声明中和数据成员函数中可以直接使用 _Widget_，除此之外，需要使用 _Widget&lt;T, size&gt;_，比如：函数的返回类型。
+类模板的声明和实现都必须在头文件中。在类模板的声明中和函数成员中可以直接使用 _Widget_，除此之外，需要使用 _Widget&lt;T, size&gt;_，比如：函数的返回类型。
 
 ## 类模板的定义
 

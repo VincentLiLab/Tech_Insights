@@ -2224,7 +2224,7 @@ class Person {
   void Widget::addFilter() const
   {
     filters.emplace_back(
-      [=](int value) { return value % divisor == 0; }       // ok! implicit use of this pointer
+      [=](int value) { return value % divisor == 0; }       // fine! implicit use of this pointer
     );                                  
   }
 ```  
@@ -2484,7 +2484,7 @@ _Standardization Committee_ 认为销毁 _joinable_ _std::thread_ 是非常可�
 
 ## _RAII_
 
-_RAII_ **_Resource Acquisition Is Initialization_** 指的是将必须要执行的操作放到析构函数中。比如：_std::fstream_ 对象，它们的析构函数会关闭它们所对应的文件。
+_RAII_ **_Resource Acquisition Is Initialization_** 指的是在构造函数中获取资源，并将必须要执行的操作放到析构函数中。比如：_std::fstream_ 对象，它们的析构函数会关闭它们所对应的文件。
 
 ## 通过 _RAII_ 来使 _std::thread_ 在所有路径上都为 _unjoinable_
 
