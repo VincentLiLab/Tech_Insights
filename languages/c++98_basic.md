@@ -22,8 +22,8 @@
     - [_return-by-reference_ 的函数可以做为左值](#return-by-reference-的函数可以做为左值)
     - [_by-reference_ 比 _by-value_ 高效](#by-reference-比-by-value-高效)
   - [函数](#函数)
-    - [默认参数](#默认参数)
-    - [占位参数](#占位参数)
+    - [默认实参](#默认实参)
+    - [占位形参](#占位形参)
     - [重载函数](#重载函数)
     - [友元函数](#友元函数)
     - [_operator_](#operator)
@@ -274,7 +274,7 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 
 ## 函数
 
-### 默认参数
+### 默认实参
 
 ```C++
   
@@ -290,7 +290,7 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
   Function(1);                          // 1
 ``` 
 
-默认参数的后面必须都是默认参数。
+默认实参的后面必须都是默认实参。
 
 ```C++
   void Function(int x, int y = 0, int z = 0);     // fine!   
@@ -298,7 +298,7 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
   void Function(int x, int y = 0, int z);          // error! 
 ```
 
-### 占位参数
+### 占位形参
 
 ```C++
   
@@ -313,7 +313,7 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 
 ``` 
 
-占位参数无法使用，但是必须传入。
+占位形参无法使用，但是必须传入。
 
 ### 重载函数
 
