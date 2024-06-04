@@ -616,7 +616,7 @@ _base class object_(_derived class object_) 是以 _derived class_ 中的 _base 
 
 ### _derived class object_ = _derived class object_
 
-* 当 _derived class_ 的 _copy assignment operator_ 是被生成的时，会自动以 _derived class_ 中的 _base class_ 部分为参数来调用 _base class_ 的户定义的或被生成的 _copy assignment operator_。
+* 当 _derived class_ 的 _copy assignment operator_ 是被生成的时，会自动以 _derived class_ 中的 _base class_ 部分为参数来调用 _base class_ 的用户定义的或被生成的 _copy assignment operator_。
 * 当 _derived class_ 的 _copy assignment operator_ 不是被生成的，而是被用户所定义的时，注意不会自动以 _derived class_ 中的 _base class_ 部分为参数来调用 _base class_ 的 _copy assignment operator_，需要自己进行显式操作。
 
 ```C++

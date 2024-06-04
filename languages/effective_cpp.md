@@ -12,12 +12,12 @@
   - [_const iterator_ 和 _const\_iterator_](#const-iterator-和-const_iterator)
   - [_const_ 用在函数返回类型上可以避免函数的返回值被意外修改](#const-用在函数返回类型上可以避免函数的返回值被意外修改)
   - [_const_ 用在函数形参上可以 _pass-by-reference-to-const_](#const-用在函数形参上可以-pass-by-reference-to-const)
-  - [_const_ 用在函数上使得可以去操作 _const_ 对象，并且可以明确表明本函数不会改变所对应的对象的内容](#const-用在函数上使得可以去操作-const-对象并且可以明确表明本函数不会改变所对应的对象的内容)
+  - [_const_ 用在成员函数上使得可以去操作 _const_ 对象，并且可以明确表明本函数不会改变所对应的对象的内容](#const-用在成员函数上使得可以去操作-const-对象并且可以明确表明本函数不会改变所对应的对象的内容)
   - [_const_ 函数和 _non-const_ 函数是函数重载，_non-const_ 函数调用 _const_ 函数可以避免代码重复](#const-函数和-non-const-函数是函数重载non-const-函数调用-const-函数可以避免代码重复)
 - [_Item 4_ 确保对象在被使用前先被初始化](#item-4-确保对象在被使用前先被初始化)
   - [确保对象在被使用前先被初始化，使用成员初始化列表法，而不是构造赋值法](#确保对象在被使用前先被初始化使用成员初始化列表法而不是构造赋值法)
   - [_local static_ 和 _non-local static_ 对象](#local-static-和-non-local-static-对象)
-  - [不同的 _translation unit_ 中所定义的 _non-local static_ 对象的初始化顺序是没有定义的](#不同的-translation-unit-中所定义的-non-local-static-对象的初始化顺序是没有定义的)
+  - [不同的 _translation unit_ 中所定义的 _non-local static_ 对象的初始化顺序是没有被定义的](#不同的-translation-unit-中所定义的-non-local-static-对象的初始化顺序是没有被定义的)
 - [_Item 5_ 了解 _C++_ 会悄悄地写和调用哪些函数](#item-5-了解-c-会悄悄地写和调用哪些函数)
   - [可以被生成的函数](#可以被生成的函数)
   - [被生成的函数都是 _public_、_inline_ 和 _non-virual_ 的](#被生成的函数都是-publicinline-和-non-virual-的)
@@ -75,8 +75,8 @@
   - [引用只是一个已经存在的对象的名字而已](#引用只是一个已经存在的对象的名字而已)
 - [_Item 22_ 声明数据成员为 _private_](#item-22-声明数据成员为-private)
 - [_Item 23_ 首选 _non-member_ _non-friend_ 函数而不是成员函数](#item-23-首选-non-member-non-friend-函数而不是成员函数)
-- [_Item 24_ 当类型转换应该应用到所有形参上时，声明为 _non-member_ 函数](#item-24-当类型转换应该应用到所有形参上时声明为-non-member-函数)
-  - [当类型转换应该应用到所有形参上时，特别是 _this_ 上时，声明为 _non-member_ 函数](#当类型转换应该应用到所有形参上时特别是-this-上时声明为-non-member-函数)
+- [_Item 24_ 当类型转换会被应用到函数的所有形参上时，需要声明这个函数为 _non-member_ 函数](#item-24-当类型转换会被应用到函数的所有形参上时需要声明这个函数为-non-member-函数)
+  - [当隐式类型转换会被应用到函数的所有形参上时，特别是 _this_ 上时，需要声明这个函数为 _non-member_ 函数](#当隐式类型转换会被应用到函数的所有形参上时特别是-this-上时需要声明这个函数为-non-member-函数)
   - [只要有可能就在构造函数中使用 _explicit_](#只要有可能就在构造函数中使用-explicit)
 - [_Item 25_ 考虑支持 _non-throwing_ _swap_](#item-25-考虑支持-non-throwing-swap)
   - [允许对标准库中函数模板进行特化，禁止对标准库中函数模板进行重载](#允许对标准库中函数模板进行特化禁止对标准库中函数模板进行重载)
@@ -103,7 +103,7 @@
 - [_Item 35_ 考虑 _virtual function_ 的替代方法](#item-35-考虑-virtual-function-的替代方法)
   - [可以使用设计模式 _template_ 和 _strategy_ 来代替 _virtual function_](#可以使用设计模式-template-和-strategy-来代替-virtual-function)
 - [_Item 36_ 永远不重新定义所继承而来的 _non-virtual function_](#item-36-永远不重新定义所继承而来的-non-virtual-function)
-  - [重新定义所继承而来的 _non-virtual function_，就相当于覆盖](#重新定义所继承而来的-non-virtual-function就相当于覆盖)
+  - [重新定义所继承而来的 _non-virtual function_ 相当于覆盖](#重新定义所继承而来的-non-virtual-function-相当于覆盖)
 - [_Item 37_ 永远不重新定义函数所继承而来的默认形参值](#item-37-永远不重新定义函数所继承而来的默认形参值)
   - [静态类型和动态类型](#静态类型和动态类型)
   - [永远不重新定义函数所继承而来的默认形参值](#永远不重新定义函数所继承而来的默认形参值)
@@ -116,7 +116,7 @@
   - [可以通过组合来实现 _private_ 继承](#可以通过组合来实现-private-继承)
   - [_private_ 继承的使用场景](#private-继承的使用场景)
 - [_Item 40_ 明智而审慎地使用多继承](#item-40-明智而审慎地使用多继承)
-  - [多继承负载且成本大](#多继承负载且成本大)
+  - [多继承复杂且成本大](#多继承复杂且成本大)
 - [_Item 41_ 了解隐式接口和 _compile-time_ 多态](#item-41-了解隐式接口和-compile-time-多态)
   - [模板的隐式接口](#模板的隐式接口)
   - [模板的 _compile-time_ 多态](#模板的-compile-time-多态)
@@ -131,8 +131,35 @@
   - [将与参数无关的代码从模板中提取出来以避免重复](#将与参数无关的代码从模板中提取出来以避免重复)
 - [_Item 45_ 使用成员函数模板去接受所有的兼容类型](#item-45-使用成员函数模板去接受所有的兼容类型)
   - [同一模板的不同实例化之间是没有任何内在的关系的](#同一模板的不同实例化之间是没有任何内在的关系的)
-- [使用成员函数模板去接受所有的兼容类型](#使用成员函数模板去接受所有的兼容类型)
+  - [使用成员函数模板去接受所有的兼容类型](#使用成员函数模板去接受所有的兼容类型)
   - [成员函数模板并不阻止那些可以被生成的函数被生成](#成员函数模板并不阻止那些可以被生成的函数被生成)
+- [_Item 46_ 当需要类型转换时，在模板内定义 _non-member_ 函数](#item-46-当需要类型转换时在模板内定义-non-member-函数)
+  - [隐式类型转换函数在模板实参推导期间是永远不会被考虑的](#隐式类型转换函数在模板实参推导期间是永远不会被考虑的)
+  - [当隐式类型转换会被应用到函数的所有形参上，特别是 _this_ 上且这个函数依赖于类模板时，需要声明这个函数为友元函数且在模板类中进行实现](#当隐式类型转换会被应用到函数的所有形参上特别是-this-上且这个函数依赖于类模板时需要声明这个函数为友元函数且在模板类中进行实现)
+- [_Item 47_ 对于类型的信息使用 _trait_ 类](#item-47-对于类型的信息使用-trait-类)
+- [_Item 48_ 了解模板元编程 _TMP_](#item-48-了解模板元编程-tmp)
+  - [_TMP_ 是 _Turing-complete_](#tmp-是-turing-complete)
+  - [_TMP_ 可以将工作从 _runtime_ 转移至 _compile-time_](#tmp-可以将工作从-runtime-转移至-compile-time)
+- [_Item 49_ 了解 _new-handler_ 的行为](#item-49-了解-new-handler-的行为)
+  - [当 _operator new_ 无法满足内存分配需求时，会调用 _new-handler_](#当-operator-new-无法满足内存分配需求时会调用-new-handler)
+  - [如何设计 _new-handler_](#如何设计-new-handler)
+  - [使用 _CRTP_ 来为每个类设置 _new-handler_](#使用-crtp-来为每个类设置-new-handler)
+  - [禁止使用 _nothrow new_](#禁止使用-nothrow-new)
+- [_Item 50_ 了解何时替换 _new_ 和 _delete_ 是有意义的](#item-50-了解何时替换-new-和-delete-是有意义的)
+  - [_custom operator new_ 和 _custom operator delete_ 的作用](#custom-operator-new-和-custom-operator-delete-的作用)
+- [_Item 51_ 当写 _new_ 和 _delete_ 时，遵循常规](#item-51-当写-new-和-delete-时遵循常规)
+  - [_operator new_ 的实现方法](#operator-new-的实现方法)
+  - [_custom operator new_ 和 _custom operator delete_ 需要处理非期望大小的内存块](#custom-operator-new-和-custom-operator-delete-需要处理非期望大小的内存块)
+  - [_operator new\[\]_ 中的元素个数 _!=_ _(bytes requested)/sizeof(class)_](#operator-new-中的元素个数--bytes-requestedsizeofclass)
+- [_Item 52_ 如果写了 _placement new_ 的话，那么也必须要写 _placement delete_](#item-52-如果写了-placement-new-的话那么也必须要写-placement-delete)
+  - [_normal operator new_ 和 _normal operator delete_](#normal-operator-new-和-normal-operator-delete)
+  - [_placement operator new_ 和 _placement operator delete_](#placement-operator-new-和-placement-operator-delete)
+  - [如果写了 _placement operator new_ 的话，那么也必须要写 _placement operator delete_](#如果写了-placement-operator-new-的话那么也必须要写-placement-operator-delete)
+  - [调用 _delete_ 只会调用 _normal operator delete_](#调用-delete-只会调用-normal-operator-delete)
+  - [类中调用 _global operator new_ 和 _global operator delete_](#类中调用-global-operator-new-和-global-operator-delete)
+- [_Item 53_ 注意编译器警告](#item-53-注意编译器警告)
+- [_Item 54_ 熟悉包含了 _TR1_ 的标准库](#item-54-熟悉包含了-tr1-的标准库)
+- [_Item 55_ 熟悉 _Boost_](#item-55-熟悉-boost)
 
 
 # _Item 1_ 将 _C++_ 视为语言联邦
@@ -147,7 +174,7 @@ _C++_ 由以下 _4_ 部分组成：_C_、_object-Oriented C++_、_template C++_ 
 
 ## 在 _object-oriented C++_ 和 _template C++_ 中，_pass-by-reference-to-const_ 比 _pass-by-value_ 高效
 
-在 _object-Oriented C++_ 和 _template C++_ 中，_pass-by-reference-to-const_ 比 _pass-by-value_ 高效且可以避免切割问题。因为 _pass-by-reference-to-const_ 避免了副本的创建和销毁。
+在 _object-Oriented C++_ 和 _template C++_ 中，_pass-by-reference-to-const_ 比 _pass-by-value_ 避免了副本的创建和销毁且可以避免切割问题。
 
 ## 在 _STL_ 中，_pass-by-value_ 比 _pass-by-reference_ 高效
 
@@ -261,9 +288,9 @@ _const_ 用在函数返回类型上可以避免函数的返回值被意外修改
 
 _const_ 用在函数形参上可以 _pass-by-reference-to-const_，_pass-by-reference-to-const_ 功能上等同于 _pass-by-value_，前者相比于后者效率高，并且可以避免切割问题。
 
-## _const_ 用在函数上使得可以去操作 _const_ 对象，并且可以明确表明本函数不会改变所对应的对象的内容
+## _const_ 用在成员函数上使得可以去操作 _const_ 对象，并且可以明确表明本函数不会改变所对应的对象的内容
 
-_const_ 用在函数上使得可以去操作 _const_ 对象，因为 _const_ 对象只可以调用 _const_ 函数。_const_ 函数可以明确表明本函数不会改变所对应的对象的内容。
+_const_ 用在成员函数上使得可以去操作 _const_ 对象，因为只有 _const_ 对象才可以调用 _const_ 函数。_const_ 函数可以明确表明本函数不会改变所对应的对象的内容。
 
 ```C++
   class TextBlock {
@@ -380,9 +407,9 @@ _const_ 函数和 _non-const_ 函数是函数重载，_non-const_ 函数调用 _
 * _local static_ 对象：函数中的 _static_ 对象。
 * _non-local static_ 对象：_global_ 对象、_namespace_ 中的对象、类中的 _static_ 对象以及 _file_ 作用域中的 _static_ 对象。
 
-## 不同的 _translation unit_ 中所定义的 _non-local static_ 对象的初始化顺序是没有定义的
+## 不同的 _translation unit_ 中所定义的 _non-local static_ 对象的初始化顺序是没有被定义的
 
-因为不同的 _translation unit_ 中所定义的 _non-local static_ 对象的初始化顺序是没有定义的，所以必须要使用 _local static_ 对象来代替所对应的 _non-local static_ 对象。
+因为不同的 _translation unit_ 中所定义的 _non-local static_ 对象的初始化顺序是没有被定义的，所以必须要使用 _local static_ 对象来代替所对应的 _non-local static_ 对象。
 
 ```C++
   class FileSystem {                              // from your library’s header file
@@ -513,7 +540,7 @@ _const_ 函数和 _non-const_ 函数是函数重载，_non-const_ 函数调用 _
 
 ## 析构函数不是 _virtual_ 的类不能被继承来做为 _base class_
 
-会被继承的 _base class_ 的析构函数必须要为 _virtual_。
+析构函数不是 _virtual_ 的类不能被继承来做为 _base class_。
 
 # _Item 8_ 阻止异常离开析构函数
 
@@ -534,8 +561,8 @@ _const_ 函数和 _non-const_ 函数是函数重载，_non-const_ 函数调用 _
 
 ## 禁止在构造函数和析构函数中调用 _virtual function_
 
-禁止在构造函数和析构函数中调用 _virtual function_，特别注意嵌套调用 _virtual function_，
-这是因为在 _base class_ 构造和析构期间，_virtual function_ 没有 _virtual_ 特性，
+禁止在构造函数和析构函数中调用 _virtual function_，特别是嵌套调用 _virtual function_，
+因为在 _base class_ 构造和析构期间，_virtual function_ 没有 _virtual_ 特性。
 
 # _Item 10_ 让 _operator=_ 返回 _reference to *this_
 
@@ -782,9 +809,9 @@ _new_ 对应于 _delete_，_new []_ 对应于 _delete []_，否则会有 _undefi
 
 # _Item 23_ 首选 _non-member_ _non-friend_ 函数而不是成员函数
 
-# _Item 24_ 当类型转换应该应用到所有形参上时，声明为 _non-member_ 函数 
+# _Item 24_ 当类型转换会被应用到函数的所有形参上时，需要声明这个函数为 _non-member_ 函数 
 
-## 当类型转换应该应用到所有形参上时，特别是 _this_ 上时，声明为 _non-member_ 函数
+## 当隐式类型转换会被应用到函数的所有形参上时，特别是 _this_ 上时，需要声明这个函数为 _non-member_ 函数
 
 ```C++
   class Rational {
@@ -931,7 +958,7 @@ _non-member_ 函数
 }
 ```
 
-需要将 _swap_ 和 _Widget_ 到其他的 _namespace_ 中：  
+需要将 _swap_ 和 _Widget_ 移动到其他的 _namespace_ 中：  
 
 ```C++
   namespace WidgetStuff {
@@ -1072,8 +1099,6 @@ _C++-style_cast&lt;target-type&gt;(expression)_	本质上是 _target-type(expres
 
 ## 首选 _C++-style_ 转换而不是 _C-style_ 转换
 
-_C++-style_cast&lt;target-type&gt;(expression)_	本质上是 _target-type(expression)_，而 _target-type(expression)_ 本质上是得到一个类型为 _target-type_ 的 _(temporary copy of expression)_，也就是说得到的是或操作的是 _temporary copy of expression_，而不是 _expression_。
-
 ```C++
 
   class Base {
@@ -1112,7 +1137,7 @@ _C++-style_cast&lt;target-type&gt;(expression)_	本质上是 _target-type(expres
   int *p = reinterpret_cast<int *>(0);  // a new temporary copy of 0 is created in this cast, where type of the copy is 'int *'
 ```
 
-* _static_cast&lt;target-type&gt;(expression)_：使用隐式的转换和用户定义的转换的组合来在类型之间转换。也就是只要能转换的都可以使用 _static_cast_ 进行转换。这个转换相比于 _dynamic_cast_ 是效率高的，当转换失败时，不会抛出 _std::bad_cast_ 异常。
+* _static_cast&lt;target-type&gt;(expression)_：使用隐式的转换和用户定义的转换的组合来在类型之间转换。也就是只要可以转换的都可以使用 _static_cast_ 进行转换。这个转换相比于 _dynamic_cast_ 是效率高的，当转换失败时，不会抛出 _std::bad_cast_ 异常。
 
 ```C++
   Base b;
@@ -1133,7 +1158,7 @@ _C++-style_cast&lt;target-type&gt;(expression)_	本质上是 _target-type(expres
 
 ## 避免返回指向对象内部成员的引用、指针或 _iterator_
 
-* 因为返回指向着对象内部成员的引用、指针或 _iterator_ 可能会导致出现这个 _handle_ 比它所指向的对象存在的更久的风险。当这个 _handle_ 比它所指向的对象存在的更久时，这个 _handle_ 就是悬空的了。
+* 因为返回指向着对象内部成员的引用、指针或 _iterator_ 可能会导致这个 _handle_ 比它所指向的对象存在的更久。当这个 _handle_ 比它所指向的对象存在的更久时，这个 _handle_ 就是悬空的了。
 
 * 因为返回指向着对象内部成员的引用、指针或 _iterator_ 可能会导致 _const_ 对象被修改，破坏封装性。
 
@@ -1179,7 +1204,7 @@ _C++-style_cast&lt;target-type&gt;(expression)_	本质上是 _target-type(expres
                                                   // (50, 0) to (100, 100)!
 ```
 
-_rec_ 是 _const_ 的，是不可以被更改的，但是 _rec.upperLeft().setX(50);_ 却修改了 _rec_，这都是因为 _rec.upperLeft()_ 返回了指向着对象内部成员 _pData_ 的引用，通过这个引用修改了 _const_ 的 _rec_ 本身。
+_rec_ 是 _const_ 的，是不可以被更改的，但是 _rec.upperLeft().setX(50);_ 却修改了 _rec_，这是因为 _rec.upperLeft()_ 返回了指向着对象内部成员 _pData_ 的引用，通过这个引用修改了 _const_ 的 _rec_ 本身。
 
 # _Item 29_ 致力于异常安全代码
 
@@ -1198,9 +1223,9 @@ _inline_ 只是申请不是命令，是在编译期间完成的。
 ## 通过尽量依赖于声明而不是定义来降低文件之间的编译依赖
 
 * 引用和指针只需要前置声明。
-* 当函数声明中使用到某些类时，并不需要这些类的定义。
+* 当函数声明中使用到某些类时，并不需要这些类的定义，只需要前置声明。
 
-因为使用声明不需要包含所对应的头文件，所以可以通过尽量依赖于声明而不是定义来降低文件之间的编译依赖，并且别为声明和定义提供独立的头文件。
+因为使用声明不需要包含所对应的头文件，所以可以通过尽量依赖于声明而不是定义来降低文件之间的编译依赖，并且分别为声明和定义提供独立的头文件。
   
 # _Item 32_ 确保 _public_ 继承模拟 _is-a_
 
@@ -1212,7 +1237,7 @@ _inline_ 只是申请不是命令，是在编译期间完成的。
 
 ## 覆盖所继承而来的名称会破坏 _is-a_ 关系
 
-覆盖所继承而来的名称会破坏 _is-a_ 关系。
+[_覆盖_](c++98_basic.md#覆盖)所继承而来的名称会破坏 _is-a_ 关系。
 
 # _Item 34_ 区分接口继承和实现继承
 
@@ -1229,9 +1254,9 @@ _inline_ 只是申请不是命令，是在编译期间完成的。
 
 # _Item 36_ 永远不重新定义所继承而来的 _non-virtual function_
 
-## 重新定义所继承而来的 _non-virtual function_，就相当于覆盖
+## 重新定义所继承而来的 _non-virtual function_ 相当于覆盖
 
-重新定义所继承而来的 _non-virtual function_，就相当于覆盖，会破坏 _is-a_ 关系。
+重新定义所继承而来的 _non-virtual function_ 相当于覆盖，会破坏 _is-a_ 关系。
 
 # _Item 37_ 永远不重新定义函数所继承而来的默认形参值
 
@@ -1257,12 +1282,12 @@ _inline_ 只是申请不是命令，是在编译期间完成的。
                               // now Rectangle*
 ```
 
-* _ps_ 的静态类型为 _Shape *_，动态类型先成为了 _Circle *_。
-* _ps_ 的静态类型为 _Shape *_，动态类型先成为了 _Rectangle *_。
+* _ps_ 的静态类型为 _Shape *_，动态类型现在成为了 _Circle *_。
+* _ps_ 的静态类型为 _Shape *_，动态类型现在成为了 _Rectangle *_。
 
 ## 永远不重新定义函数所继承而来的默认形参值
 
-永远不重新定义函数所继承而来的默认形参值，因为 _virtual function_ 是动态绑定的，而默认形参值是静态绑定的。
+永远不重新定义函数所继承而来的默认形参值，因为 _virtual function_ 是动态绑定的，但是默认形参值是静态绑定的。
 
 ```C++
   // a class for geometric shapes
@@ -1361,7 +1386,7 @@ _inline_ 只是申请不是命令，是在编译期间完成的。
 
 ## _private_ 继承会导致不希望被继承到 _derived class_ 中的 _virtual function_ 被继承到 _derived class_ 中 
 
-_private_ 继承会导致不希望被继承到 _derived class_ 中的 _virtual function_ 被继承到 _derived class_ 中 ，比如：_Widget_ 的 _onTick_ 是 _virtual function_ ，是不希望被继承到 _derived class_ 中的。
+_private_ 继承会导致不希望被继承到 _derived class_ 中的 _virtual function_ 被继承到 _derived class_ 中 ，比如：_Widget_ 的 _virtual function_ _onTick_ 是不希望被继承到 _derived class_ 中的。
 
 ## 可以通过组合来实现 _private_ 继承
 
@@ -1382,17 +1407,17 @@ _private_ 继承会导致不希望被继承到 _derived class_ 中的 _virtual f
 ```
 ![Alt text](image/image2.jpg)
 
-可以通过组合来实现 _private_ 继承，避免了不希望被继承到 _derived class_ 中的 _virtual function_ 被继承到 _derived class_ 中，同时也是阻止不希望被继承到 _derived class_ 中的 _virtual function_ 被继承到 _derived class_ 中的方法。
+可以通过组合来实现 _private_ 继承，避免了不希望被继承到 _derived class_ 中的 _virtual function_ 被继承到 _derived class_ 中。
 
 ## _private_ 继承的使用场景 
 
-只有当 _derived class_ 需要访问 _protected base class_ 的成员或需要重写所继承而来的 _virtual function_ 时，才使用 _virtual function_。
+只有当 _derived class_ 需要访问 _protected base class_ 的成员或需要重写所继承而来的 _virtual function_ 时，才使用 _private_ 继承。
 
 # _Item 40_ 明智而审慎地使用多继承
 
-## 多继承负载且成本大
+## 多继承复杂且成本大
 
-多继承负载且成本大，但也有合理的使用场景。
+多继承复杂且成本大，但也有合理的使用场景。
 
 # _Item 41_ 了解隐式接口和 _compile-time_ 多态 
 
@@ -1682,7 +1707,7 @@ _SquareMatrix&lt;double, 5&gt;_ 和 _SquareMatrix&;t;double, 10&gt;_ 就是重�
   };
 ```
 
-虽然 _Middle_ 和 _Top_ 之间是有继承关系的，但是  _SmartPtr&lt;Middle&gt;_ 和 _SmartPtr&lt;Top&gt;_ 之间是没有继承关系的，甚至是没有任何关系的，因为因为同一模板的不同实例化之间是没有任何内在的关系的。下面这样做是不可以通过编译的：
+虽然 _Middle_ 和 _Top_ 之间是有继承关系的，但是  _SmartPtr&lt;Middle&gt;_ 和 _SmartPtr&lt;Top&gt;_ 之间是没有继承关系的，是没有任何关系的，因为因为同一模板的不同实例化之间是没有任何内在的关系的。下面这样做是不可以通过编译的：
 
 ```C++
   SmartPtr<Top> pt1 =                   // convert SmartPtr<Middle> ⇒
@@ -1695,7 +1720,7 @@ _SquareMatrix&lt;double, 5&gt;_ 和 _SquareMatrix&;t;double, 10&gt;_ 就是重�
                                         // SmartPtr<const Top>
 ```
 
-# 使用成员函数模板去接受所有的兼容类型
+## 使用成员函数模板去接受所有的兼容类型
 
 ```C++
   template<typename T>
@@ -1717,7 +1742,7 @@ _SquareMatrix&lt;double, 5&gt;_ 和 _SquareMatrix&;t;double, 10&gt;_ 就是重�
 
 ## 成员函数模板并不阻止那些可以被生成的函数被生成
 
-成员函数模板并不阻止那些可以被生成的函数被生成，比如：泛化拷贝构造函数并不阻止 _常规_ 拷贝构造函数被生成。
+成员函数模板并不阻止那些可以被生成的函数被生成，比如：泛化拷贝构造函数并不阻止 _normal_ 拷贝构造函数被生成。
 
 ```C++
   template<class T> class shared_ptr {
@@ -1733,6 +1758,294 @@ _SquareMatrix&lt;double, 5&gt;_ 和 _SquareMatrix&;t;double, 10&gt;_ 就是重�
   };
 ```
 
-泛化 _copy constructor_ _shared_ptr(shared_ptr&lt;Y&gt; const& r)_ 并不会阻止 _常规_ _copy constructor_ _shared_ptr(shared_ptr const& r)_ 被生成。
+泛化 _copy constructor_ _shared_ptr(shared_ptr&lt;Y&gt; const& r)_ 并不会阻止 _normal_ _copy constructor_ _shared_ptr(shared_ptr const& r)_ 被生成。
 
-成员函数模板 _operator=(shared_ptr&lt;Y&gt; const& r)_ 并不会阻止 _常规_ _copy assignment operator_ _operator=(shared_ptr const& r)_  被生成。
+成员函数模板 _operator=(shared_ptr&lt;Y&gt; const& r)_ 并不会阻止 _normal_ _copy assignment operator_ _operator=(shared_ptr const& r)_  被生成。
+
+# _Item 46_ 当需要类型转换时，在模板内定义 _non-member_ 函数
+
+## 隐式类型转换函数在模板实参推导期间是永远不会被考虑的
+
+```C++
+  template<typename T>
+  class Rational {
+  public:
+    Rational(const T& numerator = 0,              // see Item 20 for why params
+              const T& denominator = 1);          // are now passed by reference
+    
+    const T numerator() const;                    // see Item 28 for why return
+    const T denominator() const;                  // values are still passed by value,
+    ...                                           // Item 3 for why they’re const
+  };
+
+template<typename T>
+const Rational<T> operator*(const Rational<T>& lhs,
+                            const Rational<T>& rhs)
+{ ... }
+```
+
+```C++
+  Rational<int> oneHalf(1, 2);                    // this example is from Item 24,
+                                                  // except Rational is now a template
+  Rational<int> result = oneHalf * 2;             // error! won’t compile
+```
+
+因为 _oneHalf_ 会将 _T_ 推导为 _int_，所以 _operator*_ 的形参类型就为 _const Rational&lt;int&gt;_，而实参 _2_ 需要调用 _Rational_ 的构造函数来隐式转换为 _const Rational&lt;int&gt;_，因为隐式类型转换函数在模板实参推导期间是永远不会被考虑的，所以这是不可以通过编译的。
+
+## 当隐式类型转换会被应用到函数的所有形参上，特别是 _this_ 上且这个函数依赖于类模板时，需要声明这个函数为友元函数且在模板类中进行实现
+
+因为当隐式类型转换会被应用到函数的所有形参上时，特别是 _this_ 上时，需要声明这个函数为 _non-member_ 函数；又因为当这个函数依赖于类模板时，隐式类型转换函数在模板实参推导期间是永远不会被考虑的，所以需要声明这个函数为 _non-template_ 函数，所以需要声明这个函数为 _non-member_ _non-template_函数。但是因为 _non-member_ _non-template_ 函数是有链接问题的，所以需要声明这个函数为友元函数且在模板类中进行实现。
+
+```C++
+  template<typename T>
+  class Rational {
+  public:
+    ...
+
+    friend const Rational operator*(const Rational& lhs, const Rational& rhs)
+    { 
+      return Rational( lhs.numerator() * rhs.numerator(),                       // same impl
+                        lhs.denominator() * rhs.denominator());                 // as in
+    }                                                                           // Item 24
+
+  };
+```
+
+# _Item 47_ 对于类型的信息使用 _trait_ 类 
+
+# _Item 48_ 了解模板元编程 _TMP_
+
+## _TMP_ 是 _Turing-complete_
+
+_TMP_ 是 _Turing-complete_，这意味着使用 _TMP_ 可以声明变量、执行循环、写函数和调用函数等。
+
+## _TMP_ 可以将工作从 _runtime_ 转移至 _compile-time_
+
+_TMP_ 可以将工作从 _runtime_ 转移至 _compile-time_，这可以让错误更早被探测到，并可以获得更高的运行效率。
+
+# _Item 49_ 了解 _new-handler_ 的行为
+
+## 当 _operator new_ 无法满足内存分配需求时，会调用 _new-handler_
+
+当 _operator new_ 无法满足内存分配需求时，会调用 _new-handler_。可以通过 _set_new_handler_ 来设置 _new-handler_。
+
+## 如何设计 _new-handler_
+
+* 让更多的内存可被使用。可以实现这个策略的一个方法是在程序启动时就分配一块大的内存，然后在 _new-handler_ 第一次被调用时，释放这块内存给到程序使用。
+* 安装另一个 _new-handler_。可以实现这个策略的一个方法是让另一个 _new-handler_ 去修改影响着那个被替换的 _new-handler_ 的行为的 _static_ 数据、_namespace-specific_ 数据和全局数据。
+* 卸载 _new-handler_。传递空指针给到 _set_new_handler_，当 _operator new_ 无法满足内存分配需求时，会抛出异常。
+* 抛出 _bad_alloc_ 异常或从 _bad_alloc_ 所继承而来的异常。
+* 调用 _abort_ 或 _exit_。
+
+## 使用 _CRTP_ 来为每个类设置 _new-handler_
+
+```C++
+  template<typename T>                  // “mixin-style” base class for
+  class NewHandlerSupport {             // class-specific set_new_handler
+  public:                               // support
+    static std::new_handler set_new_handler(std::new_handler p) throw();
+    static void* operator new(std::size_t size) throw(std::bad_alloc);
+    ...                                 // other versions of op. new —
+                                        // see Item 52
+  
+  private:
+    static std::new_handler currentHandler;
+  };
+
+  template<typename T>
+  std::new_handler
+  NewHandlerSupport<T>::set_new_handler(std::new_handler p) throw()
+  { 
+    std::new_handler oldHandler = currentHandler;
+    currentHandler = p;
+    return oldHandler;
+  }
+
+  template<typename T>
+  void* NewHandlerSupport<T>::operator new(std::size_t size)
+    throw(std::bad_alloc)
+  { 
+    NewHandlerHolder h(std::set_new_handler(currentHandler));
+    return ::operator new(size);
+  }
+  // this initializes each currentHandler to null
+  template<typename T>
+  std::new_handler NewHandlerSupport<T>::currentHandler = 0;
+```
+
+```C++
+  class Widget: public NewHandlerSupport<Widget> {
+    ...                                 // as before, but without declarations for
+  };                                    // set_new_handler or operator new
+```
+
+使用 _CRTP_ _class Widget: public NewHandlerSupport&lt;Widget&gt;_ 来为 _Widget_ 设置 _new-handler_。
+
+## 禁止使用 _nothrow new_
+
+当 _operator new_ 无法满足内存分配需求时，早先会返回空指针，现在仍然可以通过 _std::nothrow_ 来要求返回空指针。但是注意如果 _Widget_ 的构造函数中存在 _normal new_ 而不是 _nothrow new_ 的话，那么当 _operator new_ 无法满足内存分配需求时，_new
+(std::nothrow) Widget_ 仍然不会只返回空指针，还会调用 _new-handler_ ，这是因为 _new
+(std::nothrow) Widget_ 只能保证 _Widget_ 的 _operator new_ 是 _nothrow new_，并不能保证 _Widget_ 的构造函数中的 _operator new_ 也是 _nothrow new_，所以禁止使用 _nothrow new_。
+
+# _Item 50_ 了解何时替换 _new_ 和 _delete_ 是有意义的
+
+## _custom operator new_ 和 _custom operator delete_ 的作用
+
+* 为了探测使用错误。_custom operator new_ 除了所要求分配的内存外，可以去再多分配一些内存，而这些内存可以处在所要求分配的内存的前面和后面，其中可以放置一些已知的 _byte pattern_，然后 _custom operator delete_ 可以去检查这些 _byte pattern_ 是否仍然完整，如果这些 _byte pattern_是不完整的话，那么可能出现了 _overrun_ 或 _underrun_； _custom operator new_ 可以在其中保留已分配的地址的列表，然后 _custom operator delete_ 可以在其中删除这些地址，这样可以避免多次 _delete_ 和没有 _delete_ 的问题。
+* 为了提升效率。_normal operator new_ 和 _normal operator delete_ 是为了通用目的而设计的，能用于 _long-running_ 程序、_short-running_ 程序、大块内存、小块内存、大小块混合内存、多线程和非最优最齐位等，而 _custom operator new_ 和 _custom operator delete_ 可以针对某一目进行设计，提升效率。
+* 为了收集使用上的统计数据。_custom operator new_ 和 _custom operator delete_ 可以统计动态内存的大小、动态内存的生命周期和分配释放的顺序：_FIFO_、_LIFO_ 或 _random_ 等。
+* 为了降低默认内存管理的空间成本。_normal operator new_ 和 _normal operator delete_ 通常会使用更多的内存，而 _custom operator new_ 和 _custom operator delete_ 可以选择使用更少的内存。
+* 为了将相关对象集中。_custom operator new_ 和 _custom operator delete_ 可以将相关对象集中在一个堆上，以降低将 _page fault_ 的概率。
+* 为了获得非常规的行为。_custom operator new_ 和 _custom operator delete_ 可以将所分配和释放的内存置 _0_。
+
+# _Item 51_ 当写 _new_ 和 _delete_ 时，遵循常规
+
+## _operator new_ 的实现方法
+
+```C++
+  void* operator new(std::size_t size) throw(std::bad_alloc)
+  {                                     // your operator new might
+    using namespace std;                // take additional params
+    if (size == 0) {                    // handle 0-byte requests
+      size = 1;                         // by treating them as
+    }                                   // 1-byte requests
+    
+    while (true) {
+      attempt to allocate size bytes;
+      Customizing new and delete Item 51 253
+      if (the allocation was successful)
+        return ( a pointer to the memory);
+
+      // allocation was unsuccessful; find out what the
+      // current new-handling function is (see below)
+      new_handler globalHandler = set_new_handler(0);
+      set_new_handler(globalHandler);
+      
+      if (globalHandler) (*globalHandler)();
+      else throw std::bad_alloc();
+    }
+  }
+```
+
+## _custom operator new_ 和 _custom operator delete_ 需要处理非期望大小的内存块
+
+```C++
+  class Base {
+  public:
+    static void* operator new(std::size_t size) throw(std::bad_alloc);
+    ...
+    };
+
+  class Derived: public Base            // Derived doesn’t declare
+  { ... };                              // operator new
+  
+  Derived *p = new Derived;             // calls Base::operator new!
+```
+
+```C++
+  void* Base::operator new(std::size_t size) throw(std::bad_alloc)
+  { 
+    if (size != sizeof(Base))           // if size is “wrong,”
+    return ::operator new(size);        // have standard operator
+                                        // new handle the request
+
+    ...                                 // otherwise handle
+                                        // the request here
+  }
+```
+
+因为 _Derived_ 可以继承 _Base::operator_，所以可以使用 _Base::operator_ 来分配 _Derived_ 对象，所以不能假设 _Base::operator_ 中的元素的大小为 _sizeof(Base)_，_custom operator new_ 和 _custom operator delete_ 需要处理非期望大小的内存块。
+
+
+## _operator new[]_ 中的元素个数 _!=_ _(bytes requested)/sizeof(class)_ 
+
+```C++
+  class Base {
+  public:
+    static void* operator[] new(std::size_t size) throw(std::bad_alloc);
+    ...
+  };
+
+  class Derived: public Base            
+  { ... };                              // operator new
+  
+  Derived *p = new Derived;             
+```
+
+因为 _Derived_ 可以继承 _Base::operator[]_，所以可以使用 _Base::operator[]_ 来分配 _Derived_ 数组，所以不能假设 _Base::operator[]_ 中的元素的大小为 _sizeof(Base)_，不能假设 _operator new[]_ 中的元素个数 _==_ _(bytes requested)/sizeof(class)_。
+
+# _Item 52_ 如果写了 _placement new_ 的话，那么也必须要写 _placement delete_ 
+
+## _normal operator new_ 和 _normal operator delete_ 
+
+```C++
+  void* operator new(std::size_t) throw(std::bad_alloc);
+  void operator delete(void *rawMemory) throw();            
+                                                            // at global scope
+````
+
+## _placement operator new_ 和 _placement operator delete_ 
+
+```C++
+  void* operator new(std::size_t, void *pMemory) throw();  
+  void operator delete(void *pMemory, std::size_t size) throw();  
+
+  void* operator new(std::size_t size, std::ostream& logStream) throw(std::bad_alloc);
+  void operator delete(void*, std::ostream&) throw();
+```
+
+## 如果写了 _placement operator new_ 的话，那么也必须要写 _placement operator delete_
+
+```C++
+  Widget *pw = new (std::cerr) Widget;            // call operator new, passing cerr as
+                                                  // the ostream;this leaks memory
+                                                  // if the Widget constructor throws
+```
+
+因为调用的是 _placement operator new_，所以如果一个异常从上述语句的 _Widget_ 的构造函数中被抛出的话，那么相应的 _placement operator delete_ 是会被自动调用的，从而可以确保没有资源泄露。如果一个异常从上述语句的 _Widget_ 的构造函数中被抛出的话，但是没有存在相应的 _placement delete_ 的话，那么是不会自动调用任何 _operator new_ 的，会造成资源泄露，所以如果写了 _placement operator new_ 的话，那么也必须要写 _placement operator delete_，并且 _placement operator delete_ 只有在这种情况下才会被调用。
+
+## 调用 _delete_ 只会调用 _normal operator delete_
+
+```C++
+  Widget *pw = new (std::cerr) Widget;            // call operator new, passing cerr as
+                                                  // the ostream;this leaks memory
+                                                  // if the Widget constructor throws
+```
+
+```C++
+  delete pw;                                      // invokes the normal
+                                                  // operator delete
+```
+
+_delete pw_ 只会去调用 _normal operator delete_，虽然此时 _pw_ 是调用 _placement operator new_ 生成的。
+
+## 类中调用 _global operator new_ 和 _global operator delete_
+
+```C++
+  class StandardNewDeleteForms {
+  public:
+    // normal new/delete
+    static void* operator new(std::size_t size) throw(std::bad_alloc)
+    { return ::operator new(size); }
+    static void operator delete(void *pMemory) throw()
+    { ::operator delete(pMemory); }
+    
+    // placement new/delete
+    static void* operator new(std::size_t size, void *ptr) throw()
+    { return ::operator new(size, ptr); }
+    static void operator delete(void *pMemory, void *ptr) throw()
+    { return ::operator delete(pMemory, ptr); }
+    
+    // nothrow new/delete
+    static void* operator new(std::size_t size, const std::nothrow_t& nt) throw()
+    { return ::operator new(size, nt); }
+    static void operator delete(void *pMemory, const std::nothrow_t&) throw()
+    { ::operator delete(pMemory); }
+  };
+```
+
+# _Item 53_ 注意编译器警告
+
+# _Item 54_ 熟悉包含了 _TR1_ 的标准库
+
+# _Item 55_ 熟悉 _Boost_
