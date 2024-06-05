@@ -367,17 +367,18 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 ```
 
 ### _operator_
+
 ```C++
 class Widget {
 public:
   Widget& operator++() {
-    this->_value++;
+    this->value_++;
     return *this;
   }
 
   Widget operator++(int) {
     Widget w(*this);
-    this->_value++;
+    this->value_++;
     return w;
   }
 
@@ -386,7 +387,7 @@ public:
   }
 
 private:
-  _value;  
+  int value_;  
 };
 ```
 
@@ -646,7 +647,7 @@ public:
     Worker(int v) {
       ...
     }
-    int _value;
+    int value_;
   };
 
   class Waiter : public virtual Worker                 
@@ -676,7 +677,7 @@ public:
   };
 
   SingerWaiter sw(0);
-  sw._value = 1;              // fine!
+  sw.value_ = 1;              // fine!
 ```
 
 因为如果使用的是 _public_ 的话，那么会出现二义性问题，所以需要使用 _public virtual_ 来解决二义性问题，注意必须要在初始化列表中显式地调用 _virtual base class_ _Worker_ 的构造函数。
