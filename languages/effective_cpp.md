@@ -290,7 +290,7 @@ _const_ 用在函数形参上可以 _pass-by-reference-to-const_，_pass-by-refe
 
 ## _const_ 用在成员函数上使得可以去操作 _const_ 对象，并且可以明确表明本函数不会改变所对应的对象的内容
 
-_const_ 用在成员函数上使得可以去操作 _const_ 对象，因为只有 _const_ 对象才可以调用 _const_ 函数。_const_ 函数可以明确表明本函数不会改变所对应的对象的内容。
+_const_ 用在成员函数上使得可以去操作 _const_ 对象，因为 _const_ 对象只可以调用 _const_ 函数。_const_ 函数可以明确表明本函数不会改变所对应的对象的内容。
 
 ```C++
   class TextBlock {
