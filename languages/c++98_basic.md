@@ -502,9 +502,11 @@ _copy elision_ 可以避免调用多余的 _copy constructor_。可以通过指�
       explicit Widget(const Widget &);
       ...
   }
+  Widget w1(0);               // fine! copy initialization
+  Widget w2 = 0;              // fine! direct initialization
 
-  Widget w1 = 0;              // fine! copy initialization 
-  Widget w2 = w1;             // error! direct initialization
+  Widget w3(w2);              // fine! copy initialization
+  Widget w4 = w3;             // error! direct initialization
 ```
 _copy initialization_ 不允许使用 _explicit_ 构造函数。_direct initialization_ 允许使用 _explicit_ 构造函数。
 
