@@ -86,11 +86,16 @@
     - [_between/among_](#betweenamong)
     - [_throw to/at_](#throw-toat)
     - [_from to/through_](#from-tothrough)
-    - [_above/overabove_](#aboveoverabove)
+    - [_above/over_](#aboveover)
     - [_below/under_](#belowunder)
 - [对等连接词](#对等连接词)
   - [对等连接词的作用](#对等连接词的作用)
   - [对等连接词对动词的影响](#对等连接词对动词的影响)
+    - [_and_](#and)
+    - [_as...as_ 和 _than_](#asas-和-than)
+    - [_but_ 和 _Not only you but also_](#but-和-not-only-you-but-also)
+    - [_or_](#or)
+    - [_every_、_each_、_either_ 或 _neither_](#everyeacheither-或-neither)
 
 # 简单句
 
@@ -260,7 +265,7 @@ _S + V_，**_had died_** 表示 _从过去到过去_ 死了。
 _I **had been** smoking three packs of cigarettes a day before I decided to quit._  
 _S + V + C_，**_had been_** 表示 _从过去到过去_，_smoking_ 是形容词，做为补语，表示 _一直抽烟_。
 
-_Japan **had not been** defeated yet by the time Germany surrendered unconditionally._
+_Japan **had not been** defeated yet by the time Germany surrendered unconditionally._  
 _S + V + C_，**_had not been_** 表示 _从过去到过去_，_defeated_ 是形容词，做为补语，表示 _被击败_。
 
 ### 现在完成时态
@@ -331,7 +336,7 @@ _This is a photography show of the **Taibei** 50 years ago._
 
 ### _the_
 
-当名词明确或暗含有 **_那个_** 含义时，使用 _the_，此时名词可以是单数名词_、复数名词、不可数名词和专用名词。
+当名词明确或暗含有 **_那个_** 含义时，使用 _the_，此时名词可以是单数名词、复数名词、不可数名词。
 
 ### _!the_
   
@@ -510,7 +515,7 @@ _Unit 3 is **as boring as** Unit 4._
 ### 形容词的比较级的拼法
 
 单音节  
-_tall_、_taller、_tallest_
+_tall_、_taller_、_tallest_
 
 三音节  
 _expensive_、_more expensive_、_most expensive_
@@ -521,7 +526,7 @@ _loving_、_more loving_、_most loving_
 _helpful_、_more helpful_、_most helpful_  
 _useless_、_more useless_、_most useless_  
 _famous_、_more famous_、_most famous_  
-_active_、_more active__、_most active__
+_active_、_more active_、_most active_
 
 普通形容词的双音节  
 _often_、_oftener_、_oftenest_   
@@ -550,7 +555,7 @@ _S + V + C_，_barking_ 是形容词，做为补语。
 
 ### _Ven_
 
-过去分词按形容词处理，相对于普通形容词，现在分词带有 _完成_、_已经_ 和 _被_ 的含义。  
+过去分词按形容词处理，相对于普通形容词，现在分词带 _已经_、_被_ 和 _完成_ 的含义。  
 
 _The water is boiled._  
 _S + V + C_，_boiled_ 是形容词，做为补语。
@@ -725,7 +730,7 @@ _The circus will be here four months, from May to September._
 _The circus will be here five months, from May through September._  
 由五月到九月，有准确日期，准确五个月。
 
-### _above/overabove_
+### _above/over_
 
 无标示点  
 _Mt.Everest soars **above** all other peaks in the Alps._
@@ -749,8 +754,40 @@ _Watch out! There's a dog **under** your car._
 
 ## 对等连接词对动词的影响
 
+### _and_
+
 _The senator and delegate **wants** to make an announcement._  
 _The senator and delegate_ 是一个人
 
-_The senator and the delegate **want** to make an announcement._
+_The senator and the delegate **want** to make an announcement._  
 _The senator and the delegate_ 是两个人
+
+### _as...as_ 和 _than_
+
+_You want to borrow money? But I,as well as you, **am** broke._  
+_I, no less than you, **am** responsible._  
+
+### _but_ 和 _Not only you but also_
+
+_Everyone but a few complete idiots **was** able to see that._  
+否定部分为 _a few complete idiots_，肯定部分为 _Everyone_，肯定部分作主语。
+
+_Not only you but also I **was** at fault._   
+否定部分为 _Not only you_，肯定部分为 _I_，肯定部分作主语。
+
+### _or_
+
+_Either my father alone or both my parents **are** coming._  
+靠近动词的部分做为主语。
+
+_**Dose** he or his friends want to go?_  
+靠近助动词的部分做为主语。
+
+### _every_、_each_、_either_ 或 _neither_
+
+_every_、_each_、_either_ 或 _neither_ 等带有 **_一_** 含义的，需要使用单数名词。  
+
+_Everybody **is** to report here tomorrow._  
+_Every student **has** several chapters to report on._  
+_Each **has** to make a five-minute speech._  
+_Each of you **is** responsible for half of the job._
