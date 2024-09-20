@@ -29,6 +29,7 @@
     - [限定词](#限定词)
     - [_the_](#the)
     - [_!the_](#the-1)
+    - [限定词对名词的影响](#限定词对名词的影响)
 - [助动词](#助动词)
   - [助动词 + 动词原形](#助动词--动词原形)
   - [基本助动词](#基本助动词)
@@ -88,14 +89,31 @@
     - [_from to/through_](#from-tothrough)
     - [_above/over_](#aboveover)
     - [_below/under_](#belowunder)
+    - [_to_](#to)
 - [对等连接词](#对等连接词)
   - [对等连接词的作用](#对等连接词的作用)
   - [对等连接词对动词的影响](#对等连接词对动词的影响)
     - [_and_](#and)
     - [_as...as_ 和 _than_](#asas-和-than)
-    - [_but_ 和 _Not only you but also_](#but-和-not-only-you-but-also)
+    - [_but_ 和 _Not only but also_](#but-和-not-only-but-also)
     - [_or_](#or)
-    - [_every_、_each_、_either_ 或 _neither_](#everyeacheither-或-neither)
+- [同位语从句](#同位语从句)
+  - [同位语从句的定义](#同位语从句的定义)
+  - [陈述句](#陈述句)
+    - [从句解释主语](#从句解释主语)
+    - [从句解释宾语](#从句解释宾语)
+    - [从句解释补语](#从句解释补语)
+- [名词从句](#名词从句)
+  - [名词从句的定义](#名词从句的定义)
+    - [从句代替主语](#从句代替主语)
+    - [从句代替宾语](#从句代替宾语)
+    - [从句代替补语](#从句代替补语)
+    - [从句代替介词短语](#从句代替介词短语)
+    - [从句代替介词短语中的名词](#从句代替介词短语中的名词)
+- [形容词从句](#形容词从句)
+  - [形容词从句的定义](#形容词从句的定义)
+- [副词从句](#副词从句)
+  - [副词从句的定义](#副词从句的定义)
 
 # 简单句
 
@@ -302,6 +320,11 @@ _All mothers (love) their children._
 
 单数名词和复数名词。
 
+名词词尾为 _s_ 的名词不一定是复数，比如学科、疾病等。  
+
+_Mathematics **is** my forte._  
+_Mumps primarily **attacks** children_
+
 ### 不可数名词
 
 ### 专用名词
@@ -336,14 +359,23 @@ _This is a photography show of the **Taibei** 50 years ago._
 
 ### _the_
 
-当名词明确或暗含有 **_那个_** 含义时，使用 _the_，此时名词可以是单数名词、复数名词、不可数名词。
+当名词明确或暗含有 **_那个_** 含义时，使用 _the_，此时名词可以是单数名词、复数名词、不可数名词和专用名词。
 
 ### _!the_
   
 当名词是单数名词时，需要 _a/an_ 修饰。  
 当名词是复数名词时，有无限定词都可以。  
 当名词是不可数名词和专用名词时，不需要限定词。  
-当名词是专用名词时，不需要限定词。注意像 _the Pacific_ 类似的名词短语，并不是例外，只是进行了简写，原本为 _the Pacific Ocean_，指的是 **_那个叫做 Pacific 的大洋_**，类似的还有 _the Philippine (Islands)_、_the Alp (Mountains)_、_the Mediterranean (Sea)_、_the Titanic (Ship)_ 和 _the Hilton (Hotel)_ 等。
+当名词是专用名词时，一般不需要限定词。注意像 _the Pacific_ 类似的名词短语，并不是例外，只是进行了简写，原本为 _the Pacific Ocean_，指的是 **_那个叫做 Pacific 的大洋_**，类似的还有 _the Philippine (Islands)_、_the Alp (Mountains)_、_the Mediterranean (Sea)_、_the Titanic (Ship)_ 和 _the Hilton (Hotel)_ 等。
+
+### 限定词对名词的影响
+
+_every_、_each_、_either_ 或 _neither_ 等带有 **_一_** 含义的限定词，需要使用单数名词。  
+
+_Everybody **is** to report here tomorrow._  
+_Every student **has** several chapters to report on._  
+_Each **has** to make a five-minute speech._  
+_Each of you **is** responsible for half of the job._
 
 # 助动词
 
@@ -746,6 +778,17 @@ _The submarine is **below** the surface now._
 有标示点  
 _Watch out! There's a dog **under** your car._
 
+### _to_  
+
+解释为 "对" ，则为介词
+                    //
+_The workers objected to being treated like slaves._  
+_to_ 解释为 _对..._，做为介词，后只能接名词，_to being treated like slaves_ 做为副词。
+
+_The speaker stopped a second to drink some water_.   
+_to_ 不解释为 _对..._，做为不定词，后直能接动词原型，_to drink some water_ 做为副词。 
+
+
 # 对等连接词
 
 ## 对等连接词的作用
@@ -767,7 +810,7 @@ _The senator and the delegate_ 是两个人
 _You want to borrow money? But I,as well as you, **am** broke._  
 _I, no less than you, **am** responsible._  
 
-### _but_ 和 _Not only you but also_
+### _but_ 和 _Not only but also_
 
 _Everyone but a few complete idiots **was** able to see that._  
 否定部分为 _a few complete idiots_，肯定部分为 _Everyone_，肯定部分作主语。
@@ -783,11 +826,193 @@ _Either my father alone or both my parents **are** coming._
 _**Dose** he or his friends want to go?_  
 靠近助动词的部分做为主语。
 
-### _every_、_each_、_either_ 或 _neither_
+# 同位语从句
 
-_every_、_each_、_either_ 或 _neither_ 等带有 **_一_** 含义的，需要使用单数名词。  
+## 同位语从句的定义
 
-_Everybody **is** to report here tomorrow._  
-_Every student **has** several chapters to report on._  
-_Each **has** to make a five-minute speech._  
-_Each of you **is** responsible for half of the job._
+同位语从句是将一个简单句改造成名词类，放到另一个简单句中使用，前者为从句，后者为主句。连接词 _that_ 用于连接主句和从句，只有语法功能，从句必须解释主句的名词，可以解释主语、宾语和补语，所解释的名词可以为：_fact_、_story_、_news_、_suggestion_、_option_、_problem_、_rule_、_information_、_decision_、_thought_、_idea_ 和 _question_。
+
+## 陈述句
+
+### 从句解释主语
+
+_The story might just be true._  
+_S + V + C_。
+
+_He once killed a man._  
+_S + V + O_。
+
+_The **story that he once killed a man** might just be true._  
+_S + (that + S + V + O) + V + C_。
+
+### 从句解释宾语
+
+_I have a strong belief._    
+_S + V + O_。
+
+_Hard work leads to success._  
+_S + V_。
+
+_I have a strong **belief that hard work leads to success.**_  
+_S + V + O + (that + S + V)_。
+
+### 从句解释补语
+
+_The important thing is the information._  
+_S + V + C_。
+
+_They are all safe._  
+_S + V + C_。
+
+_The important thing is the **information that they are all safe**._  
+_S + V + C + (that + S + V + C)_。
+
+# 名词从句
+
+## 名词从句的定义 
+
+名词从句是将一个简单句改造成名词类，放到另一个简单句中使用，前者为从句，后者为主句。连接词 _that_ 用于连接主句和从句，只有语法功能，从句必须代替主句的名词，可以代替主语、宾语、补语、介词短语和介词短语中的名词。
+
+### 从句代替主语
+
+陈述句
+
+_Something is strange._  
+_S + V + C_。
+
+_He didn't show up on time._  
+_S + V_。
+
+_**That he didn’t show up on time** is strange._  
+_**It** is strange **that he didn't show up on time**._  
+_[(That + S + V)  = S]  + V + C_。
+
+疑问句
+
+_The question is anybody's guess._  
+_S + V + C_。
+
+_When will the bomb go off?_  
+_S + V_。
+
+_That when will the bomb go off is anybody's guess._
+_[(That + S + V)  = S]  + V + C_。
+
+_**When the bomb will go off** is anybody's guess._
+_[(S + V)  = S]  + V + C_，当从句为疑问句时，必须改为陈述句语序和省略连接词。
+
+### 从句代替宾语
+
+陈述句
+
+_The defendant said something._  
+_S + V + O_。
+
+_He didn't do it._  
+_S + V + O_。
+
+_The defendant said **that he didn’t do it**._  
+_S + V + [(that + S + V + O) = O]_。
+
+_The defendant said **he didn’t do it**._  
+_S + V + [(S + V + O) = O]_，当从句做为宾语时，可以省略连接词。
+
+疑问句
+
+_I can’t tell which._  
+_S + V + O_。
+
+_Either he’s telling the truth or he's not._  
+_S + V + C_。
+
+_I can't tell that either he’s telling the truth or he's not._  
+_S + V + [(that + S + V + C) = O]_。
+
+_I can't tell **whether he’s telling the truth or not**._  
+_S + V + [(S + V + C) = O]_，当从句为疑问句时，必须改为陈述句语序和省略连接词，并且 _which + either = whether/if_，但在句首和介词后时，只能使用 _whether_。
+
+_**Whether the stock market will improve or not** is impossible to say now._
+_The treatment will be decided by **whether the tumor is malignant or not**._
+
+
+### 从句代替补语
+
+陈述句
+
+_The important thing is something._    
+_S + V + C_。
+
+_we're all right._  
+_S + V + C_。
+
+_The important thing is **that we're all right**._  
+_S + V + [(that + S + V + C) = C]_。
+
+_The important thing is **we're all right**._  
+_S + V + [(S + V + C) = C]_，当从句做为补语时，可以省略连接词。
+
+疑问句
+
+_The important thing is that question._  
+_S + V + C_。
+
+_Who are you?_  
+_S + V + C_。
+
+_The important thing is that who are you._  
+_S + V + [(that + S + V + C) = C]_。
+
+_The important thing is **who you are**._  
+_S + V + [(S + V + C) = C]_，当从句为疑问句时，必须改为陈述句语序和省略连接词。
+
+### 从句代替介词短语
+
+_I am afraid of that thing._  
+_S + V + C + preposition noun_。
+
+_I can't help you._  
+_S + V + O_。
+
+_I am afraid **that I can't help you**._  
+_S + V + C + [(that + S + V + O) = preposition noun]_。
+
+_I am afraid **that I can't help you**._  
+_S + V + C + [(S + V + O) = preposition noun]_，当从句做为介词短语时，可以省略连接词。
+
+_You'd better take care of that thing._  
+_S + V + O + preposition noun_。
+
+_Nothing goes wrong._  
+_S + V + C_。
+
+_You'd better take care **that nothing goes wrong**._   
+_S + V + O + [(that + S + V + C) = preposition noun]_。
+
+_You'd better take care **nothing goes wrong**._   
+_S + V + O + [(S + V + C) = preposition noun]_，当从句做为介词短语时，可以省略连接词。
+
+### 从句代替介词短语中的名词
+
+_The treatment will be decided by which._  
+_S + V + C + preposition noun_。
+
+_Either the tumor is malignant or it is not._  
+_S + V + C_。
+
+_The treatment will be decided by that either the tumor is malignant or not._  
+_S + V + C + preposition + [(S + V + C) = noun]_，
+
+_The treatment will be decided by **whether the tumor is malignant or not**._  
+_S + V + C + preposition + [(S + V + C) = noun]_，当从句为疑问句时，必须改为陈述句语序和省略连接词，并且 _which + either = whether/if_，但在句首和介词后时，只能使用 _whether_。
+
+# 形容词从句
+
+## 形容词从句的定义 
+
+将一个简单句改造成形容词类，放到另一个简单句中使用，前者为从句，后者为主句。
+
+# 副词从句
+
+## 副词从句的定义 
+
+将一个简单句改造成副词类，放到另一个简单句中使用，前者为从句，后者为主句。
