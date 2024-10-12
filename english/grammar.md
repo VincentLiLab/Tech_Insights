@@ -67,6 +67,7 @@
     - [_Ving_](#ving)
     - [_Ven_](#ven)
   - [_be + Ven != 被动语态_](#be--ven--被动语态)
+  - [分词短语](#分词短语)
 - [副词](#副词)
   - [副词的作用](#副词的作用)
   - [副词的位置](#副词的位置)
@@ -110,10 +111,49 @@
     - [从句代替补语](#从句代替补语)
     - [从句代替介词短语](#从句代替介词短语)
     - [从句代替介词短语中的名词](#从句代替介词短语中的名词)
-- [形容词从句](#形容词从句)
-  - [形容词从句的定义](#形容词从句的定义)
+  - [名词从句的简化](#名词从句的简化)
+    - [名词从句的简化原则](#名词从句的简化原则)
+    - [名词从句的简化示例](#名词从句的简化示例)
+- [关系从句](#关系从句)
+  - [关系从句的定义](#关系从句的定义)
+    - [关系代词](#关系代词)
+    - [关系副词](#关系副词)
+    - [非限定性关系从句](#非限定性关系从句)
+  - [关系从句的简化](#关系从句的简化)
+    - [关系从句的简化原则](#关系从句的简化原则)
+    - [关系从句的简化示例](#关系从句的简化示例)
 - [副词从句](#副词从句)
   - [副词从句的定义](#副词从句的定义)
+    - [时间连接词](#时间连接词)
+    - [地点连接词](#地点连接词)
+    - [条件连接词](#条件连接词)
+    - [因果连接词](#因果连接词)
+    - [目的连接词](#目的连接词)
+    - [让步连接词](#让步连接词)
+    - [限制连接词](#限制连接词)
+    - [方法状态连接词](#方法状态连接词)
+  - [让步副词从句和关系从句的区别](#让步副词从句和关系从句的区别)
+  - [副词从句的简化](#副词从句的简化)
+    - [副词从句的简化原则](#副词从句的简化原则)
+    - [副词从句的简化示例](#副词从句的简化示例)
+- [对等从句](#对等从句)
+- [句型总结](#句型总结)
+  - [句型判断原则](#句型判断原则)
+    - [_不完整 A 句 + \[连接词\] + 完整 B 句_](#不完整-a-句--连接词--完整-b-句)
+    - [_完整 A 句 + \[连接词\] + 不完整 B 句_](#完整-a-句--连接词--不完整-b-句)
+    - [_完整 A 句 + 连接词 + 完整 B 句_](#完整-a-句--连接词--完整-b-句)
+    - [_完整 A 句 + 完整 B 句_](#完整-a-句--完整-b-句)
+    - [_\[连接词\] + 不完整 A 句, 完整 B 句_](#连接词--不完整-a-句-完整-b-句)
+    - [_完整 A 句, \[连接词\] + 不完整 B 句_](#完整-a-句-连接词--不完整-b-句)
+    - [_不完整 A 句 + 对等连接词 + 完整 B 句 or 完整 A 句 + 对等连接词 + 不完整 B 句_](#不完整-a-句--对等连接词--完整-b-句-or-完整-a-句--对等连接词--不完整-b-句)
+- [倒装句](#倒装句)
+  - [倒装句的定义](#倒装句的定义)
+    - [比较级的倒装](#比较级的倒装)
+    - [关系从句的倒装](#关系从句的倒装)
+    - [假设语气的倒装](#假设语气的倒装)
+    - [引用句的倒装](#引用句的倒装)
+    - [地方副词的倒装](#地方副词的倒装)
+    - [否定副词开发的倒装](#否定副词开发的倒装)
 
 # 简单句
 
@@ -587,7 +627,7 @@ _S + V + C_，_barking_ 是形容词，做为补语。
 
 ### _Ven_
 
-过去分词按形容词处理，相对于普通形容词，现在分词带 _已经_、_被_ 和 _完成_ 的含义。  
+过去分词按形容词处理，相对于普通形容词，过去分词带 _已经_、_被_ 和 _完成_ 的含义。  
 
 _The water is boiled._  
 _S + V + C_，_boiled_ 是形容词，做为补语。
@@ -596,6 +636,16 @@ _S + V + C_，_boiled_ 是形容词，做为补语。
 
 _I can't find my wallet. It’s **gone**._  
 _**is gone**_ 并没有被动的含义，而是表示 _已经不见了_。
+
+## 分词短语
+
+分词短语有时可以做为副词，可以用来修饰动词、名词、形容词、副词以及整个句子。详见 [副词从句的简化](#副词从句的简化)。
+
+_**Having nothing to do here**, we might as well go home._  
+分词短语 _Having nothing to do here_ 做为副词修饰整个句子 _we might as well go home_。 
+
+_Shot in the knee, he couldn't fight._  
+分词短语 _Shot in the knee_ 做为副词修饰整个句子 _he couldn't fight_。
 
 # 副词
 
@@ -793,7 +843,7 @@ _to_ 不解释为 _对..._，做为不定词，后直能接动词原型，_to dr
 
 ## 对等连接词的作用
 
-对等连接词连接两个对等的部分，比如：_and_、_or_、_but_、_not only ... but also_、_either ... or_、_as ... as_ 和 _than_ 等。
+对等连接词连接两个对等的部分，比如：_and_、_or_、_but_、_not only ... but also_、_either ... or_、_as ... as_、_not ... but_ 和 _than_ 等。
 
 ## 对等连接词对动词的影响
 
@@ -871,7 +921,7 @@ _S + V + C + (that + S + V + C)_。
 
 ## 名词从句的定义 
 
-名词从句是将一个简单句改造成名词类，放到另一个简单句中使用，前者为从句，后者为主句。连接词 _that_ 用于连接主句和从句，只有语法功能，从句必须代替主句的名词，可以代替主语、宾语、补语、介词短语和介词短语中的名词。
+名词从句是一种将一个简单句改造成名词类，并放到另一个简单句中使用的句型，前者为从句，后者为主句。连接词 _that_ 用于连接主句和从句，只有语法功能。从句必须代替主句的名词，可以代替主语、宾语、补语、介词短语和介词短语中的名词。
 
 ### 从句代替主语
 
@@ -976,7 +1026,7 @@ _S + V + O_。
 _I am afraid **that I can't help you**._  
 _S + V + C + [(that + S + V + O) = preposition noun]_。
 
-_I am afraid **that I can't help you**._  
+_I am afraid **I can't help you**._  
 _S + V + C + [(S + V + O) = preposition noun]_，当从句做为介词短语时，可以省略连接词。
 
 _You'd better take care of that thing._  
@@ -1005,14 +1055,583 @@ _S + V + C + preposition + [(S + V + C) = noun]_，
 _The treatment will be decided by **whether the tumor is malignant or not**._  
 _S + V + C + preposition + [(S + V + C) = noun]_，当从句为疑问句时，必须改为陈述句语序和省略连接词，并且 _which + either = whether/if_，但在句首和介词后时，只能使用 _whether_。
 
-# 形容词从句
+## 名词从句的简化
 
-## 形容词从句的定义 
+### 名词从句的简化原则
 
-将一个简单句改造成形容词类，放到另一个简单句中使用，前者为从句，后者为主句。
+连接词可以被省略。
+
+当从句中的主语是 _无意义_ 的名词时，比如：_one_、_everybody_、_people_、_any_  和 _it_ 等，或当从句中的主语在主句中已经出现过时，可以省略从句中的主语。
+
+当从句中的主语是 _有意义_ 的名词时，或当从句中的主语在主句中没有出现过时，不可以省略从句中的主语，可以将句型转换为 _S + V + O + C_、可以将从句中的主语转换为所有格或者可以将从句中的主语转换为 _preposition noun_。
+
+当从句句型为 _S + V + C_ 时，可以省略从句中的 _V_。
+
+当从句句型为 _!S + V + C_ 时，如果从句中有助动词的话，那么可以将从句中的动词转换为不定词，并省略从句的助动词；如果从句无助动词的话，那么可以将从句的动词转换为 _Ving_。
+
+### 名词从句的简化示例
+
+_That I drink good wine with friends is my greatest enjoyment._  
+_Drinking good wine with friends is my greatest enjoyment._   
+因为 _I == my_，所以可以被省略；  
+因为从句句型为 _!S + V + C_，所以可以将 _drink_ 转换为 _drinking_。 
+
+_I imagined that a beautiful girl was singing to me._  
+_I imagined a beautiful girl singing to me._  
+因为 _I != a beautiful girl_，所以可以将句型转换为 _S + V + O + C_；  
+因为从句句型为 _S + V + C_，所以可以省略 _was_。
+
+_That he calls my girlfriend every day is too much for me._  
+_His calling my girlfriend every day is too much for me._   
+因为 _he != me_，所以可以将 _he_ 转换为 _his_；  
+因为从句句型为 _!S + V + C_，所以可以将 _calls_ 转换为 _calling_。
+
+_I am worried that my son lies all the time._  
+_I am worried about my son lying all the time._  
+因为 _my son != I_，所以可以将 _my son_ 转换为 _about my son_；  
+因为从句句型为 _!S + V + C_，所以可以将 _lies_ 转换为 _lying_。
+
+_That anyone is called a liar is the greatest insult._  
+_**Called a liar** is the greatest insult._  
+_**Being Called a liar** is the greatest insult._  
+因为 _anyone == 无意义词_，所以可以被省略；  
+因为从句句型为 _S + V + C_，所以可以省略 _is_；  
+因为 _called_ 不是名词不可以做为主语，所以需要 _being called_，既保留 _Ven_ 的含义，又成为名词性质。
+
+_The children expect that they can get presents for Christmas._  
+_The children expect to get presents for Christmas._  
+因为 _they == The children_，所以可以被省略；  
+因为从句句型为 _!S + V + C_，所以可以将 _can get_ 转换为 _to get_。
+
+_I dont know what I should do._  
+_I dont know what to do._  
+因为 _I == I_，所以可以被省略；  
+因为从句句型为 _!S + V + C_，所以可以将 _should do_ 转换为 _to do_。
+
+# 关系从句
+
+## 关系从句的定义 
+
+关系从句是一种将一个简单句改造成形容词类，并放到另一个简单句中使用的句型，前者为从句，后者为主句。连接词用于连接主句和从句，既有语法功能，也有语义功能。主句和从句中必须要有 _交叉点_，主句中的交叉点为先行词，如果从句中的 _交叉点_ 为名词的话，那么关系代词做为连接词，并且关系代词必须要代替从句中的名词，可以代替主语、宾语和补语；如果从句中的 _交叉点_ 为副词的话，那么关系副词做为连接词，并且关系副词必须要代替从句中的副词。
+
+### 关系代词
+
+_who_
+
+_**The man** is my uncle._  
+_S + V + C_。
+
+_**He** was here just now._  
+_S + V + C_。主句中的 _The man_ 和从句中 _He_ 为 _交叉点_，因为从句中的 _交叉点_ 为名词，所以关系代词 _who_ 做为连接词，并且必须要代替从句中的名词，即为：_who was here just now_。
+
+_The man **who was here just now** is my uncle._  
+_S +  [(who = S) + V + C] + V + C_。
+
+_whom_
+
+_**The man** is my uncle._  
+_S + V + C_。
+
+_You saw **him** just now._   
+_S + V + O_。主句中的 _The man_ 和从句中 _him_ 为 _交叉点_，因为从句中的 _交叉点_ 为名词，所以关系代词 _whom_ 做为连接词，并且必须要代替从句中的名词，即为：_You saw **whom** just now_，连接词需要提前，即为：_**whom** you saw just now_。
+
+_The man **whom you saw just now** is my uncle._  
+_S +  [(whom = O) + S + V] + V + C_。
+
+_The man **you saw just now** is my uncle._  
+_S +  [ S + V] + V + C_。当限定性关系从句中的关系代词为从句中的宾语或补语时，可以省略。
+
+_that_
+
+_Man is an **animal**._
+_S + V + C_。
+
+_**The animal** is capable of reason._
+_S + V + C_。主句中的 _an animal_ 和从句中 _The animal_ 为 _交叉点_，因为从句中的 _交叉点_ 为名词，所以关系代词 _that_ 做为连接词，并且必须要代替从句中的名词，即为：_that is capable of reason_。_that_ 相比于其他关系代词具有指示功能。
+
+_Man is an animal **that is capable of reason**._  
+_S + V + C + [(that = S) + V + C]_。
+
+_which_
+
+_I like **TIME Classic Words**._
+_S + V + O_。
+
+_Many people like **TIME Classic Words**, too._
+_S + V + O_。主句中的 _TIME Classic Words_ 和从句中 _TIME Classic Words 为 _交叉点_，因为从句中的 _交叉点_ 为名词，所以关系代词 _which_ 做为连接词，并且必须要代替从句中的名词，即为：_many people like which, too_，连接词需要提前，即为：_which many people like, too_，_which_ 相比于 _that_ 只有补充说明功能。
+
+_I like TIME Classic Words, **which many people like, too**._  
+_S + V + O + [(which = O) + S + V]_。当非限定性关系从句中的关系代词为从句中的宾语或补语时，不可以省略，并且在非限定性关系从句中不可以使用 _that_。
+
+_whose_
+
+_**She** lives next door._
+_S + V_。
+
+_**The woman's son** is a doctor._
+_S + V + C_。主句中的 _She_ 和从句中 _The woman_ 为 _交叉点_，因为从句中的 _交叉点_ 为名词，所以关系代词 _whose_ 做为连接词，并且必须要代替从句中的名词，即为：_whose son is a doctor_。
+
+_The woman **whose son is a doctor** lives next door._  
+_S +  [(whose son = S) + V + C] + V_。
+
+混淆
+
+_You can find two apples in the basket._  
+_I bought the apples._
+
+_You can find two apples which I bought in the basket._  
+_in the basket_ 修饰 _find or bought_？
+
+_You can find two apples in the basket which I bought._  
+_which I bought_ 修饰 _basket or apples_？
+
+_In the basket you can find two apples which I bought._
+
+### 关系副词
+
+_when_
+
+_The rain came at **a time**._  
+_S + V + preposition noun_。
+
+_The farmers needed it most **then**._
+_S + V + O + adv_。主句中的 _a time_ 和从句中 _then_ 为 _交叉点_，因为从句中的 _交叉点_ 为副词，所以关系副词 _when_ 做为连接词，并且必须要代替从句中的副词，即为：_the farmers needed it most when_，连接词需要提前，即为：_when the farmers needed it most_。
+
+_The rain came at a time **when the farmers needed it most**._  
+_S + V + preposition noun + [when + S + V + O]_。
+
+_The rain came at a time **the farmers needed it most**._  
+_S + V + preposition noun + [S + V + O]_，关系副词都可以省略。
+
+_where_
+
+_The car stopped at **a place**._  
+_S + V + preposition noun_。
+
+_Three roads met **there**._  
+_S + V + adv_。主句中的 _a place_ 和从句中 _there_ 为 _交叉点_，因为从句中的 _交叉点_ 为副词，所以关系副词 _where_ 做为连接词，并且必须要代替从句中的副词，即为：_three roads met where_，连接词需要提前，即为：_where three roads met_。
+
+_The car stopped at a place **where three roads met**._  
+_S + V + preposition noun + [where + S + V]_。
+
+_The car stopped at a place **three roads met**._  
+_S + V + preposition noun + [S + V]_，关系副词都可以省略。
+
+_how_
+
+_can you show me **the way**?_  
+_S + V + O + O_。
+
+_You pulled off that trick **in that way**._  
+_S + V + preposition noun + preposition noun_。主句中的 _the way_ 和从句中 _in that way_ 为 _交叉点_，因为从句中的 _交叉点_ 为副词，所以关系副词 _how_ 做为连接词，并且必须要代替从句中的副词，即为：_you pulled off that trick how_，连接词需要提前，即为：_how you pulled off that trick_。
+
+_Can you show me the way **how you pulled off that trick**._  
+_S + V + O + O + [how + S + V + preposition noun]_。
+
+_Can you show me the way **you pulled off that trick**._  
+_S + V + O + O + [S + V + preposition noun]_。关系副词都可以省略。
+
+_why_
+
+_I've forgotten **the reason**._  
+_S + V + O_。
+
+_I called **for a reaseon**._
+_S + V + preposition noun_。主句中的 _the reason_ 和从句中 _for a reaseon_ 为 _交叉点_，因为从句中的 _交叉点_ 为副词，所以关系副词 _why_ 做为连接词，并且必须要代替从句中的副词，即为：_I called why_，连接词需要提前，即为：_why I called_。
+
+_I've forgotten the reason **why I called**._
+_S + V + O + [why + S + V]_。
+
+_I've forgotten the reason **I called**._
+_S + V + O + [S + V]_。关系副词都可以省略。
+
+### 非限定性关系从句
+
+因为非限定性关系从句只可以补充说明，不可以指示，所以在非限定性关系从句中不可以使用 _that_，并且当连接词为宾语或补语是，不可以被省略。
+
+_I like **TIME Classic Words**._  
+_Many people like **TIME Classic Words**, too._  
+_I like TIME Classic Words, **which many people like, too**._  
+_which_ 不可以省略。
+
+_Shakespeare was born in **1564**._    
+_Queen Elizabeth I was on the throne **then**._  
+_Shakespeare was born in 1564，**when** Queen Elizabeth I was on the throne._  
+_when_ 不可以省略。
+
+## 关系从句的简化
+
+### 关系从句的简化原则
+
+当从句中的主语是 _无意义_ 的名词时，比如：_one_、_everybody_、_people_、_any_  和 _it_ 等，或当从句中的主语在主句中已经出现过时，可以省略从句中的主语。
+
+当从句中的主语是 _有意义_ 的名词时，或当从句中的主语在主句中没有出现过时，不可以省略从句中的主语，可以将从句中的主语转换为 _preposition noun_。
+
+当从句句型为 _S + V + C_ 时，可以省略从句中的 _V_。
+
+当从句句型为 _!S + V + C_ 时，如果从句中有助动词的话，那么可以将从句中的动词转换为不定词，并省略从句的助动词；如果从句无助动词的话，那么可以将从句的动词转换为 _Ving_。
+
+### 关系从句的简化示例
+
+_Beer which is chilled to 6°C is most delicious._  
+_Beer chilled to 6°C is most delicious._   
+因为 _which == beer_，所以可以被省略；  
+因为从句句型为 _S + V + C_，所以可以省略 _is_。
+
+_John is the one who should go this time._    
+_John is the one to go this time._  
+因为 _who == one_，所以可以被省略；  
+因为从句句型为 _!S + V + C_，所以可以将 _should go_ 转换为 _to go_。
+
+_My old car, which breaks down every other week, won't last much longer._  
+_My old car, breaking down every other week, won't last much longer._   
+因为 _which == my old car_，所以可以被省略；  
+因为从句句型为 _!S + V + C_，所以可以将 _breaks_ 转换为 _breaking_。
+
+_John is not a man one can trust._  
+_John is not a man to trust._  
+因为 _one == 无意义词_，所以可以被省略；  
+因为从句句型为 _!S + V + C_，所以可以将 _can trust_ 转换为 _to trust_。
+
+_This is exactly the time when we should do it._  
+_This is exactly the time we should do it._  
+_This is exactly the time to do it._  
+因为 _we == 无意义词_，所以可以被省略；  
+因为从句句型为 _!S + V + C_，所以可以将 _should do_ 转换为 _to do_。
+
+_I have a job your brother can do._  
+_I have a job for your brother to do._   
+因为 _your brother == 有意义词_，所以可以被转换为 _for your brother_；  
+因为从句句型为 _!S + V + C_，所以可以将 _can do_ 转换为 _to do_。
+
+_Bill Clinton, who is President of the U.S., is a Baby Boomer._  
+_Bill Clinton, President of the U.S., is a Baby Boomer._   
+当从句的补语是名词时，仍然可以简化。
 
 # 副词从句
 
 ## 副词从句的定义 
 
-将一个简单句改造成副词类，放到另一个简单句中使用，前者为从句，后者为主句。
+副词从句是一种将一个简单句改造成副词类，并放到另一个简单句中使用的句型，前者为从句，后者为主句。连接词用于连接主句和从句，既有语法功能，也有逻辑功能。
+
+### 时间连接词
+
+_He became more frugal **after** he got married._  
+
+_I'll be waiting for you **until** you're married._  
+未来时态的副词从句要用现在时态。
+
+_It was all over **when** I got there._
+
+### 地点连接词
+
+_A small town grew **where** three roads met._
+
+### 条件连接词
+
+_**If** he calls, I'll say you're sleeping._
+
+_He won't have it his way, **as long as** I'm here._
+
+### 因果连接词
+
+_**As** there isn't much time left, we might as well call it a day._
+
+_There's nothing to worry about, **now that** Father is back._  
+既然
+
+_He looked **so** sincere **that** no one doubted his story._  
+因为…… 所以……
+
+_The mother locked the door from
+the outside, **so that** the kids couldn't get out when
+they saw fire._  
+以致于
+
+### 目的连接词
+
+_The mother locked away the drugs
+**so that** the kids wouldn't swallow any by
+mistake._  
+为的是
+
+_I've typed out the main points
+in boldface, **in order that** you won't miss them._
+
+_I've underlined the key points, **lest** you miss them._  
+以免
+
+_You'd better bring more money, **in case** you should need it._
+
+### 让步连接词
+
+_**Although** you may object, I must give it a try._
+
+_**While** the disease is not fatal, it can be very dangerous._  
+虽然
+
+_**Whether** you agree or not, I want to give it a try._
+
+_**No matter** who calls, I won't answer._  
+_**Whoever** calls, I won't answer._  
+_whoever = no matter who_。
+
+_**No matter** which way you go, I'll follow._  
+_**Whichever** way you go, I'll follow._  
+_whichever == no matter which_。
+
+_**No matter** how cold it is, he's always wearing a shirt only._    
+_**However** cold it is, he's always wearing a shirt only._   
+_however == no matter how_。
+
+_**No matter** where he is，I’ll get him!_  
+_**Wherever** he is，I’ll get him!_  
+_wherever == no matter where_
+
+_**No matter** when you like, you can call me._  
+_**Whenever** you like,you can call me._  
+_Whenever == no matter when_
+
+### 限制连接词
+
+_**As far as** money is concerned, you needn't worry._
+
+_Picasso was a revolutionary **in that** he broke all traditions._
+
+### 方法状态连接词
+
+_He played the piano **as** Horowitz would have._  
+
+_He writes **as if** he is left handed._  
+好像
+
+## 让步副词从句和关系从句的区别
+
+_**Whoever** calls, I won't answer._   
+_I'll fire **whoever stole the money**._  
+_whoever == anyone that_，即为：_I'll fire anyone that stole the money_。  
+
+_**Whichever** way you go, I'll follow._  
+_You can take **whichever you like**._  
+_whichever == anyone that_，即为：_You can take anyone that you like_。 
+
+_**Whatever** he may say, I won't change my mind._  
+_**Whatever he may say** won't be true._  
+_whatever == anything that_，即为：_Anything that he may say won't be true_。
+
+## 副词从句的简化
+
+### 副词从句的简化原则
+
+当从句句型为 _S + V + Ving or Ven_ 且当连接词不会破坏从句的逻辑时，可以省略连接词。
+
+当从句中的主语是 _无意义_ 的名词时，比如：_one_、_everybody_、_people_、_any_  和 _it_ 等，或当从句中的主语在主句中已经出现过时，可以省略从句中的主语。
+
+当从句中的主语是 _有意义_ 的名词时，或当从句中的主语在主句中没有出现过时，可以省略连接词，但不可以省略从句中的主语，可以为主语添加分词，或可以将从句转换为 _preposition noun_。
+
+当从句句型为 _S + V + C_ 时，可以省略从句中的 _V_。
+
+当从句句型为 _!S + V + C_ 时，如果从句中有助动词的话，那么可以将从句中的动词转换为不定词，并省略从句的助动词；如果从句无助动词的话，那么可以将从句的动词转换为 _Ving_。
+
+### 副词从句的简化示例
+
+_Because we have nothing to do here, we might as well go home._  
+_Having nothing to do here, we might as well go home._  
+因为 _Because_ 不会破坏句子的逻辑，所以可以被省略；  
+因为 _we == we_，所以可以被省略；  
+因为从句句型为 _!S + V + C_，所以可以将 _have_ 转换为 _having_。  
+
+_Although we have nothing to do here, we can't leave early._  
+_Although having nothing to do here, we can't leave early._  
+因为 _Although_ 会破坏句子的逻辑，所以不可以被省略；  
+因为 _we == we_，所以可以被省略；  
+因为从句句型为 _!S + V + C_，所以可以将 _have_ 转换为 _having_。  
+
+_Before he was in school, he used to be a naughty child._  
+_Before **being** in school, he used to be a naughty child._  
+因为 _Before_ 会破坏句子的逻辑，所以不可以被省略；  
+因为 _he == he_，所以可以被省略；  
+因为从句句型为 _S + V + C_，所以可以省略 _was_；  
+因为 _before_ 具有介词性质，所以需要后接名词 _being_，同理的还有 _after_ 和 _since_。
+
+_When the child was already sleeping soundly in bed, her mother came to kiss her goodnight._  
+_The child already sleeping soundly in bed, her mother came to kiss her goodnight._   
+因为 _the child != her mother_，所以不可以被省略，并且 _When_ 需要被省略；  
+因为从句句型为 _S + V + C_，所以可以省略 _was_；  
+_The child already sleeping soundly in bed_ 为 **_独立主格_**。 
+
+_Because they had been warned, they proceeded carefully._  
+_Having been warned, they proceeded carefully._  
+因为 _Because_ 不会破坏句子的逻辑，所以可以被省略；   
+因为 _they == they_，所以可以被省略；  
+因为从句句型为 _!S + V + C_，所以可以将 _had_ 转换为 _having_。 
+
+_I'll only be too glad if I can help._    
+_I'll only be too glad to help._   
+因为 _if_ 不会破坏句子的逻辑，所以可以被省略；   
+因为 _I == I_，所以可以被省略；  
+因为从句句型为 _!S + V + C_，所以可以将 _can help_ 转换为 _to help_。 
+
+_After he was shot in the knee, he couldn't fight._  
+_Shot in the knee, he couldn't fight._ 
+因为 _After_ 不会破坏句子的逻辑，所以可以被省略；  
+因为 _he == he_，所以可以被省略；  
+因为从句句型为 _S + V + C_，所以可以省略 _was_； 
+
+_When you are under attack, you must take cover immediately._  
+_When under attack, you must take cover immediately._
+因为从句句型为 _S + V + C_ 且 _C != Ving and Ven_ 时，所以连接词不可以被省略；  
+因为 _you == you_，所以可以被省略；  
+因为从句句型为 _S + V + C_，所以可以省略 _are_；
+
+_While it is small in size, the company is very competitive._  
+_While small in size, the company is very competitive._ 
+因为从句句型为 _S + V + C_ 且 _C != Ving and Ven_ 时，所以连接词不可以被省略；  
+因为 _it == the company_，所以可以被省略；  
+因为从句句型为 _S + V + C_，所以可以省略 _is_；
+
+_Although he was a doctor by training, Asimov became a writer._  
+_Although a doctor by training, Asimov became a writer._
+因为从句句型为 _S + V + C_ 且 _C != Ving and Ven_ 时，所以连接词不可以被省略；  
+因为 _he == Asimov_，所以可以被省略；  
+因为从句句型为 _S + V + C_，所以可以省略 _was_；
+
+_Because pork is so expensive, I'mbuying beef instead._  
+_With pork so expensive, I'm buying beef instead._  
+因为 _pork != I_，所以不可以被省略，并且 _Because_ 需要被省略；  
+因为从句句型为 _S + V + C_，所以可以省略 _is_；  
+_With pork so expensive_ 为 _preposition noun_。 
+
+# 对等从句
+
+对等从句是一种将多个从句使用对等连接词连接，并省略重复元素的句型。
+
+_Smoking by pregnant women may slow
+the growth of the fetus, **and** it may generally harm the
+fetus._  
+_Smoking by pregnant women may slow
+the growth of, **and** it may generally harm the
+fetus._  
+因为 _the fetus_ 为重复元素，所以可以省略。
+
+_The safety concerns over the new production procedure were removed **and** its superiority to the old one was proved._  
+_The safety concerns over the new production procedure were removed **and** its superiority to the old one proved._   
+因为 _was_ 为重复元素，所以可以省略。
+
+_Many modern-day scientists are **not** atheists, to whom there no such thing
+as God, **but** agnostics, who refrain from conjecturing about the existence
+of God, are much less His properties._  
+_Many modern-day scientists are **not** atheists, to whom there no such thing
+as God, **but** agnostics, who refrain from conjecturing about the existence
+of God, much less His properties._  
+因为 _are_ 为重复元素，所以可以省略。
+
+# 句型总结
+
+## 句型判断原则
+
+### _不完整 A 句 + [连接词] + 完整 B 句_
+
+_The defendant said that he didn’t do it._  
+_The defendant said he didn’t do it._  
+名词从句。
+
+### _完整 A 句 + [连接词] + 不完整 B 句_
+
+_The man whom you saw just now is my uncle._ 
+_The man you saw just now is my uncle._  
+关系代词从句。
+
+_The boy fell asleep while lying on the couch_. 
+_The boy fell asleep lying on the couch_. 
+_A monkey's brain is small when compared with the human brain._
+_A monkey's brain is small compared with the human brain._
+副词从句的简化。
+
+### _完整 A 句 + 连接词 + 完整 B 句_
+
+_It was all over when I got there._  
+副词从句。
+
+_The rain came at a time when the farmers needed it most._  
+关系副词从句。
+
+_I have a strong belief that hard work leads to success._  
+同位语从句。
+
+### _完整 A 句 + 完整 B 句_
+
+_The rain came at a time the farmers needed it most._  
+关系副词从句省略了连接词。
+
+### _[连接词] + 不完整 A 句, 完整 B 句_
+
+_When under attack, you must take cover immediately._  
+_The child already sleeping soundly in bed, her mother came to kiss her goodnight._  
+副词从句的简化。
+
+### _完整 A 句, [连接词] + 不完整 B 句_
+
+_The boy fell asleep, while lying on the couch_.  
+_The boy fell asleep, lying on the couch_.   
+副词从句的简化。
+
+_I like TIME Classic Words, which many people like, too._  
+关系代词从句。
+
+_My old car, which breaks down every other week, won't last much longer._  
+_My old car, breaking down every other week, won't last much longer._
+_Bill Clinton, who is President of the U.S., is a Baby Boomer._  
+_Bill Clinton, President of the U.S., is a Baby Boomer._   
+关系代词从句的简化。   
+
+### _不完整 A 句 + 对等连接词 + 完整 B 句 or 完整 A 句 + 对等连接词 + 不完整 B 句_ 
+
+_The safety concerns over the new production procedure were removed **and** its superiority to the old one was proved._  
+_The safety concerns over the new production procedure were removed **and** its superiority to the old one proved._   
+对等从句的省略。
+
+# 倒装句
+
+## 倒装句的定义
+
+倒装句是一种把动词或助动词移到主语前面的句型。
+
+### 比较级的倒装
+
+_Girls like cats more than boys, who as a rule are a cruel lot, do._  
+_Girls like cats more than **do boys**, who as a rule are a cruel lot._
+
+### 关系从句的倒装
+
+_The President is a man on whom a heavy responsibility, whether he likes it or not, falls._   
+_The President is a man on whom **falls a heavy responsibility**, whether he likes it or not._  
+
+### 假设语气的倒装
+
+_If I had been there, I could have done something to help._  
+_**Had I** been there, I could have done something to help._
+
+### 引用句的倒装
+
+_The police said, "None was killed in the accident."_  
+_"None was killed in the accident." **said the police**._
+
+_The WHO warns that cholera is coming back._  
+_Cholera, **warns the WHO**, is coming back._
+
+### 地方副词的倒装 
+
+_The train gose there!_  
+_There **goes the train**!_
+
+### 否定副词开发的倒装
+
+_We don't have such luck every day._  
+_**Not every day do we** have such luck._  
+
+_I will not stop waiting for you until you are married._  
+_**Not until you are married will I** stop waiting for you._  
+
+_I had hardly sat down to work when the phone rang._  
+_**Hardly had I** sat down to work when the phone rang._
