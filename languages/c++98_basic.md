@@ -137,11 +137,9 @@ _C++_ 的编译器会将 _int i_ 优化为 _int register i_。
 在 _C++_ 中，_struct_ 和 _class_ 都表示类，只是默认的访问属性不同，_struct_ 默认的访问属性是 _public_，而 _class_ 默认的访问属性是 _private_，在 _C++_ 一般用 _class_ 来表示类，而使用 _struct_ 来表示在 _C_ 中的传统功能：数据类型的整合。
 
 ```C++
-  extern "c"
-  {
-  struct Widget {
-
-  };
+  extern "c" {
+    struct Widget {
+    };
   };
 
   Widget w;                   // c++ 
@@ -277,11 +275,9 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 ### 默认实参
 
 ```C++
-  
   void Function(int x = 0);             // .h 
 
   void Function(int x) {                // .cpp
-
     std::cout << x << std::endl;
   }
 
@@ -293,17 +289,15 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 默认实参的后面必须都是默认实参。
 
 ```C++
-  void Function(int x, int y = 0, int z = 0);     // fine!   
+  void Function(int x, int y = 0, int z = 0);       // fine!   
 
-  void Function(int x, int y = 0, int z);          // error! 
+  void Function(int x, int y = 0, int z);           // error! 
 ```
 
 ### 占位形参
 
 ```C++
-  
-  void Function(int x，int)                  
-  {
+  void Function(int x，int) {
     ...
   }
 
@@ -358,7 +352,7 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 
 ```C++
   class Widget {
-  public:
+   public:
     friend std::ostream& operator<<(std::ostream &c, const Widget &w) {
       ...
     }
@@ -369,26 +363,26 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 ### _operator_
 
 ```C++
-class Widget {
-public:
-  Widget& operator++() {
-    this->value_++;
-    return *this;
-  }
+  class Widget {
+   public:
+    Widget& operator++() {
+      this->value_++;
+      return *this;
+    }
 
-  Widget operator++(int) {
-    Widget w(*this);
-    this->value_++;
-    return w;
-  }
+    Widget operator++(int) {
+      Widget w(*this);
+      this->value_++;
+      return w;
+    }
 
-   Widget operator+(const Widget &w) {
-    ...
-  }
+    Widget operator+(const Widget &w) {
+      ...
+    }
 
-private:
-  int value_;  
-};
+   private:
+    int value_;  
+  };
 ```
 
 * _Widget& operator++()_：前置 _++_，返回 _Widget&_。
@@ -424,7 +418,7 @@ private:
 
 ```C++
   class Widget {
-  public:
+   public:
     Widget();
     ...
   }
@@ -434,7 +428,7 @@ private:
 
 ```C++
   class Widget {
-  public:
+   public:
     Widget(int, int);
     ...
   }
@@ -444,7 +438,7 @@ private:
 
 ```C++
   class Widget {
-  public:
+   public:
     Widget(const Widget &);
     ...
   }
@@ -454,7 +448,7 @@ private:
 
 ```C++
   class Widget {
-  public:
+   public:
     Widget(int);
     ...
   }
@@ -469,11 +463,11 @@ _conversion constructor_ 指定了从它的实参的类型到它的类的类型�
 ### _copy elision_
 
 ```C++
-    class Widget {
-    public:
-      Widget(int);
-      Widget(const Widget &);
-      ...
+  class Widget {
+   public:
+    Widget(int);
+    Widget(const Widget &);
+    ...
   }
 ```
 
@@ -496,11 +490,11 @@ _copy elision_ 可以避免调用多余的 _copy constructor_。可以通过指�
 ### _copy initialization_ 和 _direct initialization_
 
 ```C++
-    class Widget {
-    public:
-      Widget(int);
-      explicit Widget(const Widget &);
-      ...
+  class Widget {
+   public:
+    Widget(int);
+    explicit Widget(const Widget &);
+    ...
   }
   Widget w1(0);               // fine! copy initialization
   Widget w2 = 0;              // fine! direct initialization
@@ -522,7 +516,7 @@ _copy initialization_ 不允许使用 _explicit_ 构造函数。_direct initiali
 
 ```C++
   class Widget {
-  public:
+   public:
     ~Widget();
     ...
   }
@@ -537,7 +531,7 @@ _copy initialization_ 不允许使用 _explicit_ 构造函数。_direct initiali
 转换函数指定了它的类的类型到指定类型的转换。
 ```C++
   class Widget {
-  public:
+   public:
     operator int() {
       ...
     }
@@ -545,7 +539,6 @@ _copy initialization_ 不允许使用 _explicit_ 构造函数。_direct initiali
   };
 
   int x = Widget(0);
-
 ```
 
 ## 继承
@@ -596,7 +589,7 @@ _base class object_(_derived class object_) 是以 _derived class_ 中的 _base 
 
 ```C++
   class Base {
-  public:
+   public:
     Base(const Base &) {
       ...
     }
@@ -604,7 +597,7 @@ _base class object_(_derived class object_) 是以 _derived class_ 中的 _base 
   };
 
   class Derived : public Base {
-  public:
+   public:
     Derived(const Derived &d) : Base(d) {
       ...
     } 
@@ -624,7 +617,7 @@ _base class object_(_derived class object_) 是以 _derived class_ 中的 _base 
 
 ```C++
   class Base {
-  public:
+   public:
     Base& operator=(const Base &) {
       ...
     }
@@ -632,7 +625,7 @@ _base class object_(_derived class object_) 是以 _derived class_ 中的 _base 
 };
 
 class Derived : public Base {
-public:
+ public:
   Derived& operator=(const Derived &d) {
     Base::operator=(d);
     ...
@@ -643,37 +636,34 @@ public:
 ### 使用 _public virtual_ 来解决二义性问题
 
 ```C++
-  class Worker
-  {
-  public:
+  class Worker {
+   public:
     Worker(int v) {
       ...
     }
     int value_;
   };
 
-  class Waiter : public virtual Worker                 
-  {                                       
-  public:
+  class Waiter : public virtual Worker {                                       
+   public:
     Waiter(int v) : Worker(v) {
       ...
     }
   };                                   
 
-  class Singer : public virtual Worker
-  {
-  public:
+  class Singer : public virtual Worker {
+   public:
     Singer(int v) : Worker(v) {
       ...
     }
   };	
 
-  class SingerWaiter : public Waiter, public Singer
-  {
-    SingerWaiter(int v) : 
-    Worker(v), 
-    Waiter(v), 
-    Singer(v) {
+  class SingerWaiter : public Waiter, public Singer {
+   public:  
+    SingerWaiter(int v)
+        : Worker(v), 
+        Waiter(v), 
+        Singer(v) {
       ...
     }
   };
@@ -760,7 +750,7 @@ _virtual function_ 是在类中使用 _virtual_ 修饰的函数。
 ```C++
   template<class T, int size>
   class Widget {
-  public:
+   public:
     Widget();
     Widget(const Widget &);
     Widget& operator=(const Widget &);
@@ -813,17 +803,14 @@ _virtual function_ 是在类中使用 _virtual_ 修饰的函数。
 
 ```C++
   class Widget {
-  public:
+   public:
     void Function(void) throw(Widget, int, double) {
-      
       if(...) {
         Widget w;
         throw(w);
-      }
-      else if(...) {
+      } else if(...) {
         throw(0);
-      }
-      else {
+      } else {
         throw(0.0);
       }
     }
