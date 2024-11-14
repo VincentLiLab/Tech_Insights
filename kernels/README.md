@@ -1,0 +1,1 @@
+文档中 _for author to use_ 和 _for developer to use_ 指的是 _**author**_ 使用 _lower_ 的 _data structure_ 和 _api_ 去实现 _higher_ 的 _data structure_ 和 _api_ 供 _developer_ 去使用，简单说 _**author**_ 是 _we_，而 _**developer**_ 是 _others_。
