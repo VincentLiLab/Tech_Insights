@@ -11,13 +11,13 @@
 
 # 概述
 
+_driver-model framework_ 负责探测 _device_ 和 _driver_ 何时添加、何时删除和是否匹配...，并通过 _sysfs_ 来将 _driver-model_ 的层次结构输出到了用户空间。_driver-model framework_ 简化了流程，但是具体核心操作是仍然是 _struct file_operations_ 来完成的，注意没有它也是可以的，比如：一些 _legacy driver_ 就没有涉及 _driver-model framework_。
+
 _driver-model framework_ 是对 _kernel_ 中先前使用的各种不同 _driver model_ 的统一。目的是通过将相关的数据和操作合并到相关的全局可访问的 _data structure_ 中，比如：_struct bus_type_、_struct device_、_struct device_driver_ 和 _struct class_，以增强 _bridge_ 和 _device_ 所对应的 _bus-specific driver_，比如：增强 _pci_ 所对应的 _struct pci_driver_。
 
 _struct bus_type_ 可以在不牺牲 _bus-specific_ 功能或 _type-safety_ 的情况下，将所其下所挂载的 _struct device_ 与特定的 _struct device_driver_ 进行匹配。_struct device_driver_ 是静态分配的，一个 _struct device_driver_ 可以对应有多个 _struct device_。
 
 通常的做法是：_bridge_ 和 _device_ 会定义所对应的 _bus-specific device including struct device_，比如：_struct pci_dev_，和所对应的 _bus-specific driver including struct device_driver_，比如：_struct pci_driver_，其中的 _struct device_driver_ 的 _callback_ 会调用所对应的 _bus-specific driver_ 的 _callback_，以去操作所传入的 _struct device_ 所对应的 _bus-specific device_。注意这只是过渡，只是为了减少基础架构的复杂性和代码大小，最终会只使用 _struct device_ 和 _struct device_driver_ 而不使用 _bus-specific device_ 和 _bus-specific driver_。
-
-_driver-model framework_ 主要是为了探测 _device_ 和 _driver_ 何时添加、何时删除和是否匹配...，并通过 _sysfs_ 来将 _driver-model_ 的层次结构输出到了用户空间。_driver-model framework_ 简化了流程，但是具体核心操作是仍然是 _struct file_operations_ 来完成的，注意没有它也是可以的，比如：一些 _legacy driver_ 就没有涉及 _driver-model framework_。
 
 # 细节
 
@@ -25,14 +25,13 @@ _driver-model framework_ 主要是为了探测 _device_ 和 _driver_ 何时添�
 
 ### _file layout_
 
-_include/linux/device.h_
-
-_drivers/base/bus.c_
-
+_include/linux/device.h_  
+_drivers/base/bus.c_  
 _drivers/base/core.c_
 
 ### _data structure_
 
+_struct bus_type representing a bus_  
 ```C
     struct bus_type {
         const char		*name;
@@ -76,7 +75,9 @@ _drivers/base/core.c_
         ANDROID_KABI_RESERVE(4);
     };
 ``` 
+***
 
+_struct device representing a device_  
 ```C
     struct device {
         struct device		*parent;
@@ -171,7 +172,9 @@ _drivers/base/core.c_
         ANDROID_KABI_RESERVE(8);
     };
 ```
+***
 
+_struct device_driver representing a driver_
 ```C
     struct device_driver {
         const char		*name;
@@ -209,25 +212,31 @@ _drivers/base/core.c_
 
 ### _api_
 
-```C++
+```C
     int bus_register(struct bus_type * bus);
 ```
+* 注册 _struct bus_type_
+***
 
-```C++
+```C
     int device_register(struct device *dev);
 ```
+* 注册 _struct bus_type_ 所挂载的 _struct device_。
+***
 
 ```C
     int driver_register(struct device_driver * drv);
 ```
+* 注册 _struct bus_type_ 所挂载的 _struct device_driver_。
+***
 
 # 流程
 
 ## _for author to use_
 
-* 注册 _struct bus_type_，比如：_/sys/bus/i2c_、_/sys/bus/platform_ 和 _/sys/bus/usb_...；
-* 注册 _struct bus_type_ 所挂载的 _struct device_driver_；
-* 注册 _struct bus_type_ 所挂载的 _struct device_；
+* 注册 _struct bus_type_，比如：_/sys/bus/i2c_、_/sys/bus/platform_ 和 _/sys/bus/usb_...。
+* 注册 _struct bus_type_ 所挂载的 _struct device_driver_。
+* 注册 _struct bus_type_ 所挂载的 _struct device_。
 
 ## _for kernel to execute_
 
