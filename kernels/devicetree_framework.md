@@ -1,4 +1,14 @@
 
+- [概述](#概述)
+- [细节](#细节)
+	- [_for author to use_](#for-author-to-use)
+		- [_file layout_](#file-layout)
+		- [_data structure_](#data-structure)
+		- [_api_](#api)
+- [流程](#流程)
+	- [_for author to use_](#for-author-to-use-1)
+	- [_for framework to use_](#for-framework-to-use)
+
 # 概述
 
 _devicetree_framework_ 负责描述 _hardware_ 的信息，比如：_data bus_、_interrupt line_ 和 _GPIO
@@ -150,16 +160,21 @@ _hardware node for device population_
 
 ## _for author to use_
 
-* 定义并注册 _struct machine_desc_。
-* 定义 _chosen node_。
-* 定义 _hardware node_。
+* _author_ 调用 [api](#api) 中的 _DT_MACHINE_START_：
+	* 定义并注册 _struct machine_desc_。
+***
+* _author_ 定义 _chosen node_。
+***
+* _author_ 定义 _hardware node_。
 ***
 
-## _for kernel to execute_
+## _for framework to use_
 
 * _kernel_ 调用 _setup_arch()/setup_machine_fdt()_：
-  * 根据所对应的 _device tree data_ 选择 _struct machine_desc_，并执行 _platform identification_ 以运行其所对应的 _machine-specific fixups_。
-  * 根据所对应的 _device tree data_ 选择 _chosen node_，并执行 _runtime configuration_。
-* _kernel_ 调用 _of_platform_populate()_：
-  * 根据所对应的 _device tree data_ 执行所对应的 _device population_，以描述 _hardware_ 的信息。
+    * 根据所对应的 _device tree data_，选择 _struct machine_desc_，并执行 _platform identification_，以运行其所对应的 _machine-specific fixups_。
+    * 根据所对应的 _device tree data_，选择 _chosen node_，并执行 _runtime configuration_。
 ***
+* _kernel_ 调用 _of_platform_populate()_：
+    * 根据所对应的 _device tree data_，执行所对应的 _device population_，以描述 _hardware_ 的信息。
+***
+

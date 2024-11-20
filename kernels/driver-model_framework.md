@@ -6,7 +6,7 @@
     - [_api_](#api)
 - [流程](#流程)
   - [_for author to use_](#for-author-to-use-1)
-  - [_for kernel to execute_](#for-kernel-to-execute)
+  - [_for framework to use_](#for-framework-to-use)
 
 
 # 概述
@@ -215,7 +215,7 @@ _struct device_driver representing a driver_
 ```C
     int bus_register(struct bus_type * bus);
 ```
-* 注册 _struct bus_type_
+* 注册 _struct bus_type_。
 ***
 
 ```C
@@ -234,10 +234,15 @@ _struct device_driver representing a driver_
 
 ## _for author to use_
 
-* 注册 _struct bus_type_，比如：_/sys/bus/i2c_、_/sys/bus/platform_ 和 _/sys/bus/usb_...。
-* 注册 _struct bus_type_ 所挂载的 _struct device_driver_。
-* 注册 _struct bus_type_ 所挂载的 _struct device_。
+* _author_ 调用 [api](#api) 中的 _bus_register_：  
+    * 注册 _struct bus_type_，比如：_/sys/bus/i2c_、_/sys/bus/platform_ 和 _/sys/bus/usb_...。
+***
+* _author_ 调用 [api](#api) 中的 _driver_register_：  
+    * 注册 _struct bus_type_ 所挂载的 _struct device_driver_。
+***
+* _author_ 调用 [api](#api) 中的 _device_register_：  
+    * 注册 _struct bus_type_ 所挂载的 _struct device_。
 
-## _for kernel to execute_
+## _for framework to use_
 
-_kernel_ 遍历 _struct bus_type_，将所其下所挂载的 _struct device_ 与特定的 _struct device_driver_ 进行匹配，并生成相应的 _sysfs_。
+* _driver-model_framework_ 遍历 _struct bus_type_，将所其下所挂载的 _struct device_ 与特定的 _struct device_driver_ 进行匹配，并生成相应的 _sysfs_。
