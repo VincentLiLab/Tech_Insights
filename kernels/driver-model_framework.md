@@ -1,15 +1,15 @@
-- [概述](#概述)
-- [细节](#细节)
+- [_overview_](#overview)
+- [_detail_](#detail)
   - [_for author to use_](#for-author-to-use)
     - [_file layout_](#file-layout)
     - [_data structure_](#data-structure)
     - [_api_](#api)
-- [流程](#流程)
+- [_flow_](#flow)
   - [_for author to use_](#for-author-to-use-1)
   - [_for framework to use_](#for-framework-to-use)
 
 
-# 概述
+# _overview_
 
 _driver-model framework_ 负责探测 _device_ 和 _driver_ 何时添加、何时删除和是否匹配...，并通过 _sysfs_ 来将 _driver-model_ 的层次结构输出到了用户空间。_driver-model framework_ 简化了流程，但是具体核心操作是仍然是 _struct file_operations_ 来完成的，注意没有它也是可以的，比如：一些 _legacy driver_ 就没有涉及 _driver-model framework_。
 
@@ -17,9 +17,9 @@ _driver-model framework_ 是对 _kernel_ 中先前使用的各种不同 _driver 
 
 _struct bus_type_ 可以在不牺牲 _bus-specific_ 功能或 _type-safety_ 的情况下，将所其下所挂载的 _struct device_ 与特定的 _struct device_driver_ 进行匹配。_struct device_driver_ 是静态分配的，一个 _struct device_driver_ 可以对应有多个 _struct device_。
 
-通常的做法是：_bridge_ 和 _device_ 会定义所对应的 _bus-specific device including struct device_，比如：_struct pci_dev_，和所对应的 _bus-specific driver including struct device_driver_，比如：_struct pci_driver_，其中的 _struct device_driver_ 的 _callback_ 会调用所对应的 _bus-specific driver_ 的 _callback_，以去操作所传入的 _struct device_ 所对应的 _bus-specific device_。注意这只是过渡，只是为了减少基础架构的复杂性和代码大小，最终会只使用 _struct device_ 和 _struct device_driver_ 而不使用 _bus-specific device_ 和 _bus-specific driver_。
+通常的做法是：_bridge_ 和 _device_ 会定义所对应的 _bus-specific device containing struct device_，比如：_struct pci_dev_，和所对应的 _bus-specific driver containing struct device_driver_，比如：_struct pci_driver_，其中的 _struct device_driver_ 的 _callback_ 会调用所对应的 _bus-specific driver_ 的 _callback_，以去操作所传入的 _struct device_ 所对应的 _bus-specific device_。注意这只是过渡，只是为了减少基础架构的复杂性和代码大小，最终会只使用 _struct device_ 和 _struct device_driver_ 而不使用 _bus-specific device_ 和 _bus-specific driver_。
 
-# 细节
+# _detail_
 
 ## _for author to use_
 
@@ -31,7 +31,7 @@ _drivers/base/core.c_
 
 ### _data structure_
 
-_struct bus_type representing a bus_  
+_struct bus_type to represent a bus_  
 ```C
     struct bus_type {
         const char		*name;
@@ -77,7 +77,7 @@ _struct bus_type representing a bus_
 ``` 
 ***
 
-_struct device representing a device_  
+_struct device to represent a device_  
 ```C
     struct device {
         struct device		*parent;
@@ -174,7 +174,7 @@ _struct device representing a device_
 ```
 ***
 
-_struct device_driver representing a driver_
+_struct device_driver to represent a driver_
 ```C
     struct device_driver {
         const char		*name;
@@ -215,34 +215,34 @@ _struct device_driver representing a driver_
 ```C
     int bus_register(struct bus_type * bus);
 ```
-* 注册 _struct bus_type_。
+* 注册一个 _struct bus_type_。
 ***
 
 ```C
     int device_register(struct device *dev);
 ```
-* 注册 _struct bus_type_ 所挂载的 _struct device_。
+* 注册一个挂载在指定的 _struct bus_type_ 下的 _struct device_。
 ***
 
 ```C
     int driver_register(struct device_driver * drv);
 ```
-* 注册 _struct bus_type_ 所挂载的 _struct device_driver_。
+* 注册一个挂载在指定的 _struct bus_type_ 下的 _struct device_driver_。
 ***
 
-# 流程
+# _flow_
 
 ## _for author to use_
 
 * _author_ 调用 [api](#api) 中的 _bus_register_：  
-    * 注册 _struct bus_type_，比如：_/sys/bus/i2c_、_/sys/bus/platform_ 和 _/sys/bus/usb_...。
+    * 注册一个 _struct bus_type_，比如：_/sys/bus/i2c_、_/sys/bus/platform_ 和 _/sys/bus/usb_...。
 ***
 * _author_ 调用 [api](#api) 中的 _driver_register_：  
-    * 注册 _struct bus_type_ 所挂载的 _struct device_driver_。
+    * 注册一个挂载在指定的 _struct bus_type_ 下的 _struct device_driver_。
 ***
 * _author_ 调用 [api](#api) 中的 _device_register_：  
-    * 注册 _struct bus_type_ 所挂载的 _struct device_。
+    * 注册一个挂载在指定的 _struct bus_type_ 下的 _struct device_。
 
 ## _for framework to use_
 
-* _driver-model_framework_ 遍历 _struct bus_type_，将所其下所挂载的 _struct device_ 与特定的 _struct device_driver_ 进行匹配，并生成相应的 _sysfs_。
+* _driver-model framework_ 遍历一个 _struct bus_type_，将所其下所挂载的所有 _struct device_ 与特定的 _struct device_driver_ 进行匹配，并生成相应的 _sysfs_。

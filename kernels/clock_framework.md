@@ -1,5 +1,5 @@
-- [概述](#概述)
-- [细节](#细节)
+- [_overview_](#overview)
+- [_detail_](#detail)
   - [_for author to use_](#for-author-to-use)
     - [_file layout_](#file-layout)
     - [_data structure_](#data-structure)
@@ -8,15 +8,15 @@
     - [_file layout_](#file-layout-1)
     - [_data structure_](#data-structure-1)
     - [_api_](#api-1)
-- [流程](#流程)
+- [_flow_](#flow)
   - [_for author to use_](#for-author-to-use-1)
   - [_for developer to use_](#for-developer-to-use-1)
 
-# 概述
+# _overview_
 
-_clock_framework_ 负责管理 _platform_ 中的所有 _clock_，_author_ 需要为每个 _clock_ 都定义一个其所对应的 _struct clk_ops_，以执行所对应的 _hardware-specific operations_，而 _clock_framework_ 会为每个 _clock_ 都创建一个其所对应的 _struct clk_core_，以管理所对应的 _struct clk_ops_ 和 _clock tree topology_，并通过一个 _struct clk_hw_ 来将所对应的 _struct clk_core_ 和 _struct clk_ops_ 绑定在一起；各个 _developer_ 需要通过各个 _struct clk_ 来访问一个 _clock_ 所对应的 _struct clk_ops_。
+_clock framework_ 负责管理 _platform_ 中的所有 _clock controller_ 中的所有 _clock_。_author_ 需要为每个 _clock_ 都定义一个所对应的 _struct clk_ops_，以执行所对应的 _hardware-specific operations_。_clock framework_ 会为每个 _clock_ 都创建一个所对应的 _struct clk_core_，以管理所对应的 _struct clk_ops_ 和 _clock tree topology_，并通过一个 _struct clk_hw_ 来将所对应的 _struct clk_core_ 和 _struct clk_ops_ 绑定在一起。各个 _developer_ 需要通过各个 _struct clk_ 来访问一个 _clock_ 所对应的 _struct clk_ops_。
 
-# 细节
+# _detail_
 
 ## _for author to use_
 
@@ -27,7 +27,7 @@ _drivers/clk/clk.c_
 
 ### _data structure_
 
-_struct clk_ops used for performing the hardware-specific operations_
+_struct clk_ops to perform the hardware-specific operations_
 ```C
     struct clk_ops {
         int		(*prepare)(struct clk_hw *hw);
@@ -71,7 +71,7 @@ _struct clk_ops used for performing the hardware-specific operations_
 ```
 ***
 
-_struct clk_core used for managing struct clk_ops and making up the core of the clock tree topology_
+_struct clk_core to manage the struct clk_ops and to make up the core of the clock tree topology_
 ```C
     struct clk_core {
         const char		*name;
@@ -123,7 +123,7 @@ _struct clk_core used for managing struct clk_ops and making up the core of the 
 ```
 ***
 
-_struct clk_hw tying the struct clk_ops and clk_core together_
+_struct clk_hw to tie the struct clk_ops and the clk_core together_
 ```C
     struct clk_init_data {
         const char		*name;
@@ -149,7 +149,7 @@ _struct clk_hw tying the struct clk_ops and clk_core together_
 ```C
     struct clk *clk_register(struct device *dev, struct clk_hw *hw);
 ```  
-* 根据传入的 _struct device_ 和 _struct clk_hw_，创建并配置 _struct clk_core_ 所对应的 _struct clk_ops_ 及其其他参数。
+* 根据传入的 _struct device_ 和 _struct clk_hw_，创建一个 _struct clk_core_，并配置所对应的 _struct clk_ops_ 及其其他参数。
 * 更新所创建的 _struct clk_core_ 所对应的 _clock tree topology_。
 * 通过传入的 _struct clk_hw_ 将所创建的 _struct clk_core_ 和所对应的 _struct clk_ops_ 绑定在一起。
 ***
@@ -160,7 +160,7 @@ _struct clk_hw tying the struct clk_ops and clk_core together_
 						   void *data),
 			void *data);
 ```
-* 将传入的 _clock controller node_ 所对应的 _function used for getting the specific struct clk_hw_ 添加至 _clock_framework_ 中。
+* 根据传入的 _clock controller node_，注册所对应的 _function to get the specific struct clk_hw_。
 
 ## _for developer to use_
 
@@ -173,7 +173,7 @@ _drivers/clk/clkdev.c_
 
 ### _data structure_
 
-_struct clk the driver-facing functions operate on_
+_struct clk the driver-facing functions can operate on_
 ```C
     struct clk {
         struct clk_core	*core;
@@ -192,9 +192,9 @@ _struct clk the driver-facing functions operate on_
     struct clk *clk_get(struct device *dev, const char *con_id);
 ```
 * 根据传入的 _clock consumer device_ 及其相关参数，获取所对应的 _clock controller node_。
-* 根据所获取的 _clock controller node_，从 _clock framework_ 中获取 _function used for getting the specific struct clk_hw_。
-* 根据传入的 _clock consumer device_ 所对应的 _node_ 和所获取的 _function used for getting the specific struct clk_hw_，获取 _the specific struct clk_hw_。
-* 根据所获取的 _the specific struct clk_hw_ 所对应的 _struct clk_core_，创建、配置并返回 _struct clk_。
+* 根据所获取的 _clock controller node_，从 _clock framework_ 中获取 _function to get the specific struct clk_hw_。
+* 根据传入的 _clock consumer device_ 所对应的 _node_ 和所获取的 _function to get the specific struct clk_hw_，获取 _the specific struct clk_hw_。
+* 根据所获取的 _the specific struct clk_hw_ 所对应的 _struct clk_core_，创建并配置一个 _struct clk_。
 ***
 
 ```C
@@ -205,31 +205,31 @@ _struct clk the driver-facing functions operate on_
 ```
 * 根据传入的 _struct clk_，获取所对应的 _struct clk_core_。
 * 处理所获取的 _struct clk_core_ 所对应的 _clock tree topology_。
-* 执行所获取的 _struct clk_core_ 所对应的 _struct clk_ops_ 去执行 _hardware-specific operations_。
+* 执行所获取的 _struct clk_core_ 所对应的 _struct clk_ops_，以去执行 _hardware-specific operations_。
 
-# 流程
+# _flow_
 
 ## _for author to use_
 
 * _author_ 定义一个 _clock_ 所对应的 _struct clk_ops_ 和 _struct clk_hw_
-***
 * _author_ 调用 [api](#api) 中的 _clk_register_： 
-    * 根据传入的 _struct device_ 和 _struct clk_hw_，创建并配置 _struct clk_core_ 所对应的 _struct clk_ops_ 及其其他参数。
+    * 根据传入的 _struct device_ 和 _struct clk_hw_，创建一个 _struct clk_core_，并配置所对应的 _struct clk_ops_ 及其其他参数。
     * 更新所创建的 _struct clk_core_ 所对应的 _clock tree topology_。
     * 通过传入的 _struct clk_hw_ 将所创建的 _struct clk_core_ 和所对应的 _struct clk_ops_ 绑定在一起。
 ***
+* _autor_ 定义一个 _clock controller node_ 所对应的 _function to get the specific struct clk_hw_。
 * _author_ 调用 [api](#api) 中的 _of_clk_add_provider_：
-    * 将传入的 _clock controller node_ 所对应的 _function used for getting the specific struct clk_hw_ 添加至 _clock_framework_ 中。
+    * 根据传入的 _clock controller node_，注册所对应的 _function to get the specific struct clk_hw_。
 
 ## _for developer to use_
 
 * _developer_ 调用 [api](#api-1) 中的 _clk_get_：
     * 根据传入的 _clock consumer device_ 及其相关参数，获取所对应的 _clock controller node_。
-    * 根据所获取的 _clock controller node_，从 _clock framework_ 中获取 _function used for getting the specific struct clk_hw_。
-    * 根据传入的 _clock consumer device_ 所对应的 _node_ 和所获取的 _function used for getting the specific struct clk_hw_，获取 _the specific struct clk_hw_。
-    * 根据所获取的 _the specific struct clk_hw_ 所对应的 _struct clk_core_，创建、配置并返回 _struct clk_。
+    * 根据所获取的 _clock controller node_，从 _clock framework_ 中获取 _function to get the specific struct clk_hw_。
+    * 根据传入的 _clock consumer device_ 所对应的 _node_ 和所获取的 _function to get the specific struct clk_hw_，获取 _the specific struct clk_hw_。
+    * 根据所获取的 _the specific struct clk_hw_ 所对应的 _struct clk_core_，创建并配置一个 _struct clk_。
 ***
 * _developer_ 调用 [api](#api-1) 中的 _clk_set_rate_ 等：
     * 根据传入的 _struct clk_，获取所对应的 _struct clk_core_。
     * 处理所获取的 _struct clk_core_ 所对应的 _clock tree topology_。
-    * 执行所获取的 _struct clk_core_ 所对应的 _struct clk_ops_ 去执行 _hardware-specific operations_。
+    * 执行所获取的 _struct clk_core_ 所对应的 _struct clk_ops_，以去执行 _hardware-specific operations_。

@@ -1,22 +1,22 @@
 
-- [概述](#概述)
-- [细节](#细节)
-	- [_for author to use_](#for-author-to-use)
-		- [_file layout_](#file-layout)
-		- [_data structure_](#data-structure)
-		- [_api_](#api)
-- [流程](#流程)
-	- [_for author to use_](#for-author-to-use-1)
-	- [_for framework to use_](#for-framework-to-use)
+- [_overview_](#overview)
+- [_detail_](#detail)
+  - [_for author to use_](#for-author-to-use)
+    - [_file layout_](#file-layout)
+    - [_data structure_](#data-structure)
+    - [_api_](#api)
+- [_flow_](#flow)
+  - [_for author to use_](#for-author-to-use-1)
+  - [_for framework to use_](#for-framework-to-use)
 
-# 概述
+# _overview_
 
-_devicetree_framework_ 负责描述 _hardware_ 的信息，比如：_data bus_、_interrupt line_ 和 _GPIO
+_devicetree framework_ 负责描述 _hardware_ 的信息，比如：_data bus_、_interrupt line_ 和 _GPIO
 connection_...。
 
 使用 _DT_ 主要有三个目的：_platform identification_、_runtime configuration_ 和 _device population_。
 
-# 细节
+# _detail_
 
 ## _for author to use_
 
@@ -84,7 +84,7 @@ _chosen node used for runtime configuration during early boot_
 ```
 ***
 
-_hardware node for device population_
+_hardware node used for device population_
 ```C
     /{
         ...
@@ -119,7 +119,7 @@ _hardware node for device population_
 
     #endif
 ```  
-* 定义并注册 _struct machine_desc_。
+* 定义并注册一个 _struct machine_desc_。
 ***
 
 ```C
@@ -130,7 +130,7 @@ _hardware node for device population_
 		initrd-end = <0xc8200000>;
 	};
 ```
-* 定义 _chosen node_
+* 定义并注册一个 _chosen node_。
 ***
 
 ```C
@@ -153,28 +153,28 @@ _hardware node for device population_
             ...
         };
 ```
-* 定义 _hardware node_
+* 定义并注册相关的 _hardware node_
 ***
 
-# 流程
+# _flow_
 
 ## _for author to use_
 
 * _author_ 调用 [api](#api) 中的 _DT_MACHINE_START_：
-	* 定义并注册 _struct machine_desc_。
+  	* 定义并注册一个 _struct machine_desc_。
 ***
-* _author_ 定义 _chosen node_。
+* _author_ 定义并注册一个 _chosen node_。
 ***
-* _author_ 定义 _hardware node_。
+* _author_ 定义并注册相关的 _hardware node_。
 ***
 
 ## _for framework to use_
 
-* _kernel_ 调用 _setup_arch()/setup_machine_fdt()_：
-    * 根据所对应的 _device tree data_，选择 _struct machine_desc_，并执行 _platform identification_，以运行其所对应的 _machine-specific fixups_。
-    * 根据所对应的 _device tree data_，选择 _chosen node_，并执行 _runtime configuration_。
+* _devicetree framework_ 执行 _setup_arch()/setup_machine_fdt()_：
+    * 根据所对应的 _device tree data_，选择所对应的一个 _struct machine_desc_，并执行所对应的 _platform identification_，以运行所对应的 _machine-specific fixups_。
+    * 根据所对应的 _device tree data_，选择所对应的一个 _chosen node_，并执行所对应的 _runtime configuration_。
 ***
-* _kernel_ 调用 _of_platform_populate()_：
+* _devicetree framework_ 执行 _of_platform_populate()_：
     * 根据所对应的 _device tree data_，执行所对应的 _device population_，以描述 _hardware_ 的信息。
 ***
 
