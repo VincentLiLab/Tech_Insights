@@ -205,7 +205,7 @@ _struct clk the driver-facing functions can operate on_
 ```
 * 根据传入的 _struct clk_，获取所对应的 _struct clk_core_。
 * 处理所获取的 _struct clk_core_ 所对应的 _clock tree topology_。
-* 执行所获取的 _struct clk_core_ 所对应的 _struct clk_ops_，以去执行 _hardware-specific operations_。
+* 执行所获取的 _struct clk_core_ 所对应的 _struct clk_ops_，以执行 _hardware-specific operations_。
 
 # _flow_
 
@@ -232,4 +232,4 @@ _struct clk the driver-facing functions can operate on_
 * _developer_ 调用 [api](#api-1) 中的 _clk_set_rate_ 等：
     * 根据传入的 _struct clk_，获取所对应的 _struct clk_core_。
     * 处理所获取的 _struct clk_core_ 所对应的 _clock tree topology_。
-    * 执行所获取的 _struct clk_core_ 所对应的 _struct clk_ops_，以去执行 _hardware-specific operations_。
+    * 执行所获取的 _struct clk_core_ 所对应的 _struct clk_ops_，以执行 _hardware-specific operations_。

@@ -1,17 +1,17 @@
 - [_overview_](#overview)
 - [_detail_](#detail)
-	- [_for author to use_](#for-author-to-use)
-		- [_file layout_](#file-layout)
-		- [_data structure_](#data-structure)
-		- [_api_](#api)
-	- [_for developer to use_](#for-developer-to-use)
-		- [_file layout_](#file-layout-1)
-		- [_data structure_](#data-structure-1)
-		- [_api_](#api-1)
+  - [_for author to use_](#for-author-to-use)
+    - [_file layout_](#file-layout)
+    - [_data structure_](#data-structure)
+    - [_api_](#api)
+  - [_for developer to use_](#for-developer-to-use)
+    - [_file layout_](#file-layout-1)
+    - [_data structure_](#data-structure-1)
+    - [_api_](#api-1)
 - [_flow_](#flow)
-	- [_for author to use_](#for-author-to-use-1)
-	- [_for developer to use_](#for-developer-to-use-1)
-	- [_for framework to use_](#for-framework-to-use)
+  - [_for author to use_](#for-author-to-use-1)
+  - [_for developer to use_](#for-developer-to-use-1)
+  - [_for framework to use_](#for-framework-to-use)
 
 
 # _overview_
@@ -363,5 +363,5 @@ _struct irqaction, interrupt action descriptor_
    * 在 _the specific handle_irq_ 所对应的 _struct irq_domain_ 所对应的 _mapping between hwirq numbers and irq numbers_ 中，获取 _the specific hwirq number_ 所对应的 _irq number_ 和 _struct irq_desc_。
    * 执行所获取的 _struct irq_desc_ 所对应的 _irq_flow_handler_t_：
         * 根据所获取的 _struct irq_desc_ 所对应的 _struct irq_data_，获取所对应的 _struct irq_chip_。
-        * 执行所获取的 _struct irq_chip_，以去执行 _hardware-specific operations_。
+        * 执行所获取的 _struct irq_chip_，以执行 _hardware-specific operations_。
         * 执行所获取的 _struct irq_desc_ 所对应的 _struct irqactions_ 所对应的 _irq_handler_ts_。
