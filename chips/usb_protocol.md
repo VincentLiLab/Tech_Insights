@@ -1,7 +1,7 @@
 
 # _overview_
 
-_usb_ 协议（以下简称 _usb_）不同版本的细节是不同的，比如：_usb 2.x_ 是 _480Mb/s_ 而 _usb 3.x_ 是 _5Gb/s_；_usb 2.0_ 和 _usb 3.0_ 的 _packet_ 的格式是不同的...，但是框架都是相同的，比如：所有传输都必须是由 _host_ 主动发起的，_device_ 是无法主动发起任何操作的；_transaction_ 是由 _packet_ 组成的；_transfer_ 是由 _transaction_ 组成的...。当一个 _device_ 枚举时，_host_ 首先会给 _the specific device_ 分配 _device address_，然后通过相关的 _descriptor_ 得到 _endpoints_ 信息，最后通过 _device address_ 和 _endpoint_ 来与 _device_ 通信。
+_usb_ 协议（以下简称 _usb_）不同版本的细节是不同的，比如：_usb 2.x_ 是 _480Mb/s_ 而 _usb 3.x_ 是 _5Gb/s_；_usb 2.x_ 和 _usb 3.x_ 的 _packet_ 的格式是不同的...，但是框架都是相同的，比如：所有传输都必须是由 _host_ 主动发起的，_device_ 是无法主动发起任何操作的；_transaction_ 是由 _packet_ 组成的；_transfer_ 是由 _transaction_ 组成的...。当一个 _device_ 枚举时，_host_ 首先会给 _the specific device_ 分配 _device address_，然后通过相关的 _descriptor_ 得到 _endpoints_ 信息，最后通过 _device address_ 和 _endpoint_ 来与 _device_ 通信。
 
 # _packet_
 
@@ -195,3 +195,6 @@ _in transaction_ 或  _out transaction_
 * _The host gets the all of a device descriptor for the device via the device address and endpoint 0_。
 *  _The host gets the config descriptor, the interface descriptor and the endpoint descriptor for the device via the device address and the endpoint 0_。
 *  _Now the host has known the number of the configurations, the interfaces and thn endpoints_。
+*  _The host can access the device via the device address and the endpoints_。
+  
+![alt text](image/usb_descriptor_hierarchy.png)

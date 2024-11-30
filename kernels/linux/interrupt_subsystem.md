@@ -11,12 +11,12 @@
 - [_flow_](#flow)
   - [_for author to use_](#for-author-to-use-1)
   - [_for developer to use_](#for-developer-to-use-1)
-  - [_for framework to use_](#for-framework-to-use)
+  - [_for subsystem to use_](#for-subsystem-to-use)
 
 
 # _overview_
 
-_interrupt framework_ 负责管理 _platform_ 中的所有 _interrupt controller_ 中的所有 _interrupt_。_author_ 需要为每个 _interrupt controller_ 都分别定义：一个所对应的 _struct irq_chip_，以执行所对应的 _hardware-specific operations_；一个所对应的 _handle_irq_，以做为 _top-level irq flow handler_；一个所对应的 _struct irq_domain_ops_，以被 _interrupt framework_ 为每个 _interrupt controller_ 而所创建的一个 _struct irq_domain_ 所使用，以管理所对应的 _interrupt controller tree topology_ 和 _hwirq number which is a controller-local interrupt number_ 和 _irq number which is an index into the global irq_desc array and an enumeration of the possible interrupt sources on a machine_ 之间的映射，_hwirq number_ 在不同的 _interrupt controller_ 中是可以重复的，而 _irq number_ 则是全局唯一的。_interrupt framework_ 会为每个 _irq number_ 都创建：一个所对应的 _struct irq_desc_，以做为所对应的 _interrupt descriptor_；一个所对应的 _struct irq_data_，以包含所对应的 _struct irq_chip_ 所要使用的相关信息；一个所对应的 _irq_flow_handler_t_，以做为 _high-level irq flow handler_；一个 _struct irqaction_，以做为所对应的 _interrupt action descriptor_。_developer_ 需要为每个 _irq number_ 都定义一个或多个 _irq_handler_t_，以做为 _low-level irq flow handler or thread_。
+_interrupt subsystem_ 负责管理 _platform_ 中的所有 _interrupt controller_ 中的所有 _interrupt_。_author_ 需要为每个 _interrupt controller_ 都分别定义：一个所对应的 _struct irq_chip_，以执行所对应的 _hardware-specific operations_；一个所对应的 _handle_irq_，以做为 _top-level irq flow handler_；一个所对应的 _struct irq_domain_ops_，以被 _interrupt subsystem_ 为每个 _interrupt controller_ 而所创建的一个 _struct irq_domain_ 所使用，以管理所对应的 _interrupt controller tree topology_ 和 _hwirq number which is a controller-local interrupt number_ 和 _irq number which is an index into the global irq_desc array and an enumeration of the possible interrupt sources on a machine_ 之间的映射，_hwirq number_ 在不同的 _interrupt controller_ 中是可以重复的，而 _irq number_ 则是全局唯一的。_interrupt subsystem_ 会为每个 _irq number_ 都创建：一个所对应的 _struct irq_desc_，以做为所对应的 _interrupt descriptor_；一个所对应的 _struct irq_data_，以包含所对应的 _struct irq_chip_ 所要使用的相关信息；一个所对应的 _irq_flow_handler_t_，以做为 _high-level irq flow handler_；一个 _struct irqaction_，以做为所对应的 _interrupt action descriptor_。_developer_ 需要为每个 _irq number_ 都定义一个或多个 _irq_handler_t_，以做为 _low-level irq flow handler or thread_。
 
 # _detail_
 
@@ -302,10 +302,10 @@ _struct irqaction, interrupt action descriptor_
 * 根据传入的 _interrupt consumer node_，获取所对应的 _interrupt controller node_。
 * 根据所获取的 _interrupt controller node_，获取所对应的 _struct irq_domain_。
 * 根据传入的相关参数，执行所获取的 _struct irq_domain_ 所对应的 _struct irq_domain_ops_，以获取所对应的 _hwirq number_。
-* 从 _interrupt framework_ 中，申请 _hwirq numbers_ 所对应的 _irq number_ 和 _struct irq_desc_。
+* 从 _interrupt subsystem_ 中，申请 _hwirq numbers_ 所对应的 _irq number_ 和 _struct irq_desc_。
 * 更新所获取的 _struct irq_domain_ 所对应的 _interrupt controller tree topology_。
 * 执行所获取的 _struct irq_domain_ 所对应的 _struct irq_domain_ops_，以执行： 
-    * 从 _interrupt framework_ 中，获取所获取的 _struct irq_domain_ 所对应的 _struct irq_chip_。
+    * 从 _interrupt subsystem_ 中，获取所获取的 _struct irq_domain_ 所对应的 _struct irq_chip_。
     * 根据所获取的 _hwirq number_ 和 _struct irq_chip_ ，配置所申请的 _struct irq_desc_ 所对应的  _struct irq_data_。
     * 配置所申请的 _struct irq_desc_ 所对应的 _irq_flow_handler_t_。
 * 根据所获取的 _hwirq number_，在传入的 _struct irq_domain_ 中创建 _mapping between the hwirq and the irq number_。
@@ -317,7 +317,7 @@ _struct irqaction, interrupt action descriptor_
 			 irq_handler_t thread_fn, unsigned long irqflags,
 			 const char *devname, void *dev_id);
 ```
-* 根据传入的 _irq number_，从 _interrupt framework_ 中，获取所对应的 _struct irq_desc_。
+* 根据传入的 _irq number_，从 _interrupt subsystem_ 中，获取所对应的 _struct irq_desc_。
 * 根据传入的 _irq_handler_ts_ 及其相关参数，创建并配置一个 _struct irqaction_。
 * 将所创建的 _struct irqaction_ 添加到所获取的 _struct irq_desc_ 中。
 
@@ -342,23 +342,23 @@ _struct irqaction, interrupt action descriptor_
     * 根据传入的 _interrupt consumer node_，获取所对应的 _interrupt controller node_。
     * 根据所获取的 _interrupt controller node_，获取所对应的 _struct irq_domain_。
     * 根据传入的相关参数，执行所获取的 _struct irq_domain_ 所对应的 _struct irq_domain_ops_，以获取所对应的 _hwirq number_。
-    * 从 _interrupt framework_ 中，申请 _hwirq number_ 所对应的 _irq number_ 和 _struct irq_desc_。
+    * 从 _interrupt subsystem_ 中，申请 _hwirq number_ 所对应的 _irq number_ 和 _struct irq_desc_。
     * 更新所获取的 _struct irq_domain_ 所对应的 _interrupt controller tree topology_。
     * 执行所获取的 _struct irq_domain_ 所对应的 _struct irq_domain_ops_，以执行： 
-        * 从 _interrupt framework_ 中，获取所获取的 _struct irq_domain_ 所对应的 _struct irq_chip_。
+        * 从 _interrupt subsystem_ 中，获取所获取的 _struct irq_domain_ 所对应的 _struct irq_chip_。
         * 根据所获取的 _hwirq number_ 和 _struct irq_chip_ 以及其他相关参数 ，配置所申请的 _struct irq_desc_ 所对应的 _struct irq_data_。
         * 配置所申请的 _struct irq_desc_ 所对应的 _irq_flow_handler_t_。
     * 根据所获取的 _hwirq number_，在传入的 _struct irq_domain_ 中创建 _mapping between the hwirq and the irq number_。
 	* 返回所申请的 _irq number_。
 ***
 * _developer_ 调用 [api](#api-1) 中的 _request_threaded_irq_：
-	* 根据传入的 _irq number_，从 _interrupt framework_ 中，获取所对应的 _struct irq_desc_。
+	* 根据传入的 _irq number_，从 _interrupt subsystem_ 中，获取所对应的 _struct irq_desc_。
     * 根据传入的 _irq_handler_ts_ 及其相关参数，创建并配置一个 _struct irqaction_。
     * 将所创建的 _struct irqaction_ 添加到所获取的 _struct irq_desc_ 中。
 
-## _for framework to use_
+## _for subsystem to use_
 
-*  当一个 _interrupt_ 到来时，_interrupt framework_ 执行 _handle_irq_：
+*  当一个 _interrupt_ 到来时，_interrupt subsystem_ 执行 _handle_irq_：
    * 读取相关寄存器，获取 _the specific interrupt_ 所对应的 _hwirq number_。
    * 在 _the specific handle_irq_ 所对应的 _struct irq_domain_ 所对应的 _mapping between hwirq numbers and irq numbers_ 中，获取 _the specific hwirq number_ 所对应的 _irq number_ 和 _struct irq_desc_。
    * 执行所获取的 _struct irq_desc_ 所对应的 _irq_flow_handler_t_：

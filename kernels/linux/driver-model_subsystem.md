@@ -6,14 +6,14 @@
     - [_api_](#api)
 - [_flow_](#flow)
   - [_for author to use_](#for-author-to-use-1)
-  - [_for framework to use_](#for-framework-to-use)
+  - [_for subsystem to use_](#for-subsystem-to-use)
 
 
 # _overview_
 
-_driver-model framework_ 负责探测 _device_ 和 _driver_ 何时添加、何时删除和是否匹配...，并通过 _sysfs_ 来将 _driver-model_ 的层次结构输出到了用户空间。_driver-model framework_ 简化了流程，但是具体核心操作是仍然是 _struct file_operations_ 来完成的，注意没有它也是可以的，比如：一些 _legacy driver_ 就没有涉及 _driver-model framework_。
+_driver-model subsystem_ 负责探测 _device_ 和 _driver_ 何时添加、何时删除和是否匹配...，并通过 _sysfs_ 来将 _driver-model_ 的层次结构输出到了用户空间。_driver-model subsystem_ 简化了流程，但是具体核心操作是仍然是 _struct file_operations_ 来完成的，注意没有它也是可以的，比如：一些 _legacy driver_ 就没有涉及 _driver-model subsystem_。
 
-_driver-model framework_ 是对 _kernel_ 中先前使用的各种不同 _driver model_ 的统一。目的是通过将相关的数据和操作合并到相关的全局可访问的 _data structure_ 中，比如：_struct bus_type_、_struct device_、_struct device_driver_ 和 _struct class_，以增强 _bridge_ 和 _device_ 所对应的 _bus-specific driver_，比如：增强 _pci_ 所对应的 _struct pci_driver_。
+_driver-model subsystem_ 是对 _kernel_ 中先前使用的各种不同 _driver model_ 的统一。目的是通过将相关的数据和操作合并到相关的全局可访问的 _data structure_ 中，比如：_struct bus_type_、_struct device_、_struct device_driver_ 和 _struct class_，以增强 _bridge_ 和 _device_ 所对应的 _bus-specific driver_，比如：增强 _pci_ 所对应的 _struct pci_driver_。
 
 _struct bus_type_ 可以在不牺牲 _bus-specific_ 功能或 _type-safety_ 的情况下，将所其下所挂载的 _struct device_ 与特定的 _struct device_driver_ 进行匹配。_struct device_driver_ 是静态分配的，一个 _struct device_driver_ 可以对应有多个 _struct device_。
 
@@ -243,6 +243,6 @@ _struct device_driver to represent a driver_
 * _author_ 调用 [api](#api) 中的 _device_register_：  
     * 注册一个挂载在指定的 _struct bus_type_ 下的 _struct device_。
 
-## _for framework to use_
+## _for subsystem to use_
 
-* _driver-model framework_ 遍历一个 _struct bus_type_，将所其下所挂载的所有 _struct device_ 与特定的 _struct device_driver_ 进行匹配，并生成相应的 _sysfs_。
+* _driver-model subsystem_ 遍历一个 _struct bus_type_，将所其下所挂载的所有 _struct device_ 与特定的 _struct device_driver_ 进行匹配，并生成相应的 _sysfs_。

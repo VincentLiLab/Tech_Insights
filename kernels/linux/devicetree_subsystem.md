@@ -7,11 +7,11 @@
     - [_api_](#api)
 - [_flow_](#flow)
   - [_for author to use_](#for-author-to-use-1)
-  - [_for framework to use_](#for-framework-to-use)
+  - [_for subsystem to use_](#for-subsystem-to-use)
 
 # _overview_
 
-_devicetree framework_ 负责描述 _hardware_ 的信息，比如：_data bus_、_interrupt line_ 和 _GPIO
+_devicetree subsystem_ 负责描述 _hardware_ 的信息，比如：_data bus_、_interrupt line_ 和 _GPIO
 connection_...。
 
 使用 _DT_ 主要有三个目的：_platform identification_、_runtime configuration_ 和 _device population_。
@@ -168,13 +168,13 @@ _hardware node used for device population_
 * _author_ 定义并注册相关的 _hardware node_。
 ***
 
-## _for framework to use_
+## _for subsystem to use_
 
-* _devicetree framework_ 执行 _setup_arch()/setup_machine_fdt()_：
+* _devicetree subsystem_ 执行 _setup_arch()/setup_machine_fdt()_：
     * 根据所对应的 _device tree data_，选择所对应的一个 _struct machine_desc_，并执行所对应的 _platform identification_，以运行所对应的 _machine-specific fixups_。
     * 根据所对应的 _device tree data_，选择所对应的一个 _chosen node_，并执行所对应的 _runtime configuration_。
 ***
-* _devicetree framework_ 执行 _of_platform_populate()_：
+* _devicetree subsystem_ 执行 _of_platform_populate()_：
     * 根据所对应的 _device tree data_，执行所对应的 _device population_，以描述 _hardware_ 的信息。
 ***
 

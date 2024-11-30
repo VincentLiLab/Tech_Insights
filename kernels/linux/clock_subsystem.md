@@ -14,7 +14,7 @@
 
 # _overview_
 
-_clock framework_ 负责管理 _platform_ 中的所有 _clock controller_ 中的所有 _clock_。_author_ 需要为每个 _clock_ 都定义一个所对应的 _struct clk_ops_，以执行所对应的 _hardware-specific operations_。_clock framework_ 会为每个 _clock_ 都创建一个所对应的 _struct clk_core_，以管理所对应的 _struct clk_ops_ 和 _clock tree topology_，并通过一个 _struct clk_hw_ 来将所对应的 _struct clk_core_ 和 _struct clk_ops_ 绑定在一起。各个 _developer_ 需要通过各个 _struct clk_ 来访问一个 _clock_ 所对应的 _struct clk_ops_。
+_clock subsystem_ 负责管理 _platform_ 中的所有 _clock controller_ 中的所有 _clock_。_author_ 需要为每个 _clock_ 都定义一个所对应的 _struct clk_ops_，以执行所对应的 _hardware-specific operations_。_clock subsystem_ 会为每个 _clock_ 都创建一个所对应的 _struct clk_core_，以管理所对应的 _struct clk_ops_ 和 _clock tree topology_，并通过一个 _struct clk_hw_ 来将所对应的 _struct clk_core_ 和 _struct clk_ops_ 绑定在一起。各个 _developer_ 需要通过各个 _struct clk_ 来访问一个 _clock_ 所对应的 _struct clk_ops_。
 
 # _detail_
 
@@ -192,7 +192,7 @@ _struct clk the driver-facing functions can operate on_
     struct clk *clk_get(struct device *dev, const char *con_id);
 ```
 * 根据传入的 _clock consumer device_ 及其相关参数，获取所对应的 _clock controller node_。
-* 根据所获取的 _clock controller node_，从 _clock framework_ 中获取 _function to get the specific struct clk_hw_。
+* 根据所获取的 _clock controller node_，从 _clock subsystem_ 中获取 _function to get the specific struct clk_hw_。
 * 根据传入的 _clock consumer device_ 所对应的 _node_ 和所获取的 _function to get the specific struct clk_hw_，获取 _the specific struct clk_hw_。
 * 根据所获取的 _the specific struct clk_hw_ 所对应的 _struct clk_core_，创建并配置一个 _struct clk_。
 ***
@@ -225,7 +225,7 @@ _struct clk the driver-facing functions can operate on_
 
 * _developer_ 调用 [api](#api-1) 中的 _clk_get_：
     * 根据传入的 _clock consumer device_ 及其相关参数，获取所对应的 _clock controller node_。
-    * 根据所获取的 _clock controller node_，从 _clock framework_ 中获取 _function to get the specific struct clk_hw_。
+    * 根据所获取的 _clock controller node_，从 _clock subsystem_ 中获取 _function to get the specific struct clk_hw_。
     * 根据传入的 _clock consumer device_ 所对应的 _node_ 和所获取的 _function to get the specific struct clk_hw_，获取 _the specific struct clk_hw_。
     * 根据所获取的 _the specific struct clk_hw_ 所对应的 _struct clk_core_，创建并配置一个 _struct clk_。
 ***

@@ -10,13 +10,13 @@
     - [_api_](#api-1)
 - [_flow_](#flow)
   - [_for author to use_](#for-author-to-use-1)
-  - [_for framework to use_](#for-framework-to-use)
+  - [_for subsystem to use_](#for-subsystem-to-use)
   - [_for developer to use_](#for-developer-to-use-1)
 
 
 # _overview_
 
-_i2c framework_ 负责管理 _platform_ 中的所有 _i2c controller_ 中的所有 _i2c slave device_。_author_ 需要为每个 _i2c controller_ 都分别定义：一个所对应的 _struct algorithm_，以执行所对应的 _hardware-specific operations_；一个所对应的 _i2c_adapter_，以用于识别和访问 _the specific physical i2c, the specific i2c controller_。_developer_ 需要每个 _i2c controller_ 中的每个 _i2c slave device_ 都定义：一个所对应的 _struct i2c_client_，以表示一个 _i2c slave device_；一个所对应的 _struct i2c_driver_，以表示 _i2c slave device driver_，_the specific struct i2c_driver_ 可以通过所对应的 _struct i2c_client_ 所对应的 _i2c_adapter_ 所对应的 _struct algorithm_ 执行所对应的 _hardware-specific operations_。
+_i2c subsystem_ 负责管理 _platform_ 中的所有 _i2c controller_ 中的所有 _i2c slave device_。_author_ 需要为每个 _i2c controller_ 都分别定义：一个所对应的 _struct algorithm_，以执行所对应的 _hardware-specific operations_；一个所对应的 _i2c_adapter_，以用于识别和访问 _the specific physical i2c, the specific i2c controller_。_developer_ 需要每个 _i2c controller_ 中的每个 _i2c slave device_ 都定义：一个所对应的 _struct i2c_client_，以表示一个 _i2c slave device_；一个所对应的 _struct i2c_driver_，以表示 _i2c slave device driver_，_the specific struct i2c_driver_ 可以通过所对应的 _struct i2c_client_ 所对应的 _i2c_adapter_ 所对应的 _struct algorithm_ 执行所对应的 _hardware-specific operations_。
 
 # _detail_
 
@@ -212,9 +212,9 @@ _include/linux/i2c.h_
       * 配置所创建的 _struct client_ 所对应的 _struct device_，比如：所对应的 _struct bus_type_:/sys/bus/i2c_。
       * 注册所创建的 _struct client_ 所对应的 _struct device_。
 
-## _for framework to use_
+## _for subsystem to use_
 
-* _driver-model framework_ 遍历 _struct bus_type_:/sys/bus/i2c_，将所其下所挂载的所有 _struct i2c_client_ 与特定的 _struct i2c_driver_ 进行匹配，并生成相应的 _sysfs_。
+* _driver-model subsystem_ 遍历 _struct bus_type_:/sys/bus/i2c_，将所其下所挂载的所有 _struct i2c_client_ 与特定的 _struct i2c_driver_ 进行匹配，并生成相应的 _sysfs_。
 
 ## _for developer to use_
 
