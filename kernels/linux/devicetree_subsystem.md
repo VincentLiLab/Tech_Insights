@@ -28,7 +28,7 @@ _arch/arm/include/asm/mach/arch.h_
 
 ### _data structure_
 
-_struct machine_desc used for platform identification to run machine-specific fixups during early boot_
+_struct machine_desc used for the platform identification to run machine-specific fixups during early boot_
 ```C
     struct machine_desc {
         unsigned int		nr;		/* architecture number	*/
@@ -73,7 +73,7 @@ _struct machine_desc used for platform identification to run machine-specific fi
 ```
 ***
 
-_chosen node used for runtime configuration during early boot_
+_chosen node used for the runtime configuration during early boot_
 ```C
     // example
     chosen {
@@ -84,7 +84,7 @@ _chosen node used for runtime configuration during early boot_
 ```
 ***
 
-_hardware node used for device population_
+_hardware node used for the device population_
 ```C
     /{
         ...
@@ -163,8 +163,10 @@ _hardware node used for device population_
 * _author_ 调用 [api](#api) 中的 _DT_MACHINE_START_：
   	* 定义并注册一个 _struct machine_desc_。
 ***
+
 * _author_ 定义并注册一个 _chosen node_。
 ***
+
 * _author_ 定义并注册相关的 _hardware node_。
 ***
 
@@ -174,6 +176,7 @@ _hardware node used for device population_
     * 根据所对应的 _device tree data_，选择所对应的一个 _struct machine_desc_，并执行所对应的 _platform identification_，以运行所对应的 _machine-specific fixups_。
     * 根据所对应的 _device tree data_，选择所对应的一个 _chosen node_，并执行所对应的 _runtime configuration_。
 ***
+
 * _devicetree subsystem_ 执行 _of_platform_populate()_：
     * 根据所对应的 _device tree data_，执行所对应的 _device population_，以描述 _hardware_ 的信息。
 ***

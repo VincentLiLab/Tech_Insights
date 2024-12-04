@@ -16,7 +16,7 @@
 
 # _overview_
 
-_i2c subsystem_ 负责管理 _platform_ 中的所有 _i2c controller_ 中的所有 _i2c slave device_。_author_ 需要为每个 _i2c controller_ 都分别定义：一个所对应的 _struct algorithm_，以执行所对应的 _hardware-specific operations_；一个所对应的 _i2c_adapter_，以用于识别和访问 _the specific physical i2c, the specific i2c controller_。_developer_ 需要每个 _i2c controller_ 中的每个 _i2c slave device_ 都定义：一个所对应的 _struct i2c_client_，以表示一个 _i2c slave device_；一个所对应的 _struct i2c_driver_，以表示 _i2c slave device driver_，_the specific struct i2c_driver_ 可以通过所对应的 _struct i2c_client_ 所对应的 _i2c_adapter_ 所对应的 _struct algorithm_ 执行所对应的 _hardware-specific operations_。
+_i2c subsystem_ 负责管理 _platform_ 中的所有 _i2c controller_ 中的所有 _i2c slave device_。_author_ 需要为每个 _i2c controller_ 都分别定义：一个所对应的 _struct algorithm_，以执行所对应的 _hardware-specific operations_；一个所对应的 _i2c_adapter_，以用于识别和访问 _the specific physical i2c, the specific i2c controller_。_developer_ 需要每个 _i2c controller_ 中的每个 _i2c slave device_ 都定义：一个所对应的 _struct i2c_client_，以表示这个 _i2c slave device_；一个所对应的 _struct i2c_driver_，以管理所对应的 _struct i2c_client_。_the specific struct i2c_driver_ 或 _developer_ 需要通过所对应的 _struct i2c_client_ 所对应的 _i2c_adapter_ 所对应的 _struct algorithm_ 执行所对应的 _hardware-specific operations_。
 
 # _detail_
 
@@ -87,7 +87,7 @@ _struct i2c_adapter used to identify a physical i2c bus along with the access al
 ```
 ***
 
-_struct i2c_client, represent an i2c slave device_
+_struct i2c_client to represent an i2c slave device_
 ```C
     struct i2c_client {
         unsigned short flags;		/* div., see below		*/
@@ -107,7 +107,7 @@ _struct i2c_client, represent an i2c slave device_
 ```
 ***
 
-_struct i2c_driver, represent an i2c slave device driver_
+_struct i2c_driver to manage the struct i2c_client_
 ```C
     struct i2c_driver {
         unsigned int class;
@@ -156,13 +156,15 @@ _struct i2c_driver, represent an i2c slave device driver_
 ```C
     int i2c_add_adapter(struct i2c_adapter *adapter);
 ```
-* 配置传入的 _struct i2c_adapter_ 所对应的 _struct device_，比如：所对应的 _struct bus_type_:/sys/bus/i2c_。
-* 注册传入的 _struct i2c_adapter_ 所对应的 _struct device_。
-* 获取传入的 _struct i2c_adapter_ 所对应的 _struct device_ 所对应的 _node_
+* 配置所传入的 _struct i2c_adapter_ 所对应的 _struct device_ 所对应的 _sysfs_，比如：
+    * 所对应的 _name::_i2c-%d_，比如：_/sys/bus/i2c/devices/i2c-0_，其中的 _0_ 是 _i2c subsystem_ 所分配的 _bus number_。
+    * 所对应的 _struct bus_type::/sys/bus/i2c_。
+* 注册所传入的 _struct i2c_adapter_ 所对应的 _struct device_。
+* 获取所传入的 _struct i2c_adapter_ 所对应的 _struct device_ 所对应的 _node_
 * 遍历所获取的 _node_ 所对应的 _child nodes_:
     * 创建一个 _struct client_。
-    * 根据传入的 _struct i2c_adapter_ 及其相关参数，配置所创建的 _struct client_。
-    * 配置所创建的 _struct client_ 所对应的 _struct device_，比如：所对应的 _struct bus_type_:/sys/bus/i2c_。
+    * 根据所传入的 _struct i2c_adapter_ 以及其他相关参数，配置所创建的 _struct client_。
+    * 配置所创建的 _struct client_ 所对应的 _struct device_，比如：所对应的 :/sys/bus/i2c_。
     * 注册所创建的 _struct client_ 所对应的 _struct device_。
 ***
 
@@ -170,8 +172,11 @@ _struct i2c_driver, represent an i2c slave device driver_
     #define i2c_add_driver(driver) \
 	    i2c_register_driver(THIS_MODULE, driver)
 ```
-* 配置传入的 _struct i2c_driver *driver_ 所对应的 _struct device_driver driver_，比如：所对应的 _struct bus_type_:/sys/bus/i2c_。
-
+* 配置所传入的 _struct i2c_driver_ 所对应的 _struct device_driver_ 所对应的 _sysfs_，比如：
+    * 所对应的 _name_。
+    * 所对应的 _struct bus_type::/sys/bus/i2c_。
+* 注册所传入的 _struct i2c_driver_ 所对应的 _struct device_driver_。
+    
 ## _for developer to use_
 
 ### _file layout_
@@ -188,8 +193,8 @@ _include/linux/i2c.h_
     static inline int i2c_master_recv(const struct i2c_client *client,
                     char *buf, int count);
 ```
-* 根据传入的 _struct i2c_client_，获取所对应的 _struct i2c_algorithm_。
-* 根据传入的相关参数，执行所传入的 struct i2c_client_ 所对应的 _struct i2c_algorithm_，以执行 _hardware-specific operations_。
+* 根据所传入的 _struct i2c_client_，获取所对应的 _struct i2c_algorithm_。
+* 根据所传入的相关参数，执行所传入的 struct i2c_client_ 所对应的 _struct i2c_algorithm_，以执行 _hardware-specific operations_。
 
 # _flow_
 
@@ -197,27 +202,33 @@ _include/linux/i2c.h_
 
 * _author_ 定义一个 _struct i2c_driver_。
 * _author_ 调用 [api](#api) 中的 _i2c_add_driver_：
-    * 配置传入的 _struct i2c_driver *driver_ 所对应的 _struct device_driver driver_，比如：所对应的 _struct bus_type_:/sys/bus/i2c_。
+    * 配置所传入的 _struct i2c_driver_ 所对应的 _struct device_driver_ 所对应的 _sysfs_，比如：
+        * 所对应的 _name_。
+        * 所对应的 _struct bus_type::/sys/bus/i2c_。
+    * 注册所传入的 _struct i2c_driver_ 所对应的 _struct device_driver_。
 ***
+
 * _author_ 定义一个 _struct i2c_algorithm_。
 * _author_ 定义一个 _struct i2c_adapter_。
-* 根据所定义的所定义的 _struct i2c_algorithm_ 及其其他参数，配置 _struct i2c_adapter_。
+* 根据所定义的 _struct i2c_algorithm_ 以及其他相关参数，配置 _struct i2c_adapter_。
 * _author_ 调用 [api](#api) 中的 _i2c_add_adapter_：
-    * 配置传入的 _struct i2c_adapter_ 所对应的 _struct device_，比如：所对应的 _struct bus_type_:/sys/bus/i2c_。
-  * 注册传入的 _struct i2c_adapter_ 所对应的 _struct device_。
-  * 获取传入的 _struct i2c_adapter_ 所对应的 _struct device_ 所对应的 _node_
-  * 遍历所获取的 _node_ 所对应的 _child nodes_:
-      * 创建一个 _struct client_。
-      * 根据传入的 _struct i2c_adapter_ 及其相关参数，配置所创建的 _struct client_。
-      * 配置所创建的 _struct client_ 所对应的 _struct device_，比如：所对应的 _struct bus_type_:/sys/bus/i2c_。
-      * 注册所创建的 _struct client_ 所对应的 _struct device_。
+    * 配置所传入的 _struct i2c_adapter_ 所对应的 _struct device_ 所对应的 _sysfs_，比如：
+        * 所对应的 _name::i2c-%d_，比如：_/sys/bus/i2c/devices/i2c-0_，其中的 _0_ 是 _i2c subsystem_ 所分配的 _bus number_。
+        * 所对应的 _struct bus_type::/sys/bus/i2c_。
+    * 注册所传入的 _struct i2c_adapter_ 所对应的 _struct device_。
+    * 获取所传入的 _struct i2c_adapter_ 所对应的 _struct device_ 所对应的 _node_
+    * 遍历所获取的 _node_ 所对应的 _child nodes_:
+        * 创建一个 _struct client_。
+        * 根据所传入的 _struct i2c_adapter_ 以及其他相关参数，配置所创建的 _struct client_。
+        * 配置所创建的 _struct client_ 所对应的 _struct device_，比如：所对应的 :/sys/bus/i2c_。
+        * 注册所创建的 _struct client_ 所对应的 _struct device_。
 
 ## _for subsystem to use_
 
-* _driver-model subsystem_ 遍历 _struct bus_type_:/sys/bus/i2c_，将所其下所挂载的所有 _struct i2c_client_ 与特定的 _struct i2c_driver_ 进行匹配，并生成相应的 _sysfs_。
+* _driver-model subsystem_ 遍历 _struct bus_type::/sys/bus/i2c_，将所其下所挂载的所有 _struct i2c_client_ 与特定的 _struct i2c_driver_ 进行匹配，并生成相应的 _sysfs_。
 
 ## _for developer to use_
 
 * _developer_ 调用 [api](#api-1) 中的 _i2c_master_send_ 或 _i2c_master_recv_：
-    * 根据传入的 _struct i2c_client_，获取所对应的 _struct i2c_algorithm_。
-    * 根据传入的相关参数，执行所传入的 struct i2c_client_ 所对应的 _struct i2c_algorithm_，以执行 _hardware-specific operations_。 
+    * 根据所传入的 _struct i2c_client_，获取所对应的 _struct i2c_algorithm_。
+    * 根据所传入的相关参数，执行所传入的 struct i2c_client_ 所对应的 _struct i2c_algorithm_，以执行 _hardware-specific operations_。 
