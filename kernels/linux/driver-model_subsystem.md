@@ -234,15 +234,15 @@ _struct device_driver to represent a driver_
 
 ## _for author to use_
 
-* _author_ 调用 [api](#api) 中的 _bus_register_：  
+* _author_ 调用 [_api_](#api) 中的 _bus_register_：  
     * 注册一个 _struct bus_type_，比如：_/sys/bus/i2c_、_/sys/bus/platform_ 和 _/sys/bus/usb_...。
 ***
 
-* _author_ 调用 [api](#api) 中的 _driver_register_：  
+* _author_ 调用 [_api_](#api) 中的 _driver_register_：  
     * 注册一个挂载在指定的 _struct bus_type_ 下的 _struct device_driver_。
 ***
 
-* _author_ 调用 [api](#api) 中的 _device_register_：  
+* _author_ 调用 [_api_](#api) 中的 _device_register_：  
     * 注册一个挂载在指定的 _struct bus_type_ 下的 _struct device_。
 
 ## _for subsystem to use_

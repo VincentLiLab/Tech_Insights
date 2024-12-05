@@ -160,7 +160,7 @@ _hardware node used for the device population_
 
 ## _for author to use_
 
-* _author_ 调用 [api](#api) 中的 _DT_MACHINE_START_：
+* _author_ 调用 [_api_](#api) 中的 _DT_MACHINE_START_：
   	* 定义并注册一个 _struct machine_desc_。
 ***
 

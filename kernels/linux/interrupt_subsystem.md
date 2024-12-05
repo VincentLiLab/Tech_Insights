@@ -329,18 +329,18 @@ _struct irqaction, a interrupt action descriptor_
 ***
 
 * _author_ 定义一个 _interrupt controller_ 所对应的 _struct irq_domain_ops_。
-* _author_ 调用 [api](#api) 中的 ___irq_domain_add_：
+* _author_ 调用 [_api_](#api) 中的 ___irq_domain_add_：
     * 根据所传入的 _struct irq_domain_ops_ 以及其他相关参数，创建并配置一个 _struct irq_domain_。
     * 根据所传入的 _interrupt controller node_，注册所创建的 _struct irq_domain_。
 ***
 
 * _author_ 定义一个 _interrupt controller_ 所对应的 _handle_irq_。
-* _author_ 调用 [api](#api) 中的 _set_handle_irq_：
+* _author_ 调用 [_api_](#api) 中的 _set_handle_irq_：
 	* 根据所传入的参数，注册 _handle_irq_。
  
 ## _for developer to use_
 
-* _developer_ 调用 [api](#api-1) 中的 _of_irq_get_：
+* _developer_ 调用 [_api_](#api-1) 中的 _of_irq_get_：
     * 根据所传入的 _interrupt consumer node_，获取所对应的 _interrupt controller node_。
     * 根据所获取的 _interrupt controller node_，获取所对应的 _struct irq_domain_。
     * 根据所传入的相关参数，执行所获取的 _struct irq_domain_ 所对应的 _struct irq_domain_ops_，以获取所对应的 _hwirq number_。
@@ -354,7 +354,7 @@ _struct irqaction, a interrupt action descriptor_
 	* 返回所申请的 _irq number_。
 ***
 
-* _developer_ 调用 [api](#api-1) 中的 _request_threaded_irq_：
+* _developer_ 调用 [_api_](#api-1) 中的 _request_threaded_irq_：
 	* 根据所传入的 _irq number_，从 _interrupt subsystem_ 中，获取所对应的 _struct irq_desc_。
     * 根据所传入的 _irq_handler_ts_ 以及其他相关参数，创建并配置一个 _struct irqaction_。
     * 将所创建的 _struct irqaction_ 添加到所获取的 _struct irq_desc_ 中。

@@ -201,7 +201,7 @@ _include/linux/i2c.h_
 ## _for author to use_
 
 * _author_ 定义一个 _struct i2c_driver_。
-* _author_ 调用 [api](#api) 中的 _i2c_add_driver_：
+* _author_ 调用 [_api_](#api) 中的 _i2c_add_driver_：
     * 配置所传入的 _struct i2c_driver_ 所对应的 _struct device_driver_ 所对应的 _sysfs_，比如：
         * 所对应的 _name_。
         * 所对应的 _struct bus_type::/sys/bus/i2c_。
@@ -211,7 +211,7 @@ _include/linux/i2c.h_
 * _author_ 定义一个 _struct i2c_algorithm_。
 * _author_ 定义一个 _struct i2c_adapter_。
 * 根据所定义的 _struct i2c_algorithm_ 以及其他相关参数，配置 _struct i2c_adapter_。
-* _author_ 调用 [api](#api) 中的 _i2c_add_adapter_：
+* _author_ 调用 [_api_](#api) 中的 _i2c_add_adapter_：
     * 配置所传入的 _struct i2c_adapter_ 所对应的 _struct device_ 所对应的 _sysfs_，比如：
         * 所对应的 _name::i2c-%d_，比如：_/sys/bus/i2c/devices/i2c-0_，其中的 _0_ 是 _i2c subsystem_ 所分配的 _bus number_。
         * 所对应的 _struct bus_type::/sys/bus/i2c_。
@@ -229,6 +229,6 @@ _include/linux/i2c.h_
 
 ## _for developer to use_
 
-* _developer_ 调用 [api](#api-1) 中的 _i2c_master_send_ 或 _i2c_master_recv_：
+* _developer_ 调用 [_api_](#api-1) 中的 _i2c_master_send_ 或 _i2c_master_recv_：
     * 根据所传入的 _struct i2c_client_，获取所对应的 _struct i2c_algorithm_。
     * 根据所传入的相关参数，执行所传入的 struct i2c_client_ 所对应的 _struct i2c_algorithm_，以执行 _hardware-specific operations_。 

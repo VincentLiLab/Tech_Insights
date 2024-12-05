@@ -17,9 +17,9 @@
 
 > 友情提醒：开始本文档之前，请先去看 [_usb protocol_](../../chips/usb_protocol.md)。
 
-_usb subsystem_ 负责 _platform_ 中的所有 _usb controller_ 中的所有 _usb device_ 和 _usb root hub_。_author_ 需要为每个 _usb controller_ 都定义一个 _struct hc_driver_，以执行所对应的 _hardware-specific operations_，以被 _usb subsystem_ 为每个 _usb controller_ 而所创建的一个用于表示这个 _usb controller_ 的 _struct usb_hcd_ 和一个用于表示这个 _usb controller_ 所对应的 _usb bus_ 的 _struct usb_bus_ 所使用。_usb subsystem_ 需要为：每个 _usb device_ 或 _usb root hub_、每个 _usb device_ 或 _usb root hub_ 所包含的所有 _usb configuration_、每个 _usb configuration_ 所包含的所有 _usb interface_ 以及每个 _usb interface_ 所包含的所有 _struct ep_device_，分别定义 _struct usb_device_、_struct usb_host_config_、_struct usb_interface_ 以及 _struct ep_device_，以分别用于表示，而每个 _struct usb_device_ 都是连接在一个用于表示 _usb hub_ 的 _struct usb_hub_ 上的一个用于表示 _usb hub port_ 的 _struct usb_port_ 上的。同时 _author_ 还需要为：所有 _struct usb_device_ 定义都一个 _struct usb_device_driver_，以管理其所对应的 _usb device_；每个 _struct usb_interface_ 都分别定义一个 _struct usb_driver_，以管理其所对应的 _struct usb_interface_。_developer_ 需要首先申请并配置 _struct urb_，以包含 _all relevant information to execute any USB transaction and deliver the data and status back_，然后通过所要进行通信的 _struct usb_device_ 所连接的 _struct usb_hub_ 所对应的 _usb interface_ 所对应的 _struct usb_device, a root hub_ 所对应的 _usb bus_ 所对应的 _struct usb_hcd_ 所对应的 _struct hc_driver_ 来完成。 
+_usb subsystem_ 负责 _platform_ 中的所有 _usb controller_ 中的所有 _usb device_ 和 _usb root hub_。_author_ 需要为每个 _usb controller_ 都定义一个 _struct hc_driver_，以执行所对应的 _hardware-specific operations_，以被 _usb subsystem_ 为每个 _usb controller_ 而所创建的一个用于表示这个 _usb controller_ 的 _struct usb_hcd_ 和一个用于表示这个 _usb controller_ 所对应的 _usb bus_ 的 _struct usb_bus_ 所使用。_usb subsystem_ 需要为：每个 _usb device_ 或 _usb root hub_、每个 _usb device_ 或 _usb root hub_ 所包含的所有 _usb configuration_、每个 _usb configuration_ 所包含的所有 _usb interface_ 以及每个 _usb interface_ 所包含的所有 _struct ep_device_，分别定义 _struct usb_device_、_struct usb_host_config_、_struct usb_interface_ 以及 _struct ep_device_，以分别用于表示它们，而每个 _struct usb_device_ 都是连接在一个用于表示 _usb hub_ 的 _struct usb_hub_ 上的一个用于表示 _usb hub port_ 的 _struct usb_port_ 上的。同时 _author_ 还需要为：所有 _struct usb_device_ 定义都一个 _struct usb_device_driver_，以管理其所对应的 _usb device_；每个 _struct usb_interface_ 都分别定义一个 _struct usb_driver_，以管理其所对应的 _struct usb_interface_。_developer_ 需要首先申请并配置 _struct urb_，以包含 _all relevant information to execute any USB transaction and deliver the data and status back_，然后通过所要进行通信的 _struct usb_device_ 所连接的 _struct usb_hub_ 所对应的 _usb interface_ 所对应的 _struct usb_device, a root hub_ 所对应的 _usb bus_ 所对应的 _struct usb_hcd_ 所对应的 _struct hc_driver_ 来完成。 
 
-_**struct usb_device, a root hub::[usb1] -- struct usb_interface::[1-0:1.0]::struct usb_hub -- struct usb_port::[usb1-port1] -- usb_device::[1-1] -- struct usb_interface::[1-0:1.0] -- struct struct usb_driver**_																				
+_**struct usb_device, a root hub::[usb1] -- struct usb_interface::[1-0:1.0]::struct usb_hub -- struct usb_port::[usb1-port1] -- usb_device::[1-1] -- struct usb_interface::[1-1:1.0] -- struct struct hc_driver**_																				
 																										                    
 # _detail_
 
@@ -889,12 +889,12 @@ struct usb_device *usb_alloc_dev(struct usb_device *parent,
     * 所对应的其他相关参数。
 * 配置所创建的 _struct usb_device_ 所对应的 _struct device_ 所对应的 _sysfs_，比如：
     * 所对应的 _struct bus_type::/sys/bus/usb_。
-    * 所对应的 _struct device_type：usb_device_type_。
+    * 所对应的 _struct device_type::usb_device_type_。
     * 所对应的 _name_：
         * _usb%d if the struct usb_device is a usb root hub_，比如：_/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb2_，其中的 _2_ 是 _usb subsystem_ 所分配的 _bus number_。
-        * _%d-%d or %d-%s.%d the struct usb_device is a usb hub or a usb device_，比如：
+        * _%d-%d or %d-%s.%d the struct usb_device is a usb device_，比如：
             * _/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/2-1_，其中的：_2_ 是 _usb subsystem_ 所分配的 _bus number_；_1_ 是 _the struct usb_device_ 所对应的 _struct usb_hub_ 所对应的 _struct port_。
-            * _/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/1-1/1-1.3_，其中的：_1-1_ 是 _the struct usb_device_ 所对应的 _the parent of the struct usb_device_；_1_ 是 _the struct usb_device_ 所对应的 _struct usb_hub_ 所对应的 _struct port_。
+            * _/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/1-1/1-1.3_，其中的：_1-1_ 是 _the struct usb_device_ 所对应的 _the parent of the struct usb_device_；_3_ 是 _the struct usb_device_ 所对应的 _struct usb_hub_ 所对应的 _struct port_。
 * 根据所传入的 _struct usb_bus_，配置所创建的 _struct usb_device_。
 *** 
 
@@ -927,7 +927,7 @@ int usb_add_hcd(struct usb_hcd *hcd,
     * 所对应的其他相关参数。
 * 配置所创建的 _struct usb_device, a root hub_ 所对应的 _struct device_ 所对应的 _sysfs_，比如：
     * 所对应的 _struct bus_type::/sys/bus/usb_。
-    * 所对应的 _struct device_type：usb_device_type_。
+    * 所对应的 _struct device_type::usb_device_type_。
     * 所对应的 _name::usb%d_，比如：_/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb2_，其中的 _2_ 是 _usb subsystem_ 所分配的 _bus number_。
 * 根据所传入的 _struct usb_hcd_ 所对应的 _struct usb_bus_，配置所创建的 _struct usb_device, a root hub_。
 * 根据所传入的 _struct usb_hcd_，配置所传入的 _struct usb_hcd_ 所对应的 _struct usb_bus_。
@@ -968,10 +968,10 @@ int usb_add_hcd(struct usb_hcd *hcd,
 ```C
     int generic_probe(struct usb_device *udev);
 ```
-* 在所传入的 _struct usb_device_ 中，获取一个 _struct usb_host_config_。
+* 在所传入的 _struct usb_device_ 所对应的 _struct usb_host_configs_ 中，获取一个 _struct usb_host_config_。
 * 根据所获取的 _struct usb_host_config_ 所对应的 _struct usb_interface_descriptors_ 以及其他相关参数，创建 _struct usb_interfaces_。 
 * 配置所创建的 _struct usb_interfaces_ 所对应的 _struct devices_ 所对应的 _sysfs_，比如：
-    * 所对应的 _the parent::所传入的 _struct usb_device_ 所对应的 _struct device_。
+    * 所对应的 _the parent::所传入的 struct usb_device 所对应的 struct device_。
     * 所对应的 _struct bus_type::/sys/bus/usb_。
     * 所对应的 _struct device_type::usb_if_device_type_。
     * 所对应的 _name :%d-%s:%d.%d_，比如：_/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/1-1/1-1:1.0_，其中的 _1-1_ 是 _the struct usb_interface_ 所对应的 _the struct usb_device_；_1_ 是 _the usb configuration number_；_0_ 是 _the usb interface number_。
@@ -999,7 +999,7 @@ int usb_add_hcd(struct usb_hcd *hcd,
 * 向所创建的 _struct usb_hub_ 所对应的 _struct usb_device_，获取所对应的 _usb hub status_，以执行相关操作。
 * 创建一个 _struct urb_。
 * 获取所传入的 _struct usb_interface_ 所对应的一个 _struct usb_host_endpoint_ 所对应的 _struct usb_endpoint_descriptor_。
-* 根据所获取的 _struct usb_endpoint_descriptor_、所创建的 _struct usb_hub_ 所对应的 _struct usb_device_ 以及其他相关参数，配置所创建的 _struct urb_ 以去检查所创建的 _struct usb_hub_ 上的 _struct ports_ 上是否有所对应的 _struct usb_devices_ 连接，主要包含：
+* 根据所获取的 _struct usb_endpoint_descriptor_、所创建的 _struct usb_hub_ 所对应的 _struct usb_device_ 以及其他相关参数，配置所创建的 _struct urb_，以去检查所创建的 _struct usb_hub_ 上的 _struct ports_ 上是否有所对应的 _struct usb_devices_ 连接，主要包含：
     * _transfer type_。
     * _endpoint number_。
     * _direction_。
@@ -1020,7 +1020,7 @@ int usb_add_hcd(struct usb_hcd *hcd,
 * 根据所获取的 _struct usb_hub_descriptor_，创建并配置 _struct usb_ports_。
 * 根据所创建的 _struct usb_ports_，配置所创建的 _struct usb_hub_。
 * 配置所创建的 _struct usb_ports_ 所对应的 _struct devices_ 所对应的 _sysfs_：
-    * 所对应的 _the parent::创建的 _struct usb_hub_ 所对应的 _struct usb_device_。
+    * 所对应的 _the parent::所创建的 struct usb_hub 所对应的 struct device_。
     * 所对应的 _struct device_type::usb_port_device_type_。
     * 所对应的 _struct device_driver::usb_port_driver_。
     * 所对应的 _name::%s-port%d_。比如：_/sys/bus/usb/devices/usb1/1-0:1.0/usb1-port1_，其中的：_usb1_ 是所创建的 _struct usb_hub_ 所对应的 _struct usb_device_；_1_ 是 _the usb port number_。
@@ -1038,12 +1038,10 @@ int usb_add_hcd(struct usb_hcd *hcd,
         * 所对应的其他相关参数。
     * 配置所创建的 _struct usb_device_ 所对应的 _struct device_ 所对应的 _sysfs_，比如：
         * 所对应的 _struct bus_type::/sys/bus/usb_。
-        * 所对应的 _struct device_type：usb_device_type_。
-        * 所对应的 _name_：
-            * _usb%d if the struct usb_device is a usb root hub_，比如：_/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb2_，其中的 _2_ 是 _usb subsystem_ 所分配的 _bus number_。
-            * _%d-%d or %d-%s.%d the struct usb_device is a usb hub or a usb device_，比如：
-                * _/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/2-1_，其中的：_2_ 是 _usb subsystem_ 所分配的 _bus number_；_1_ 是 _the struct usb_device_ 所对应的 _struct usb_hub_ 所对应的 _struct port_。
-                * _/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/1-1/1-1.3_，其中的：_1-1_ 是 _the struct usb_device_ 所对应的 _the parent of the struct usb_device_；_1_ 是 _the struct usb_device_ 所对应的 _struct usb_hub_ 所对应的 _struct port_。
+        * 所对应的 _struct device_type::usb_device_type_。
+        * 所对应的 _name::%d-%d or %d-%s.%d_，比如：
+            * _/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/2-1_，其中的：_2_ 是 _usb subsystem_ 所分配的 _bus number_；_1_ 是 _the struct usb_device_ 所对应的 _struct usb_hub_ 所对应的 _struct port_。
+            * _/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/1-1/1-1.3_，其中的：_1-1_ 是 _the struct usb_device_ 所对应的 _the parent of the struct usb_device_；_3_ 是 _the struct usb_device_ 所对应的 _struct usb_hub_ 所对应的 _struct port_。
     * 根据所传入的 _struct usb_bus_，配置所创建的 _struct usb_device_。
     * 根据所创建的 _struct usb_device_ 所对应的 _struct usb_device_descriptor_，创建 _struct usb_host_configs_。
     * 根据所创建的 _struct usb_host_configs_，配置所创建的 _struct usb_device_。
@@ -1180,24 +1178,24 @@ _struct urb consisting of all relevant information to execute any USB transactio
 ## _for author to use_
 
 * _author_ 定义一个 _struct usb_device_driver::usb_generic_driver_。
-* _author_ 调用 [api](#api) 中的 _usb_register_device_driver_：
-    * 配置所传入的 _struct usb_device_driver _ 所对应的 _struct device_driver_ 所对应的 _sysfs_，比如：
-        * 所对应的 _name_。
+* _author_ 调用 [_api_](#api) 中的 _usb_register_device_driver_：
+    * 配置所传入的 _struct usb_device_driver_ 所对应的 _struct device_driver_ 所对应的 _sysfs_，比如：
+        * 所对应的 _name::/sys/bus/usb/drivers/usb_。
         * 所对应的 _struct bus_type::/sys/bus/usb_。
 * _author_ 定义一个 _struct struct usb_driver::hub_driver_。
-* _author_ 调用 [api](#api) 中的 _usb_register_driver_：
+* _author_ 调用 [_api_](#api) 中的 _usb_register_driver_：
     * 配置所传入的 _struct usb_driver_ 所对应的 _struct device_driver_ 所对应的 _sysfs_，比如：
-        * 所对应的 _name_。
+        * 所对应的 _name::/sys/bus/usb/drivers/hub/_。
         * 所对应的 _struct bus_type::/sys/bus/usb_。
 ***
 
 * _author_ 定义一个 _struct hc_driver_。
-* _author_ 调用 [api](#api) 中的 _usb_create_hcd_：
+* _author_ 调用 [_api_](#api) 中的 _usb_create_hcd_：
     * 创建并配置一个 _struct usb_hcd_。
     * 根据所传入的相关参数，配置所创建的 _struct usb_hcd_ 的 _struct usb_bus_。
     * 根据所传入的 _struct hc_driver_，配置所创建的 _struct usb_hcd_。
     * 返回所创建的 _struct usb_hcd_。
-* _author_ 调用 [api](#api) 中的 _usb_add_hcd_：
+* _author_ 调用 [_api_](#api) 中的 _usb_add_hcd_：
     * 从 _usb subsystem_ 中，申请一个 _bus number_。 
     * 根据所申请的 _bus number_，配置所传入的 _struct usb_hcd_ 所对应的 _struct usb_bus_。
     * 创建并配置一个 _struct usb_device, a root hub_。
@@ -1206,7 +1204,7 @@ _struct urb consisting of all relevant information to execute any USB transactio
         * 所对应的其他相关参数。
     * 配置所创建的 _struct usb_device, a root hub_ 所对应的 _struct device_ 所对应的 _sysfs_，比如：
         * 所对应的 _struct bus_type::/sys/bus/usb_。
-        * 所对应的 _struct device_type：usb_device_type_。
+        * 所对应的 _struct device_type::usb_device_type_。
         * 所对应的 _name::usb%d_，比如：_/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb2_，其中的 _2_ 是 _usb subsystem_ 所分配的 _bus number_。
     * 根据所传入的 _struct usb_hcd_ 所对应的 _struct usb_bus_，配置所创建的 _struct usb_device, a root hub_。
     * 根据所传入的 _struct usb_hcd_，配置所传入的 _struct usb_hcd_ 所对应的 _struct usb_bus_。
@@ -1227,11 +1225,11 @@ _struct urb consisting of all relevant information to execute any USB transactio
 
 ## _for subsystem to use_
 
-* 当一个 _struct usb_device, a root hub_ 注册到 _usb subsystem_ 时，会执行 [api](#api) 中的 _generic_probe_：
-    * 在所传入的 _struct usb_device, a root hub_ 中，获取一个 _struct usb_host_config_。
+* 当一个 _struct usb_device, a root hub_ 注册到 _usb subsystem_ 时，会执行 [_api_](#api) 中的 _generic_probe_：
+    * 在所传入的 _struct usb_device, a root hub_ 所对应的 _struct usb_host_configs_ 中，获取一个 _struct usb_host_config_。
     * 根据所获取的 _struct usb_host_config_ 所对应的 _struct usb_interface_descriptors_ 以及其他相关参数，创建 _struct usb_interfaces_。 
     * 配置所创建的 _struct usb_interfaces_ 所对应的 _struct devices_ 所对应的 _sysfs_，比如：
-        * 所对应的 _the parent::所传入的 _struct usb_device, a root hub_ 所对应的 _struct device_。
+        * 所对应的 _the parent::所传入的 struct usb_device, a root hub 所对应的 struct device_。
         * 所对应的 _struct bus_type::/sys/bus/usb_。
         * 所对应的 _struct device_type::usb_if_device_type_。
         * 所对应的 _name :%d-%s:%d.%d_，比如：_/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/1-1/1-1:1.0_，其中的 _1-1_ 是 _the struct usb_interface_ 所对应的 _the struct usb_device_；_1_ 是 _the usb configuration number_；_0_ 是 _the usb interface number_。
@@ -1243,7 +1241,7 @@ _struct urb consisting of all relevant information to execute any USB transactio
     * 根据所创建的 _struct ep_devices_，配置所传入的 _struct usb_device, a root hub_ 所对应的 _struct usb_host_endpoints_。 
 ***
 
-* 当一个 _struct usb_hub_ 所对应的 _struct usb_interface_ 注册到 _usb subsystem_ 时，会执行 [api](#api) 中的 _hub_probe_：
+* 当一个 _struct usb_hub_ 所对应的 _struct usb_interface_ 注册到 _usb subsystem_ 时，会执行 [_api_](#api) 中的 _hub_probe_：
     * 创建并配置一个 _struct usb_hub_。
     * 根据所传入的 _struct usb_interface_ 所对应的 _struct device_，配置所创建的 _struct usb_hub_。
     * 根据所传入的 _struct usb_interface_ 所对应的 _struct device_ 所对应的 _parent_，获取所对应的 _struct usb_device_。
@@ -1257,7 +1255,7 @@ _struct urb consisting of all relevant information to execute any USB transactio
     * 向所创建的 _struct usb_hub_ 所对应的 _struct usb_device_，获取所对应的 _usb hub status_，以执行相关操作。
     * 创建一个 _struct urb_。
     * 获取所传入的 _struct usb_interface_ 所对应的一个 _struct usb_host_endpoint_ 所对应的 _struct usb_endpoint_descriptor_。
-    * 根据所获取的 _struct usb_endpoint_descriptor_、所创建的 _struct usb_hub_ 所对应的 _struct usb_device_ 以及其他相关参数，配置所创建的 _struct urb_ 以去检查所创建的 _struct usb_hub_ 上的 _struct ports_ 上是否有所对应的 _struct usb_devices_ 连接，主要包含：
+    * 根据所获取的 _struct usb_endpoint_descriptor_、所创建的 _struct usb_hub_ 所对应的 _struct usb_device_ 以及其他相关参数，配置所创建的 _struct urb_，以去检查所创建的 _struct usb_hub_ 上的 _struct ports_ 上是否有所对应的 _struct usb_devices_ 连接，主要包含：
         * _transfer type_。
         * _endpoint number_。
         * _direction_。
@@ -1278,14 +1276,14 @@ _struct urb consisting of all relevant information to execute any USB transactio
     * 根据所获取的 _struct usb_hub_descriptor_，创建并配置 _struct usb_ports_。
     * 根据所创建的 _struct usb_ports_，配置所创建的 _struct usb_hub_。
     * 配置所创建的 _struct usb_ports_ 所对应的 _struct devices_ 所对应的 _sysfs_：
-        * 所对应的 _the parent::创建的 _struct usb_hub_ 所对应的 _struct usb_device_。
+        * 所对应的 _the parent::所创建的 struct usb_hub 所对应的 struct device_。 
         * 所对应的 _struct device_type::usb_port_device_type_。
         * 所对应的 _struct device_driver::usb_port_driver_。
         * 所对应的 _name::%s-port%d_。比如：_/sys/bus/usb/devices/usb1/1-0:1.0/usb1-port1_，其中的：_usb1_ 是所创建的 _struct usb_hub_ 所对应的 _struct usb_device_；_1_ 是 _the usb port number_。
     * 注册所创建的 _struct usb_ports_ 所对应的 _struct devices_。
 *** 
 
-* 当一个 _struct usb_device_ 连接到到 _the specific usb hub_ 时，会执行 [api](#api) 中的 _hub_event_：
+* 当一个 _struct usb_device_ 连接到到 _the specific usb hub_ 时，会执行 [_api_](#api) 中的 _hub_event_：
     * 根据所传入的 _struct work_struct_，获取所对应的 _struct usb_hub_。
     * 当所获取的 _struct usb_hub_ 上的 _struct ports_ 上有所对应的 _struct usb_devices_ 连接时：
         * 创建并配置一个 _struct usb_device_。
@@ -1294,12 +1292,10 @@ _struct urb consisting of all relevant information to execute any USB transactio
             * 所对应的其他相关参数。
         * 配置所创建的 _struct usb_device_ 所对应的 _struct device_ 所对应的 _sysfs_，比如：
             * 所对应的 _struct bus_type::/sys/bus/usb_。
-            * 所对应的 _struct device_type：usb_device_type_。
-            * 所对应的 _name_：
-                * _usb%d if the struct usb_device is a usb root hub_，比如：_/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb2_，其中的 _2_ 是 _usb subsystem_ 所分配的 _bus number_。
-                * _%d-%d or %d-%s.%d the struct usb_device is a usb hub or a usb device_，比如：
-                    * _/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/2-1_，其中的：_2_ 是 _usb subsystem_ 所分配的 _bus number_；_1_ 是 _the struct usb_device_ 所对应的 _struct usb_hub_ 所对应的 _struct port_。
-                    * _/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/1-1/1-1.3_，其中的：_1-1_ 是 _the struct usb_device_ 所对应的 _the parent of the struct usb_device_；_1_ 是 _the struct usb_device_ 所对应的 _struct usb_hub_ 所对应的 _struct port_。
+            * 所对应的 _struct device_type::usb_device_type_。
+            * 所对应的 _name::%d-%d or %d-%s.%d_，比如：
+                * _/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/2-1_，其中的：_2_ 是 _usb subsystem_ 所分配的 _bus number_；_1_ 是 _the struct usb_device_ 所对应的 _struct usb_hub_ 所对应的 _struct port_。
+                * _/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/1-1/1-1.3_，其中的：_1-1_ 是 _the struct usb_device_ 所对应的 _the parent of the struct usb_device_；_3_ 是 _the struct usb_device_ 所对应的 _struct usb_hub_ 所对应的 _struct port_。
         * 根据所传入的 _struct usb_bus_，配置所创建的 _struct usb_device_。
         * 根据所创建的 _struct usb_device_ 所对应的 _struct usb_device_descriptor_，创建 _struct usb_host_configs_。
         * 根据所创建的 _struct usb_host_configs_，配置所创建的 _struct usb_device_。
@@ -1316,11 +1312,11 @@ _struct urb consisting of all relevant information to execute any USB transactio
     * 执行所获取的 _struct usb_hub_ 所对应的其他相关操作。
 ***
 
-* 当一个 _struct usb_device_ 注册到 _usb subsystem_ 时，会执行 [api](#api) 中的 _generic_probe_：
-    * 在所传入的 _struct usb_device_ 中，获取一个 _struct usb_host_config_。
+* 当一个 _struct usb_device_ 注册到 _usb subsystem_ 时，会执行 [_api_](#api) 中的 _generic_probe_：
+    * 在所传入的 _struct usb_device_ 所对应的 _struct usb_host_configs_ 中，获取一个 _struct usb_host_config_。
     * 根据所获取的 _struct usb_host_config_ 所对应的 _struct usb_interface_descriptors_ 以及其他相关参数，创建 _struct usb_interfaces_。 
     * 配置所创建的 _struct usb_interfaces_ 所对应的 _struct devices_ 所对应的 _sysfs_，比如：
-        * 所对应的 _the parent::所传入的 _struct usb_device_ 所对应的 _struct device_。
+        * 所对应的 _the parent::所传入的 struct usb_device 所对应的 struct device_。
         * 所对应的 _struct bus_type::/sys/bus/usb_。
         * 所对应的 _struct device_type::usb_if_device_type_。
         * 所对应的 _name :%d-%s:%d.%d_，比如：_/sys/devices/soc0/amba/e0002000.usb/ci_hdrc.0/usb1/1-1/1-1:1.0_，其中的 _1-1_ 是 _the struct usb_interface_ 所对应的 _the struct usb_device_；_1_ 是 _the usb configuration number_；_0_ 是 _the usb interface number_。
@@ -1333,9 +1329,9 @@ _struct urb consisting of all relevant information to execute any USB transactio
 
 ## _for developer to use_
 
-* _developer_ 调用 [api](#api-1) 中的 _usb_alloc_urb_：
+* _developer_ 调用 [_api_](#api-1) 中的 _usb_alloc_urb_：
     * 创建一个 _struct urb_。
-* _developer_ 调用 [api](#api-1) 中的 _usb_fill_control_urb_、_usb_fill_bulk_urb_ 和 _usb_fill_int_urb_：
+* _developer_ 调用 [_api_](#api-1) 中的 _usb_fill_control_urb_、_usb_fill_bulk_urb_ 和 _usb_fill_int_urb_：
     * 根据所传入的相关参数，配置所传入的 _struct urb_，主要包含：
         * _transfer type_。
         * _endpoint number_。
@@ -1343,7 +1339,7 @@ _struct urb consisting of all relevant information to execute any USB transactio
         * _data transferred from or to the specific usb device_。
         * _the specific struct usb_device from or to which the data transferred_。
         * _routine executed upon data transfer completion_。 
-* _developer_ 调用 [api](#api-1) 中的 _usb_submit_urb_：
+* _developer_ 调用 [_api_](#api-1) 中的 _usb_submit_urb_：
     * 根据所传入的 _struct urb_，在所传入的 _struct urb_ 所对应的 _struct usb_device_ 中，获取所对应的 _struct usb_host_endpoint_。
     * 根据所获取的 _struct usb_host_endpoint_ 以及其他相关参数，配置所传入的 _struct urb_。
     * 根据所传入的 _struct urb_ 所对应的 _struct usb_device_ 所对应的 _struct usb_bus_，获取所对应的 _struct usb_hcd_。
