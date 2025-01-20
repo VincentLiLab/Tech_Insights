@@ -77,7 +77,7 @@
   - [类模板的格式](#类模板的格式)
     - [类模板的声明和实现都必须在头文件中](#类模板的声明和实现都必须在头文件中)
   - [类模板的定义](#类模板的定义)
-    - [类模板也是类，具有类的一些特性](#类模板也是类具有类的一些特性)
+    - [类模板也是类，具有类的一切特性](#类模板也是类具有类的一切特性)
   - [类模板的模板形参和模板实参](#类模板的模板形参和模板实参)
     - [_type template parameter_ 类型模板形参和 _type template argument_ 类型模板实参](#type-template-parameter-类型模板形参和-type-template-argument-类型模板实参)
     - [_non-type template parameter_ 非类型模板形参和 _non-type template argument_ 非类型模板实参](#non-type-template-parameter-非类型模板形参和-non-type-template-argument-非类型模板实参)
@@ -324,7 +324,7 @@ _return-by-reference_ 和 _return-by-value_ 也是相同的原因。
 
 ```
 
-注意 _const_、_non-const_、_reference_ _non-reference_ 都是类型。
+注意 _const_、_non-const_、_reference_ 和 _non-reference_ 都是类型。
 
 ```C++
   void Function(int);
@@ -496,17 +496,17 @@ _copy elision_ 可以避免调用多余的 _copy constructor_。可以通过指�
     explicit Widget(const Widget &);
     ...
   }
-  Widget w1(0);               // fine! copy initialization
-  Widget w2 = 0;              // fine! direct initialization
+  Widget w1(0);               // fine! direct initialization
+  Widget w2 = 0;              // fine! copy initialization
 
-  Widget w3(w2);              // fine! copy initialization
-  Widget w4 = w3;             // error! direct initialization
+  Widget w3(w2);              // fine! direct initialization
+  Widget w4 = w3;             // error! copy initialization
 ```
 _copy initialization_ 不允许使用 _explicit_ 构造函数。_direct initialization_ 允许使用 _explicit_ 构造函数。
 
 ### 构造函数被生成的条件
 
-见 [_default constructor_ 被生成的条件](effective_modern_cpp.md#copy-operation-被生成的条件) 和 [_copy constructor_ 被生成的条件](effective_modern_cpp.md#default-constructor-被生成的条件)。
+见 [_default constructor_ 被生成的条件](effective_modern_cpp.md#default-constructor-被生成的条件) 和 [_copy constructor_ 被生成的条件](effective_modern_cpp.md#copy-operation-被生成的条件)。
 
 ## 析构函数
 
@@ -545,18 +545,18 @@ _copy initialization_ 不允许使用 _explicit_ 构造函数。_direct initiali
 
 ### _public_ 
 
-* _base class_ 的 _public_ 成员生为 _derived class_ 的 _public_ 成员。
-* _base class_ 的 _protected_ 成员生为 _derived class_ 的 _protected_ 成员。
-* _base class_ 的 _private_ 成员生为 _derived class_ 的 _private_ 成员。
+* _base class_ 的 _public_ 成员成为 _derived class_ 的 _public_ 成员。
+* _base class_ 的 _protected_ 成员成为 _derived class_ 的 _protected_ 成员。
+* _base class_ 的 _private_ 成员成为 _derived class_ 的 _private_ 成员。
 
 ### _protected_
 
-* _base class_ 的 _public_ 和 _protected_ 成员生为 _derived class_ 的 _protected_ 成员；  
-* _base class_ 的 _private_ 成员生为 _derived class_ 的 _private_ 成员。
+* _base class_ 的 _public_ 和 _protected_ 成员成为 _derived class_ 的 _protected_ 成员；  
+* _base class_ 的 _private_ 成员成为 _derived class_ 的 _private_ 成员。
 
 ### _private_
 
-* _base class_ 的 _public_、_protected_ 和 _private_ 成员生为 _derived class_ 的 _private_ 成员。
+* _base class_ 的 _public_、_protected_ 和 _private_ 成员成为 _derived class_ 的 _private_ 成员。
 
 ### 构造函数的执行顺序
 
@@ -661,7 +661,7 @@ class Derived : public Base {
   class SingerWaiter : public Waiter, public Singer {
    public:  
     SingerWaiter(int v)
-        : Worker(v), 
+      : Worker(v), 
         Waiter(v), 
         Singer(v) {
       ...
@@ -779,9 +779,9 @@ _virtual function_ 是在类中使用 _virtual_ 修饰的函数。
 
 ## 类模板的定义
 
-### 类模板也是类，具有类的一些特性
+### 类模板也是类，具有类的一切特性
 
-模板类也是类，具有类的一些特性，不要把模板类特殊化。
+类模板也是类，具有类的一切特性，不要把类模板特殊化。
 
 ## 类模板的模板形参和模板实参
 

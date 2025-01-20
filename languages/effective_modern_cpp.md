@@ -98,6 +98,7 @@
   - [_std::move_ 是转换而不是移动](#stdmove-是转换而不是移动)
   - [_std::forward_ 是转换而不是转发](#stdforward-是转换而不是转发)
   - [_std::move_ 并不能保证转换后的结果是可以被移动的，禁止将可以被移动的对象声明为 _const_](#stdmove-并不能保证转换后的结果是可以被移动的禁止将可以被移动的对象声明为-const)
+  - [_lvalue-reference-to-const_ 可以绑定左值和右值](#lvalue-reference-to-const-可以绑定左值和右值)
 - [_Item 24_ 区分 _universal reference_ 和右值引用](#item-24-区分-universal-reference-和右值引用)
   - [_\&\&_ 是 _universal reference_ 的场景](#-是-universal-reference-的场景)
   - [_\&\&_ 是右值引用的场景](#-是右值引用的场景)
@@ -1477,9 +1478,9 @@ _std::mutex m_ 被声明为了 _mutable_，因为 _m_ 的加锁和解锁是 _non
 
 如果声明了其中一个 _copy operation_ 的话，那么 **_应该_** 阻止编译器生成另一个 _copy operation_。因为只要声明了其中一个 _copy operation_，就表明了编译器所生成的 _copy operation_ 的 _memberwise copy_ 是不合适的，所以应该阻止编译器生成另一个 _copy operation_。但注意是 **_应该_**，但是并没有，因为这会破坏 _C++98_ 的代码。
 
-如果声明了任意一个 _move operation_ 的话，那么会阻止编译器生成 _copy operation_。因为只要声明了 _move operation_，就表明了编译器所生成的 _move operation_ 的 _memberwise move_ 是不合适的，编译器也会认为如果 _memberwise move_ 都不合适的话，那么 _memberwise copy_ 也是不合适的。所以应该阻止编译器生成 _copy operation_。
+如果声明了任意一个 _move operation_ 的话，那么会阻止编译器生成 _copy operation_。因为只要声明了 _move operation_，就表明了编译器所生成的 _move operation_ 的 _memberwise move_ 是不合适的，编译器也会认为如果 _memberwise move_ 都不合适的话，那么 _memberwise copy_ 也是不合适的。所以阻止编译器生成 _copy operation_。
 
-如果声明了析构函数的话，那么 **_应该_** 阻止编译器生成 _copy operation_。因为只要声明了析构函数，就表明了需要在析构函数中做特殊处理，那么编译器所生成的 _copy operation_ 的 _memberwise copy_ 是不合适的了，所以应该阻止编译器生成 _move operation_。但注意是 **_应该_**，但是并没有，因为这会破坏 _C++98_ 的代码。
+如果声明了析构函数的话，那么 **_应该_** 阻止编译器生成 _copy operation_。因为只要声明了析构函数，就表明了需要在析构函数中做特殊处理，那么编译器所生成的 _copy operation_ 的 _memberwise copy_ 是不合适的了，所以应该阻止编译器生成 _copy operation_。但注意是 **_应该_**，但是并没有，因为这会破坏 _C++98_ 的代码。
 
 所以，如果你声明了任意一个 _copy constructor_、_copy assignment operator_ 和析构函数的话，那么你应该把这三个都声明出来，否则虽然仍然是可以编译和运行的，但却是被 _C++11_ 废弃的。
 
@@ -1850,6 +1851,10 @@ _std::forward_ 的形参的类型是 _univeral reference_，这表示它的形�
   };
 ```  
 在 _Annotation_ 的构造函数的成员初始值列表中，_std::move(text)_ 的结果是一个 _const std::string_ 的右值。这个右值不可以被传递到 _std::string_ 的移动构造函数中，因为 _std::string_ 的移动构造函数持有的是 _non-const std::string_ 的右值引用。然而，这个右值是可以被传递到 _std::string_ 的 _copy constructor_ 中的，因为允许 _lvalue-reference-to-const_ 去绑定一个 _const_ 右值。因此 _Annotation_ 的成员初始化执行的会是 _std::string_ 的 _copy constructor_，尽管 _text_ 已经被转换为了一个右值。这样的行为对于维护 _const-correctness_ 是必不可少的。将值移出对象之外通常会修改这个对象，所以，语言不允许将 _const_ 对象传递给那些像移动构造函数一样的可能会修改它们的函数。
+
+## _lvalue-reference-to-const_ 可以绑定左值和右值
+
+因为 _lvalue-reference-to-const_ 的 _const_ ，所以可以绑定左值或右值。
 
 # _Item 24_ 区分 _universal reference_ 和右值引用
 

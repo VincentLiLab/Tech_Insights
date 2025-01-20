@@ -30,7 +30,7 @@
   - [会被继承的 _base class_ 的析构函数必须要为 _virtual_](#会被继承的-base-class-的析构函数必须要为-virtual)
   - [析构函数不是 _virtual_ 的类不能被继承来做为 _base class_](#析构函数不是-virtual-的类不能被继承来做为-base-class)
 - [_Item 8_ 阻止异常离开析构函数](#item-8-阻止异常离开析构函数)
-  - [允许异常传离开析构函数会导致 _undefined behavior_](#允许异常传离开析构函数会导致-undefined-behavior)
+  - [允许异常离开析构函数会导致 _undefined behavior_](#允许异常离开析构函数会导致-undefined-behavior)
   - [阻止异常离开析构函数](#阻止异常离开析构函数)
 - [_Item 9_ 永远不在构造和析构期间调用 _virtual function_](#item-9-永远不在构造和析构期间调用-virtual-function)
   - [在 _base class_ 构造和析构期间，_virtual function_ 没有 _virtual_ 特性](#在-base-class-构造和析构期间virtual-function-没有-virtual-特性)
@@ -72,7 +72,7 @@
   - [首选 _pass-by-reference-to-const_ 而不是 _pass-by-value_ 的原因](#首选-pass-by-reference-to-const-而不是-pass-by-value-的原因)
 - [_Item 21_ 当返回对象时，不要尝试返回引用](#item-21-当返回对象时不要尝试返回引用)
   - [当 _local static_ 对象对应有多个引用时，禁止返回指向着这个 _local static_ 对象的引用](#当-local-static-对象对应有多个引用时禁止返回指向着这个-local-static-对象的引用)
-  - [引用只是一个已经存在的对象的名字而已](#引用只是一个已经存在的对象的名字而已)
+  - [引用只是一个已经存在的对象的另一个名字而已](#引用只是一个已经存在的对象的另一个名字而已)
 - [_Item 22_ 声明数据成员为 _private_](#item-22-声明数据成员为-private)
 - [_Item 23_ 首选 _non-member_ _non-friend_ 函数而不是成员函数](#item-23-首选-non-member-non-friend-函数而不是成员函数)
 - [_Item 24_ 当类型转换会被应用到函数的所有形参上时，需要声明这个函数为 _non-member_ 函数](#item-24-当类型转换会被应用到函数的所有形参上时需要声明这个函数为-non-member-函数)
@@ -544,7 +544,7 @@ _const_ 函数和 _non-const_ 函数是函数重载，_non-const_ 函数调用 _
 
 # _Item 8_ 阻止异常离开析构函数
 
-## 允许异常传离开析构函数会导致 _undefined behavior_
+## 允许异常离开析构函数会导致 _undefined behavior_
 
 允许异常传离开析构函数会导致 _undefined behavior_，因为析构函数的异常无法捕获，异常离开析构函数，会一直向 _上_ 寻找 _try-catch_，这可能会造成 _undefined behavior_。
 
@@ -561,8 +561,7 @@ _const_ 函数和 _non-const_ 函数是函数重载，_non-const_ 函数调用 _
 
 ## 禁止在构造函数和析构函数中调用 _virtual function_
 
-禁止在构造函数和析构函数中调用 _virtual function_，特别是嵌套调用 _virtual function_，
-因为在 _base class_ 构造和析构期间，_virtual function_ 没有 _virtual_ 特性。
+禁止在构造函数和析构函数中调用 _virtual function_，特别是嵌套调用的 _virtual function_，因为在 _base class_ 构造和析构期间，_virtual function_ 没有 _virtual_ 特性。
 
 # _Item 10_ 让 _operator=_ 返回 _reference to *this_
 
@@ -716,7 +715,7 @@ _new_ 对应于 _delete_，_new []_ 对应于 _delete []_，否则会有 _undefi
 
 ## 让接口与内建类型的行为兼容
 
-让接口与内建类型的行为兼容，也就对于接口来说，内建类型的行为和自定义类的行为需要一致。
+让接口与内建类型的行为兼容，也就是对于接口来说，内建类型的行为和自定义类的行为需要一致。
 
 ## _cross-DLL_ 问题
 
@@ -757,7 +756,7 @@ _new_ 对应于 _delete_，_new []_ 对应于 _delete []_，否则会有 _undefi
 
 ## 如何设计类的异常安全
 
-如何设计类的异常安全。
+如何设计类的异常安全，比如阻止异常离开析构函数。
 
 ## 是否需要设计为类模板
 
@@ -801,9 +800,9 @@ _new_ 对应于 _delete_，_new []_ 对应于 _delete []_，否则会有 _undefi
 
 因为 _if ((a * b) == (c * d))_ 等同于 _if (operator==(operator*(a, b), operator*(c, d)))_ 而 _operator*(a, b)_ 和 _operator*(c, d)_ 返回的是同一个 _result_，是 _local static_ 对象，所以 _operator*(a, b)_ 和 _operator*(c, d)_ 是永远相等的，_if ((a * b) == (c * d))_ 永远都是 _true_ 的。
 
-## 引用只是一个已经存在的对象的名字而已
+## 引用只是一个已经存在的对象的另一个名字而已
 
-引用只是一个已经存在的对象的名字而已，只要看见引用的声明，都应该立刻问自己：这个引用所对应的是哪个对象。
+引用只是一个已经存在的对象的另一个名字而已，只要看见引用的声明，都应该立刻问自己：这个引用所对应的是哪个对象。
 
 # _Item 22_ 声明数据成员为 _private_
 
@@ -1250,7 +1249,7 @@ _inline_ 只是申请不是命令，是在编译期间完成的。
 
 ## 可以使用设计模式 _template_ 和 _strategy_ 来代替 _virtual function_
 
-可以使用设计模式 _template_ 和 _strategy_ 来代替 _virtual function_。
+可以使用设计模式 [_template_](./design_pattern.md#template) 和 [_strategy_](./design_pattern.md#strategy) 来代替 _virtual function_。
 
 # _Item 36_ 永远不重新定义所继承而来的 _non-virtual function_
 
@@ -1686,7 +1685,7 @@ _nested depend name_ 默认不是类型，可以使用 _typename_ 来将 _nested
   };
 ```
 
-_SquareMatrix&lt;double, 5&gt;_ 和 _SquareMatrix&;t;double, 10&gt;_ 就是重复，可以使用函数参数和成员变量来替换非类型模板形参。你必须训练自己去感受当一个模板被实例化多次时可能发生的重复。
+_SquareMatrix&lt;double, 5&gt;_ 和 _SquareMatrix&lt;double, 10&gt;_ 就是重复，可以使用函数参数和成员变量来替换非类型模板形参。你必须训练自己去感受当一个模板被实例化多次时可能发生的重复。
 
 # _Item 45_ 使用成员函数模板去接受所有的兼容类型
 
@@ -1778,10 +1777,10 @@ _SquareMatrix&lt;double, 5&gt;_ 和 _SquareMatrix&;t;double, 10&gt;_ 就是重�
     ...                                           // Item 3 for why they’re const
   };
 
-template<typename T>
-const Rational<T> operator*(const Rational<T>& lhs,
-                            const Rational<T>& rhs)
-{ ... }
+  template<typename T>
+  const Rational<T> operator*(const Rational<T>& lhs,
+                              const Rational<T>& rhs)
+  { ... }
 ```
 
 ```C++
@@ -1794,7 +1793,7 @@ const Rational<T> operator*(const Rational<T>& lhs,
 
 ## 当隐式类型转换会被应用到函数的所有形参上，特别是 _this_ 上且这个函数依赖于类模板时，需要声明这个函数为友元函数且在模板类中进行实现
 
-因为当隐式类型转换会被应用到函数的所有形参上时，特别是 _this_ 上时，需要声明这个函数为 _non-member_ 函数；又因为当这个函数依赖于类模板时，隐式类型转换函数在模板实参推导期间是永远不会被考虑的，所以需要声明这个函数为 _non-template_ 函数，所以需要声明这个函数为 _non-member_ _non-template_函数。但是因为 _non-member_ _non-template_ 函数是有链接问题的，所以需要声明这个函数为友元函数且在模板类中进行实现。
+因为当隐式类型转换会被应用到函数的所有形参上时，特别是 _this_ 上时，需要声明这个函数为 _non-member_ 函数；又因为当这个函数依赖于类模板时，隐式类型转换函数在模板实参推导期间是永远不会被考虑的，所以需要声明这个函数为 _non-template_ 函数，所以需要声明这个函数为 _non-member_ _non-template_ 函数。但是因为 _non-member_ _non-template_ 函数是有链接问题的，所以需要声明这个函数为友元函数且在模板类中进行实现。
 
 ```C++
   template<typename T>
@@ -1891,7 +1890,7 @@ _TMP_ 可以将工作从 _runtime_ 转移至 _compile-time_，这可以让错误
 
 ## _custom operator new_ 和 _custom operator delete_ 的作用
 
-* 为了探测使用错误。_custom operator new_ 除了所要求分配的内存外，可以去再多分配一些内存，而这些内存可以处在所要求分配的内存的前面和后面，其中可以放置一些已知的 _byte pattern_，然后 _custom operator delete_ 可以去检查这些 _byte pattern_ 是否仍然完整，如果这些 _byte pattern_是不完整的话，那么可能出现了 _overrun_ 或 _underrun_； _custom operator new_ 可以在其中保留已分配的地址的列表，然后 _custom operator delete_ 可以在其中删除这些地址，这样可以避免多次 _delete_ 和没有 _delete_ 的问题。
+* 为了探测使用错误。_custom operator new_ 除了所要求分配的内存外，可以去再多分配一些内存，而这些内存可以处在所要求分配的内存的前面和后面，其中可以放置一些已知的 _byte pattern_，然后 _custom operator delete_ 可以去检查这些 _byte pattern_ 是否仍然完整，如果这些 _byte pattern_ 是不完整的话，那么可能出现了 _overrun_ 或 _underrun_；_custom operator new_ 可以在其中保留已分配的地址的列表，然后 _custom operator delete_ 可以在其中删除这些地址，这样可以避免多次 _delete_ 和没有 _delete_ 的问题。
 * 为了提升效率。_normal operator new_ 和 _normal operator delete_ 是为了通用目的而设计的，能用于 _long-running_ 程序、_short-running_ 程序、大块内存、小块内存、大小块混合内存、多线程和非最优最齐位等，而 _custom operator new_ 和 _custom operator delete_ 可以针对某一目进行设计，提升效率。
 * 为了收集使用上的统计数据。_custom operator new_ 和 _custom operator delete_ 可以统计动态内存的大小、动态内存的生命周期和分配释放的顺序：_FIFO_、_LIFO_ 或 _random_ 等。
 * 为了降低默认内存管理的空间成本。_normal operator new_ 和 _normal operator delete_ 通常会使用更多的内存，而 _custom operator new_ 和 _custom operator delete_ 可以选择使用更少的内存。
