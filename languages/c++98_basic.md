@@ -12,7 +12,6 @@
   - [_const_](#const)
     - [_const_ 变量必须要初始化](#const-变量必须要初始化)
     - [_const_ 变量真正不可被修改](#const-变量真正不可被修改)
-    - [_const_ 变量是 _compile-time_ 的常量](#const-变量是-compile-time-的常量)
 - [_C++_ 的特性](#c-的特性)
   - [引用](#引用)
     - [引用在定义的同时必须要初始化](#引用在定义的同时必须要初始化)
@@ -181,10 +180,6 @@ _(v1 > v2) ? v1 : v2_ 是右值，不能赋值，而 _(v1 > v2 ? &v1 : &v2)_ 也
 ### _const_ 变量真正不可被修改
 
 在 _C++_ 中，不可以通过地址去修改 _const_ 变量，因为 _const_ 变量是被分配在了符号表中的，不可被修改；在 _C_ 中，可以通过地址去修改 _const_ 变量。
-
-### _const_ 变量是 _compile-time_ 的常量
-
-在 _C++_ 中，_const_ 变量是 _compile-time_ 的常量，可以被用来定义数组；在 _C_ 中，不可以。
 
 # _C++_ 的特性
 
@@ -547,16 +542,17 @@ _copy initialization_ 不允许使用 _explicit_ 构造函数。_direct initiali
 
 * _base class_ 的 _public_ 成员成为 _derived class_ 的 _public_ 成员。
 * _base class_ 的 _protected_ 成员成为 _derived class_ 的 _protected_ 成员。
-* _base class_ 的 _private_ 成员成为 _derived class_ 的 _private_ 成员。
+* _base class_ 的 _private_ 成员仍然为 _base class_ 的 _private_ 成员。
 
 ### _protected_
 
 * _base class_ 的 _public_ 和 _protected_ 成员成为 _derived class_ 的 _protected_ 成员；  
-* _base class_ 的 _private_ 成员成为 _derived class_ 的 _private_ 成员。
+* _base class_ 的 _private_ 成员仍然为 _base class_ 的 _private_ 成员。
 
 ### _private_
 
-* _base class_ 的 _public_、_protected_ 和 _private_ 成员成为 _derived class_ 的 _private_ 成员。
+* _base class_ 的 _public_ 和 _protected_ 成员成为 _derived class_ 的 _private_ 成员；  
+* _base class_ 的 _private_ 成员仍然为 _base class_ 的 _private_ 成员。
 
 ### 构造函数的执行顺序
 
@@ -695,8 +691,8 @@ _virtual function_ 是在类中使用 _virtual_ 修饰的函数。
 
 ### 友元函数不可以是 _virtual function_ 
 
-友元函数不可以是 _virtual function_。
- 
+友元函数不可以是 _virtual function_，友元函数本质上是全局函数，所以不可以是 _virtual function_。
+
 ### _virtual function table_ 和 _pointer to virtual function table_
 
 如果类中包含有 _virtual function_，那么编译器会在编译期间生成一个隐藏的 _virtual function table_ 以及一个 _pointer to virtual function table_，在这个 _virtual function table_ 存储了这个类的所有 _virtual function_。

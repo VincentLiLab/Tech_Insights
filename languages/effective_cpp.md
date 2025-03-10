@@ -798,7 +798,7 @@ _new_ 对应于 _delete_，_new []_ 对应于 _delete []_，否则会有 _undefi
   }
 ```
 
-因为 _if ((a * b) == (c * d))_ 等同于 _if (operator==(operator*(a, b), operator*(c, d)))_ 而 _operator*(a, b)_ 和 _operator*(c, d)_ 返回的是同一个 _result_，是 _local static_ 对象，所以 _operator*(a, b)_ 和 _operator*(c, d)_ 是永远相等的，_if ((a * b) == (c * d))_ 永远都是 _true_ 的。
+因为 _if ((a * b) == (c * d))_ 等同于 _if (operator==(operator*(a, b), operator*(c, d)))_，而 _operator*(a, b)_ 和 _operator*(c, d)_ 返回的是同一个 _local static_ 对象 _result_，此时同一个 _local static_ 对象 _result_ 对应有两个引用 _lhs_ 和 _rhs_，所以 _operator*(a, b)_ 和 _operator*(c, d)_ 是永远相等的，_if ((a * b) == (c * d))_ 永远都是 _true_ 的，所以当 _local static_ 对象对应有多个引用时，禁止返回指向着这个 _local static_ 对象的引用。
 
 ## 引用只是一个已经存在的对象的另一个名字而已
 
@@ -1174,12 +1174,12 @@ _C++-style_cast&lt;target-type&gt;(expression)_	本质上是 _target-type(expres
   struct RectData { // Point data for a Rectangle
     Point ulhc; // ulhc = “ upper left-hand corner”
     Point lrhc; // lrhc = “ lower right-hand corner”
-    };
+  };
 
-    class Rectangle {
-      ...
-    private:
-      std::tr1::shared_ptr<RectData> pData; // see Item 13 for info on
+  class Rectangle {
+    ...
+  private:
+    std::tr1::shared_ptr<RectData> pData; // see Item 13 for info on
   };
 ```
 
@@ -2001,7 +2001,7 @@ _TMP_ 可以将工作从 _runtime_ 转移至 _compile-time_，这可以让错误
                                                   // if the Widget constructor throws
 ```
 
-因为调用的是 _placement operator new_，所以如果一个异常从上述语句的 _Widget_ 的构造函数中被抛出的话，那么相应的 _placement operator delete_ 是会被自动调用的，从而可以确保没有资源泄露。如果一个异常从上述语句的 _Widget_ 的构造函数中被抛出的话，但是没有存在相应的 _placement delete_ 的话，那么是不会自动调用任何 _operator new_ 的，会造成资源泄露，所以如果写了 _placement operator new_ 的话，那么也必须要写 _placement operator delete_，并且 _placement operator delete_ 只有在这种情况下才会被调用。
+因为调用的是 _placement operator new_，所以如果一个异常从上述语句的 _Widget_ 的构造函数中被抛出的话，那么相应的 _placement operator delete_ 是会被自动调用的，从而可以确保没有资源泄露。如果一个异常从上述语句的 _Widget_ 的构造函数中被抛出的话，但是没有存在相应的 _placement delete_ 的话，那么是不会自动调用任何 _operator delete_ 的，会造成资源泄露，所以如果写了 _placement operator new_ 的话，那么也必须要写 _placement operator delete_，并且 _placement operator delete_ 只有在这种情况下才会被调用。
 
 ## 调用 _delete_ 只会调用 _normal operator delete_
 
